@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import client.Heuristic.AStar;
 import client.Heuristic.Greedy;
@@ -201,7 +200,7 @@ public class SearchClient {
 	
 	public static void main( String[] args ) throws Exception {
 		BufferedReader serverMessages = new BufferedReader( new InputStreamReader( System.in ) );
-agents.add(new Agent('0', "red"));
+		agents.add(new Agent('0', "red"));
 		// Use stderr to print to console
 		System.err.println( "SearchClient initializing. I am sending this using the error output stream." );
 
@@ -238,16 +237,18 @@ agents.add(new Agent('0', "red"));
 		for (int i = 0; i < solution.length; i++) {
 			solution[i]="[";
 		}
-		int j=0;
-		
+
 		for (int i = 0; i < solutions.size(); i++) {
 			for (int k = 0; k < solutions.get(i).size(); k++) {
-				
+				if(k<solutions.get(i).size()){
+					solution[k]+=solutions.get(i).get(k).action.toString();
+				}else{
+					solution[k]+="NoOp";
+				}
 				if(i!=solutions.size()-1){
 					solution[k]+=solutions.get(i).get(k).action.toString()+",";
-				}else{
-					solution[k]+=solutions.get(i).get(k).action.toString();
 				}
+
 			}
 		}
 		for (int i = 0; i < solution.length; i++) {
@@ -255,7 +256,7 @@ agents.add(new Agent('0', "red"));
 		}
 		
 		System.err.println(Arrays.toString(solution));
-		if ( solution == null ) {
+		if ( solution.length == 0 ) {
 			System.err.println( "Unable to solve level" );
 			System.exit( 0 );
 		} else {
