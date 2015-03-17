@@ -6,20 +6,6 @@ import java.util.*;
 public class RandomWalkClient {
 	private static Random rand = new Random();
 
-	public class Agent {
-		// We don't actually use these for Randomly Walking Around
-		private char id;
-		private String color;
-
-		Agent( char id, String color ) {
-			this.id = id;
-			this.color = color;
-		}
-
-		public String act() {
-			return Command.every[rand.nextInt( Command.every.length )].toString();
-		}
-	}
 
 	private BufferedReader in = new BufferedReader( new InputStreamReader( System.in ) );
 	private List< Agent > agents = new ArrayList< Agent >();

@@ -1,4 +1,4 @@
-package sc;
+package client;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Random;
 
-import sc.Command.dir;
-import sc.Command.type;
+import client.Command.dir;
+import client.Command.type;
 
 public class Node {
 

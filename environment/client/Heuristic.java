@@ -1,4 +1,4 @@
-package sc;
+package client;
 
 import java.util.Comparator;
 import java.util.HashMap;
