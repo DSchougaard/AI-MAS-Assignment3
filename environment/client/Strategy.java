@@ -1,10 +1,10 @@
-package sc;
+package client;
 
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
-import sc.SearchClient.Memory;
+import client.SearchClient.Memory;
 
 public abstract class Strategy {
 
