@@ -1,7 +1,7 @@
 package client.map;
 
 
-
+import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -50,7 +50,7 @@ class Level{
 		}
 	}
 
-	private Cell[][] map;
+	private static Cell[][] map;
 
 	public enum Type { SPACE, WALL, GOAL, BOX, AGENT }
 
@@ -61,7 +61,7 @@ class Level{
 
 
 	// Constructor
-	public Level(){
+	public Level(DistanceMap dmap){
 		this.tempMapContainer = new ArrayList<String>();
 		this.goals = new HashMap<Character, ArrayList<Cell> >();
 	}
@@ -131,8 +131,19 @@ class Level{
 		Interface for the Heuristic to use
 	*/
 
+	public int getCol(){
+		return this.maxCol;
+	}
+
+	public int getRow(){
+		return this.maxRow;
+	}
+
 	public List<Cell> getGoals(char chr){
 		return this.goals.get(new Character(chr));
+	}
+	public Map<Character, List<Cell>> getAllGoals(){
+		return this.goals;
 	}
 }
 
