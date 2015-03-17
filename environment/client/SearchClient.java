@@ -79,9 +79,9 @@ public class SearchClient {
 	public static void main( String[] args ) {
 
 		// Use stderr to print to console
-		System.err.println( "Hello from RandomWalkClient. I am sending this using the error outputstream" );
+		System.err.println( "Hello from SearchClient. I am sending this using the error outputstream" );
 		try {
-			RandomWalkClient client = new RandomWalkClient();
+			SearchClient client = new SearchClient();
 			while ( client.update() )
 				;
 
