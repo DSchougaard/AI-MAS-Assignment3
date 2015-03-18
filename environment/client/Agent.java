@@ -8,10 +8,10 @@ public class Agent{
 	private static Random rand = new Random();
 
 		// We don't actually use these for Randomly Walking Around
-		private char id;
-		private String color;
+		public int id;
+		public String color;
 
-		Agent( char id, String color ) {
+		Agent( int id, String color ) {
 			this.id = id;
 			this.color = color;
 		}

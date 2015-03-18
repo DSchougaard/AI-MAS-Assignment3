@@ -116,6 +116,7 @@ public abstract class Heuristic implements Comparator< Node > {
 		public Greedy(Node initialState) {
 			super( initialState );
 		}
+		
 
 		public int f( Node n ) {
 			return h( n );
@@ -138,31 +139,12 @@ public abstract class Heuristic implements Comparator< Node > {
 			this.y=y;
 		}
 		public static int dist(int x, int y, int x2, int y2){
-		System.err.println(x+ " "+ y +" to "+x2+" " +y2+": "+((int) Math.sqrt(Math.pow(Math.abs(x-x2),2)+Math.pow(Math.abs(y-y2),2)))+" : "+(Math.abs(x-x2)+Math.abs(y-y2)));
+//		System.err.println(x+ " "+ y +" to "+x2+" " +y2+": "+((int) Math.sqrt(Math.pow(Math.abs(x-x2),2)+Math.pow(Math.abs(y-y2),2)))+" : "+(Math.abs(x-x2)+Math.abs(y-y2)));
 			return (int) Math.sqrt(Math.pow(Math.abs(x-x2),2)+Math.pow(Math.abs(y-y2),2));
 		}
 		public int dist(int x, int y){
 			return (int) Math.sqrt(Math.pow(Math.abs(this.x-x),2)+Math.pow(Math.abs(this.y-y),2));
 		}
-//		
-//		public int dist(Point p){
-//			return (int) Math.sqrt(Math.pow(Math.abs(this.x-p.x),2)+Math.pow(Math.abs(this.y-p.y),2));
-//		}
-		
-//		public static int dist(int x, int y, int x2, int y2){
-//			if(((int) Math.sqrt(Math.pow(Math.abs(x-x2),2)+Math.pow(Math.abs(y-y2),2)))!=(Math.abs(x-x2)+Math.abs(y-y2))){
-//				System.err.println(x+ " "+ y +" to "+x2+" " +y2+": "+((int) Math.sqrt(Math.pow(Math.abs(x-x2),2)+Math.pow(Math.abs(y-y2),2)))+" : "+(Math.abs(x-x2)+Math.abs(y-y2)));
-//			}
-//				return Math.abs(x-x2)+Math.abs(y-y2);
-//		}
-//		public int dist(int x, int y){
-//			System.err.println(x+ "-"+ y +" to "+this.x+" " +this.y+":-"+(Math.abs(this.x-x)+Math.abs(this.y-y)));
-//			return Math.abs(this.x-x)+Math.abs(this.y-y);
-//		}
-//		
-//		public int dist(Point p){
-//			System.err.println("hej");
-//			return Math.abs(this.x-p.x)+Math.abs(this.y-p.y);
-//		}
+
 	}
 }

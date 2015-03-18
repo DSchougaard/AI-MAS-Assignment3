@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Random;
 
 import client.Command.dir;
 import client.Command.type;
-
+import client.map.Level;
 public class Node {
 
 	private static Random rnd = new Random( 1 ); 
@@ -28,23 +29,60 @@ public class Node {
 	// walls[row][col] is true if there's a wall at (row, col)
 	//
 
+	private static Map<Character, String> colors;
+	
 	public static boolean[][] walls = new boolean[MAX_ROW][MAX_COLUMN];
-	public char[][] boxes = new char[MAX_ROW][MAX_COLUMN]; 
 	public static char[][] goals = new char[MAX_ROW][MAX_COLUMN];
-
+	
+	public Level level;
+	
+	public char[][] boxes = new char[MAX_ROW][MAX_COLUMN]; 
+	
+ 
 	public Node parent;
 	public Command action;
 
 	private int g;
 	
-	public Node( Node parent ) {
+	Agent agent;
+	
+	public int[][] agents=new int[10][2];
+	
+	public Node( Node parent, Map<Character, String> colors, Agent agent ) {
+		this.agent=agent;
+		Node.colors=colors;
 		this.parent = parent;
 		if ( parent == null ) {
 			g = 0;
 		} else {
 			g = parent.g() + 1;
+			level=parent.level;
 		}
-
+		
+	}
+	
+	public Node( Node parent, Map<Character, String> colors ) {
+		Node.colors=colors;
+		this.parent = parent;
+		if ( parent == null ) {
+			g = 0;
+		} else {
+			g = parent.g() + 1;
+			level=parent.level;
+		}
+		
+	}
+	
+	public Node( Node parent) {
+		
+		this.parent = parent;
+		if ( parent == null ) {
+			g = 0;
+		} else {
+			g = parent.g() + 1;
+			level=parent.level;
+		}
+		
 	}
 	public void init(int MAX_ROW,int MAX_COLUMN){
 		Node.MAX_COLUMN=MAX_COLUMN;
@@ -52,6 +90,10 @@ public class Node {
 		walls = new boolean[MAX_ROW][MAX_COLUMN];
 		goals = new char[MAX_ROW][MAX_COLUMN];
 		
+	}
+	
+	public void init(Level level){
+		this.level=level;
 	}
 
 	public int g() {
@@ -63,6 +105,9 @@ public class Node {
 	}
 
 	public boolean isGoalState() {
+		if(agent!=null){
+			return isColouredGoalState();
+		}
 		for ( int row = 1; row < MAX_ROW - 1; row++ ) {
 			for ( int col = 1; col < MAX_COLUMN - 1; col++ ) {
 				char g = goals[row][col];
@@ -72,10 +117,41 @@ public class Node {
 				}
 			}
 		}
+		
+		return true;
+	}
+	
+	public boolean isColouredGoalState() {
+//		System.err.println("-------"+colors.toString()+"  ----- "+agent.color);
+		for ( int row = 1; row < MAX_ROW - 1; row++ ) {
+			for ( int col = 1; col < MAX_COLUMN - 1; col++ ) {
+				char g = goals[row][col];
+				char b = Character.toLowerCase( boxes[row][col] );
+//				if ( g > 0 )
+//				System.err.println( colors.get(Character.toLowerCase(g)));
+				
+//				if(colors.get(Character.toUpperCase(b)) != null && colors.get(Character.toLowerCase(b)).equals(agent.color)){
+		
+				if(g>0 && colors.get(Character.toUpperCase(g)).equals(agent.color) && b != g){
+//					System.err.println(g+"+++++++++++++++++++++++++++++++++++++++++++++++");
+//				}
+//				if ( g > 0 && b != g) {
+////					System.err.println("not");
+//					
+//					System.err.println("not");
+						return false;
+					
+				}
+			}
+		}
+		System.err.println("goal");
 		return true;
 	}
 
 	public ArrayList< Node > getExpandedNodes() {
+		if(agent!=null){
+			return getColouredExpandedNodes();
+		}
 		ArrayList< Node > expandedNodes = new ArrayList< Node >( Command.every.length );
 		for ( Command c : Command.every ) {
 			// Determine applicability of action
@@ -126,8 +202,73 @@ public class Node {
 			}
 		}
 		Collections.shuffle( expandedNodes, rnd );
+		
 		return expandedNodes;
 	}
+	public ArrayList< Node > getColouredExpandedNodes() {
+//		System.err.println(agents[0][0]+","+agents[0][1]);
+		ArrayList< Node > expandedNodes = new ArrayList< Node >( Command.every.length );
+		for ( Command c : Command.every ) {
+			// Determine applicability of action
+			int newAgentRow = agents[agent.id][0] + dirToRowChange( c.dir1 );
+			int newAgentCol = agents[agent.id][1] + dirToColChange( c.dir1 );
+
+			if ( c.actType == type.Move ) {
+				// Check if there's a wall or box on the cell to which the agent is moving
+				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
+					
+					Node n = this.ChildNode();
+					n.action = c;
+					n.agents[agent.id][0] = newAgentRow;
+					n.agents[agent.id][1] = newAgentCol;
+					expandedNodes.add( n );
+					
+				}
+			} else if ( c.actType == type.Push ) {
+				// Make sure that there's actually a box to move
+				if ( boxAt( newAgentRow, newAgentCol ) && agent.color.equals(colors.get(boxes[newAgentRow][newAgentCol]))) {
+//				if ( boxAt( newAgentRow, newAgentCol ) ) {
+					int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
+					int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
+					// .. and that new cell of box is free
+					if ( cellIsFree( newBoxRow, newBoxCol ) ) {
+						System.err.println("push");
+						Node n = this.ChildNode();
+						n.action = c;
+						n.agents[agent.id][0] = newAgentRow;
+						n.agents[agent.id][1] = newAgentCol;
+						n.boxes[newBoxRow][newBoxCol] = this.boxes[newAgentRow][newAgentCol];
+						n.boxes[newAgentRow][newAgentCol] = 0;
+						expandedNodes.add( n );
+					}
+				}
+			} else if ( c.actType == type.Pull ) {
+				// Cell is free where agent is going
+				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
+					int boxRow = agents[agent.id][0] + dirToRowChange( c.dir2 );
+					int boxCol = agents[agent.id][1] + dirToColChange( c.dir2 );
+					// .. and there's a box in "dir2" of the agent
+					if(boxAt( boxRow, boxCol ))
+					System.err.println(agent.color+" "+ colors.get(Character.toUpperCase(boxes[boxRow][boxCol]))+" "+boxes[boxRow][boxCol]+"!");
+					
+					if ( boxAt( boxRow, boxCol )  && agent.color == colors.get(boxes[boxRow][boxCol])) {
+						System.err.println("pull");
+						Node n = this.ChildNode();
+						n.action = c;
+						n.agents[agent.id][0] = newAgentRow;
+						n.agents[agent.id][1] = newAgentCol;
+						n.boxes[agents[agent.id][0]][agents[agent.id][1]] = this.boxes[boxRow][boxCol];
+						n.boxes[boxRow][boxCol] = 0;
+						expandedNodes.add( n );
+					}
+				}
+			}
+		}
+		Collections.shuffle( expandedNodes, rnd );
+		
+		return expandedNodes;
+	}
+
 
 	private boolean cellIsFree( int row, int col ) {
 		return ( !Node.walls[row][col] && this.boxes[row][col] == 0 );
@@ -152,6 +293,7 @@ public class Node {
 			System.arraycopy( this.boxes[row], 0, copy.boxes[row], 0, MAX_COLUMN );
 //			System.arraycopy( this.goals[row], 0, copy.goals[row], 0, MAX_COLUMN );
 		}
+		copy.agent=this.agent;
 		return copy;
 	}
 
@@ -172,6 +314,7 @@ public class Node {
 		result = prime * result + agentCol;
 		result = prime * result + agentRow;
 		result = prime * result + Arrays.deepHashCode( boxes );
+		result = prime * result + Arrays.deepHashCode( agents );
 //		result = prime * result + Arrays.deepHashCode( goals );
 //		result = prime * result + Arrays.deepHashCode( walls );
 		return result;
@@ -193,6 +336,15 @@ public class Node {
 		if ( !Arrays.deepEquals( boxes, other.boxes ) ) {
 			return false;
 		}
+
+		for (int i = 0; i < agents.length; i++) {
+			for (int j = 0; j < agents[0].length; j++) {
+				if(agents[i][j]!=other.agents[i][j]){
+					return false;
+				}
+			}
+		}
+		
 //		if ( !Arrays.deepEquals( goals, other.goals ) )
 //			return false;
 //		if ( !Arrays.deepEquals( walls, other.walls ) )
@@ -201,6 +353,7 @@ public class Node {
 	}
 
 	public String toString() {
+		//TODO: enable MA agent drawing
 		StringBuilder s = new StringBuilder();
 		for ( int row = 0; row < MAX_ROW; row++ ) {
 			if ( !Node.walls[row][0] ) {
@@ -225,4 +378,7 @@ public class Node {
 		return s.toString();
 	}
 
+	public String getColor(Character c){
+		return colors.get(c);
+	}
 }

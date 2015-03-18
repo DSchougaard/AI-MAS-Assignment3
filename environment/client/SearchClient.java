@@ -13,9 +13,8 @@ import java.util.Map;
 import client.Heuristic.AStar;
 import client.Heuristic.Greedy;
 import client.Heuristic.WeightedAStar;
-import client.Strategy.StrategyBFS;
 import client.Strategy.StrategyBestFirst;
-import client.Strategy.StrategyDFS;
+import client.map.Level;
 
 public class SearchClient {
 
@@ -81,10 +80,26 @@ public class SearchClient {
 		}
 		
 		if ( colorLines > 0 ) {
-			error( "Box colors not supported" );
+			
+			System.err.println("Coloured expirence!!!");
+			colors.forEach(
+					(l,c)->{
+							System.err.println(l+" "+c);
+					}
+			);
+			colors.forEach(
+					(l,c)->{
+										if(Character.isDigit(l)){
+											agents.add(new Agent(Integer.parseInt(l+""), c));
+										}else{
+//											box color
+										}
+							}
+			);
+//			error( "Box colors not supported" );
 		}
 		
-		initialState = new Node( null );
+		initialState = new Node( null, colors);
 
 		int max_column=0;
 		ArrayList<String> tmpLines = new ArrayList<>();
@@ -103,8 +118,10 @@ public class SearchClient {
 				if ( '+' == chr ) { // Walls
 					Node.walls[levelLines][i] = true;
 				} else if ( '0' <= chr && chr <= '9' ) { // Agents
+					initialState.agents[Integer.parseInt(chr+"")][0]=levelLines;
+					initialState.agents[Integer.parseInt(chr+"")][1]=i;
 					if ( agentCol != -1 || agentRow != -1 ) {
-						error( "Not a single agent level" );
+						System.err.println( "Not a single agent level" );
 					}
 					initialState.agentRow = levelLines;
 					initialState.agentCol = i;
@@ -138,12 +155,14 @@ public class SearchClient {
 			}
 
 			if ( strategy.frontierIsEmpty() ) {
+				System.err.println("empty");
 				return null;
 			}
 
 			Node leafNode = strategy.getAndRemoveLeaf();
 
 			if ( leafNode.isGoalState() ) {
+				System.err.println("plan");
 				return leafNode.extractPlan();
 			}
 
@@ -176,12 +195,14 @@ public class SearchClient {
 			}
 
 			if ( strategy.frontierIsEmpty() ) {
+				System.err.println("empty");
 				return null;
 			}
 
 			Node leafNode = strategy.getAndRemoveLeaf();
 
 			if ( leafNode.isGoalState() ) {
+				System.err.println("plan");
 				return leafNode.extractPlan();
 			}
 
@@ -198,36 +219,17 @@ public class SearchClient {
 	private static List< Agent > agents = new ArrayList< Agent >();
 	
 	
-	public static void main( String[] args ) throws Exception {
-		BufferedReader serverMessages = new BufferedReader( new InputStreamReader( System.in ) );
-		agents.add(new Agent('0', "red"));
-		// Use stderr to print to console
-		System.err.println( "SearchClient initializing. I am sending this using the error output stream." );
-
-		// Read level and create the initial state of the problem
-		SearchClient client = new SearchClient( serverMessages );
-
-		Strategy strategy = null;
-		strategy = new StrategyBFS();
-		// Ex 1:
-//		strategy = new StrategyDFS();
-		
-		// Ex 3:
-//		strategy = new StrategyBestFirst( new AStar( client.initialState ) );
-//		strategy = new StrategyBestFirst( new WeightedAStar( client.initialState ) );
-		strategy = new StrategyBestFirst( new Greedy( client.initialState ) );
-
-		ArrayList< LinkedList< Node > > solutions = new ArrayList<LinkedList<Node>>();
-		
-	
-		for (Agent agent : agents) {
-			solutions.add(client.Search( strategy , agent ));
-		}
-//		merge solutions
+	/**
+	 * Merges plans to an executable list of commands
+	 * @param solutions
+	 * @return
+	 */
+	public static String[] mergePlans(ArrayList< LinkedList< Node > > solutions){
 		String[] solution;
 		
 		int size=0;
 		for (int i = 0; i < solutions.size(); i++) {
+//			System.err.println(solutions.get(i));
 			if(size<solutions.get(i).size()){
 				size=solutions.get(i).size();
 			}
@@ -239,14 +241,15 @@ public class SearchClient {
 		}
 
 		for (int i = 0; i < solutions.size(); i++) {
-			for (int k = 0; k < solutions.get(i).size(); k++) {
+			
+			for (int k = 0; k < size; k++) {
 				if(k<solutions.get(i).size()){
 					solution[k]+=solutions.get(i).get(k).action.toString();
 				}else{
 					solution[k]+="NoOp";
 				}
 				if(i!=solutions.size()-1){
-					solution[k]+=solutions.get(i).get(k).action.toString()+",";
+					solution[k]+=",";
 				}
 
 			}
@@ -256,6 +259,50 @@ public class SearchClient {
 		}
 		
 		System.err.println(Arrays.toString(solution));
+		return solution;
+	}
+	
+	
+
+	
+	public static void main( String[] args ) throws Exception {
+		BufferedReader serverMessages = new BufferedReader( new InputStreamReader( System.in ) );
+		
+
+		
+		// Use stderr to print to console
+		System.err.println( "SearchClient initializing. I am sending this using the error output stream." );
+
+		// Read level and create the initial state of the problem
+		SearchClient client = new SearchClient( serverMessages );
+
+
+
+		ArrayList< LinkedList< Node > > solutions = new ArrayList<LinkedList<Node>>();
+		
+		Strategy strategy = null;
+		for (Agent agent : agents) {
+		
+			Node AgentInitialState= modAgentIntialState(client.initialState, agent);
+
+			strategy = new StrategyBestFirst( new AStar( AgentInitialState) );
+//			strategy = new StrategyBestFirst( new WeightedAStar( AgentInitialState ) );
+//			strategy = new StrategyBestFirst( new Greedy( AgentInitialState ) );
+			solutions.add(client.Search( strategy ));
+			System.err.println(solutions.get(solutions.size()-1));
+			System.err.println("-----------------------------------------------------");
+			
+		}
+		//single agent
+		if(agents.size()==0){
+			strategy = new StrategyBestFirst( new Greedy( client.initialState ) );
+			solutions.add(client.Search( strategy ));
+			System.err.println(solutions.get(solutions.size()-1));
+		}
+		
+		String[] solution = mergePlans(solutions);
+		
+		
 		if ( solution.length == 0 ) {
 			System.err.println( "Unable to solve level" );
 			System.exit( 0 );
@@ -274,5 +321,38 @@ public class SearchClient {
 				}
 			}
 		}
+	}
+
+	
+	/**
+	 * creates an relaxed world for each agent, by removing things 
+	 * @param initialState
+	 * @param agent
+	 * @return
+	 */
+	private static Node modAgentIntialState(Node initialState, Agent agent) {
+		// TODO Auto-generated method stub
+		
+		// TODO create new world by modifing intial state
+		
+		
+		
+		// TODO exchange wrong colored boxes with walls
+		
+		// TODO remove wrong colored goals 
+		
+		
+		
+//		n.init(initialState.level);
+//		
+//		boolean[][] walls = initialState.walls;
+//		char[][] goals = initialState.goals;
+//		
+//		
+//		
+//		char[][] boxes = n.boxes; 
+//		
+		initialState.agent=agent;
+		return initialState;
 	}
 }
