@@ -350,19 +350,29 @@ public class SearchClient {
 				System.err.println( "Found solution of length " + solution.length );
 				System.err.println( strategy.searchStatus() );
 	
+				int k=0;
 				for ( String n : solution ) {
 					System.out.println( n );
-					String response = serverMessages.readLine();
+					System.err.println("execute "+n);
+//					String response = serverMessages.readLine();
+					String response;
+					do{
+						response = serverMessages.readLine();
+					}while(response.equals(""));
+				
 					if ( response.contains( "false" ) ) {
 						System.err.format( "Server responsed with %s to the inapplicable action: %s\n", response, n );
 						System.err.format( "%s was attempted in \n%s\n", n, client.state );
+//						TODO: update failed state
+						client.state=updateFailedState(client.state,solutions,k,response);
 						break;
 					}else{
-						//TODO: update state;
-//						client.updateState(n);
-//						updateState(Client.state,n);
+
+						client.state=updateState(client.state,solutions,k);
+						System.err.println(client.state);
+						
 					}
-	
+					k++;
 				}
 			}
 			
@@ -371,6 +381,52 @@ public class SearchClient {
 		}
 	}
 
+
+
+	private static Node updateFailedState(Node n, ArrayList<LinkedList<Node>> solutions, int k, String response) {
+
+		String[] strings=response.split(",");
+		
+		int size=0;
+		for (int i = 0; i < solutions.size(); i++) {
+			//			System.err.println(solutions.get(i));
+			if(size<solutions.get(i).size()){
+				size=solutions.get(i).size();
+			}
+
+		}
+		ArrayList<Command> commands= new ArrayList<>();
+		for (int i = 0; i < solutions.size(); i++) {
+				if(k<solutions.get(i).size() && !strings[i].contains("false")){
+					commands.add(solutions.get(i).get(k).action);
+				}else{
+					commands.add(null);
+				}
+
+		}
+		return n.excecuteCommands(commands);
+	}
+
+	private static Node updateState(Node n, ArrayList<LinkedList<Node>> solutions, int k) {
+		int size=0;
+		for (int i = 0; i < solutions.size(); i++) {
+			//			System.err.println(solutions.get(i));
+			if(size<solutions.get(i).size()){
+				size=solutions.get(i).size();
+			}
+
+		}
+		ArrayList<Command> commands= new ArrayList<>();
+		for (int i = 0; i < solutions.size(); i++) {
+				if(k<solutions.get(i).size()){
+					commands.add(solutions.get(i).get(k).action);
+				}else{
+					commands.add(null);
+				}
+
+		}
+		return n.excecuteCommands(commands);
+	}
 
 	/**
 	 * creates an relaxed world for each agent, by removing things 

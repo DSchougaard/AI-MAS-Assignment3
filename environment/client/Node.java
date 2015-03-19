@@ -41,6 +41,8 @@ public class Node {
 	
  
 	public Node parent;
+	
+	public ArrayList<Command> actions= new ArrayList<>();
 	public Command action;
 
 	private int g;
@@ -191,7 +193,62 @@ public class Node {
 		
 		return expandedNodes;
 	}
+	
+	
+	public Node excecuteCommands(ArrayList<Command> cs){
+		Node child = ChildNode();
+		for (int i = 0; i < cs.size(); i++) {
+			if(cs.get(i)!=null){
+				child.excecuteCommand(i, cs.get(i));
+			}
+		}
 
+		return child;
+		
+	}
+	
+	/**
+	 * precondition that the command is possible
+	 * @param n
+	 * @param agentID
+	 * @param c
+	 * @return
+	 */
+	private void excecuteCommand(int agentID, Command c){
+		actions.add(c);
+		int newAgentRow = agents[agentID][0] + dirToRowChange( c.dir1 );
+		int newAgentCol = agents[agentID][1] + dirToColChange( c.dir1 );
+		switch (c.actType) {
+		case Move:
+			
+			agents[agentID][0] = newAgentRow;
+			agents[agentID][1] = newAgentCol;
+			break;
+		case Push:
+			int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
+			int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
+
+			agents[agentID][0] = newAgentRow;
+			agents[agentID][1] = newAgentCol;
+			boxes[newBoxRow][newBoxCol] = boxes[newAgentRow][newAgentCol];
+			boxes[newAgentRow][newAgentCol] = 0;
+			
+			
+			break;
+		case Pull:
+			int boxRow = agents[agentID][0] + dirToRowChange( c.dir2 );
+			int boxCol = agents[agentID][1] + dirToColChange( c.dir2 );
+
+			agents[agentID][0] = newAgentRow;
+			agents[agentID][1] = newAgentCol;
+			boxes[agents[agentID][0]][agents[agentID][1]] = boxes[boxRow][boxCol];
+			boxes[boxRow][boxCol] = 0;
+			break;
+
+		}
+
+		
+	}
 
 	private boolean cellIsFree( int row, int col ) {
 		return ( !Node.walls[row][col] && this.boxes[row][col] == 0 );
@@ -201,11 +258,11 @@ public class Node {
 		return this.boxes[row][col] > 0;
 	}
 
-	private int dirToRowChange( dir d ) { 
+	private static int dirToRowChange( dir d ) { 
 		return ( d == dir.S ? 1 : ( d == dir.N ? -1 : 0 ) ); // South is down one row (1), north is up one row (-1)
 	}
 
-	private int dirToColChange( dir d ) {
+	private static int dirToColChange( dir d ) {
 		return ( d == dir.E ? 1 : ( d == dir.W ? -1 : 0 ) ); // East is left one column (1), west is right one column (-1)
 	}
 
@@ -216,6 +273,10 @@ public class Node {
 			System.arraycopy( this.boxes[row], 0, copy.boxes[row], 0, MAX_COLUMN );
 //			System.arraycopy( this.goals[row], 0, copy.goals[row], 0, MAX_COLUMN );
 		}
+		for (int i = 0; i < agents.length; i++) {
+			System.arraycopy( this.agents[i], 0, copy.agents[i], 0, 2 );
+		}
+		
 		copy.agent=this.agent;
 		return copy;
 	}
