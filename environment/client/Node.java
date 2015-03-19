@@ -9,6 +9,7 @@ import java.util.Random;
 
 import client.Command.dir;
 import client.Command.type;
+import client.SearchClient.Color;
 import client.map.Level;
 public class Node {
 
@@ -16,8 +17,8 @@ public class Node {
 	public static int MAX_ROW = 70;
 	public static int MAX_COLUMN = 70;
 
-	public int agentRow;
-	public int agentCol;
+//	public int agentRow;
+//	public int agentCol;
 
 	// Arrays are indexed from the top-left of the level, with first index being row and second being column.
 	// Row 0: (0,0) (0,1) (0,2) (0,3) ...
@@ -29,7 +30,7 @@ public class Node {
 	// walls[row][col] is true if there's a wall at (row, col)
 	//
 
-	private static Map<Character, String> colors;
+	private static Map<Character, Color> colors;
 	
 	public static boolean[][] walls = new boolean[MAX_ROW][MAX_COLUMN];
 	public static char[][] goals = new char[MAX_ROW][MAX_COLUMN];
@@ -47,8 +48,14 @@ public class Node {
 	Agent agent;
 	
 	public int[][] agents=new int[10][2];
+	{
+		for (int i = 0; i < agents.length; i++) {
+			agents[i][0]=-1;
+			agents[i][1]=-1;
+		}
+	}
 	
-	public Node( Node parent, Map<Character, String> colors, Agent agent ) {
+	public Node( Node parent, Map<Character, Color> colors, Agent agent ) {
 		this.agent=agent;
 		Node.colors=colors;
 		this.parent = parent;
@@ -61,7 +68,7 @@ public class Node {
 		
 	}
 	
-	public Node( Node parent, Map<Character, String> colors ) {
+	public Node( Node parent, Map<Character, Color> colors ) {
 		Node.colors=colors;
 		this.parent = parent;
 		if ( parent == null ) {
@@ -104,41 +111,18 @@ public class Node {
 		return this.parent == null;
 	}
 
-	public boolean isGoalState() {
-		if(agent!=null){
-			return isColouredGoalState();
-		}
-		for ( int row = 1; row < MAX_ROW - 1; row++ ) {
-			for ( int col = 1; col < MAX_COLUMN - 1; col++ ) {
-				char g = goals[row][col];
-				char b = Character.toLowerCase( boxes[row][col] );
-				if ( g > 0 && b != g) {
-					return false;
-				}
-			}
-		}
-		
-		return true;
-	}
+
 	
-	public boolean isColouredGoalState() {
+	public boolean isGoalState() {
 //		System.err.println("-------"+colors.toString()+"  ----- "+agent.color);
 		for ( int row = 1; row < MAX_ROW - 1; row++ ) {
 			for ( int col = 1; col < MAX_COLUMN - 1; col++ ) {
 				char g = goals[row][col];
 				char b = Character.toLowerCase( boxes[row][col] );
-//				if ( g > 0 )
-//				System.err.println( colors.get(Character.toLowerCase(g)));
-				
-//				if(colors.get(Character.toUpperCase(b)) != null && colors.get(Character.toLowerCase(b)).equals(agent.color)){
+
 		
 				if(g>0 && colors.get(Character.toUpperCase(g)).equals(agent.color) && b != g){
-//					System.err.println(g+"+++++++++++++++++++++++++++++++++++++++++++++++");
-//				}
-//				if ( g > 0 && b != g) {
-////					System.err.println("not");
-//					
-//					System.err.println("not");
+
 						return false;
 					
 				}
@@ -148,65 +132,8 @@ public class Node {
 		return true;
 	}
 
-	public ArrayList< Node > getExpandedNodes() {
-		if(agent!=null){
-			return getColouredExpandedNodes();
-		}
-		ArrayList< Node > expandedNodes = new ArrayList< Node >( Command.every.length );
-		for ( Command c : Command.every ) {
-			// Determine applicability of action
-			int newAgentRow = this.agentRow + dirToRowChange( c.dir1 );
-			int newAgentCol = this.agentCol + dirToColChange( c.dir1 );
 
-			if ( c.actType == type.Move ) {
-				// Check if there's a wall or box on the cell to which the agent is moving
-				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
-					Node n = this.ChildNode();
-					n.action = c;
-					n.agentRow = newAgentRow;
-					n.agentCol = newAgentCol;
-					expandedNodes.add( n );
-				}
-			} else if ( c.actType == type.Push ) {
-				// Make sure that there's actually a box to move
-				if ( boxAt( newAgentRow, newAgentCol ) ) {
-					int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
-					int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
-					// .. and that new cell of box is free
-					if ( cellIsFree( newBoxRow, newBoxCol ) ) {
-						Node n = this.ChildNode();
-						n.action = c;
-						n.agentRow = newAgentRow;
-						n.agentCol = newAgentCol;
-						n.boxes[newBoxRow][newBoxCol] = this.boxes[newAgentRow][newAgentCol];
-						n.boxes[newAgentRow][newAgentCol] = 0;
-						expandedNodes.add( n );
-					}
-				}
-			} else if ( c.actType == type.Pull ) {
-				// Cell is free where agent is going
-				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
-					int boxRow = this.agentRow + dirToRowChange( c.dir2 );
-					int boxCol = this.agentCol + dirToColChange( c.dir2 );
-					// .. and there's a box in "dir2" of the agent
-					if ( boxAt( boxRow, boxCol ) ) {
-						Node n = this.ChildNode();
-						n.action = c;
-						n.agentRow = newAgentRow;
-						n.agentCol = newAgentCol;
-						n.boxes[this.agentRow][this.agentCol] = this.boxes[boxRow][boxCol];
-						n.boxes[boxRow][boxCol] = 0;
-						expandedNodes.add( n );
-					}
-				}
-			}
-		}
-		Collections.shuffle( expandedNodes, rnd );
-		
-		return expandedNodes;
-	}
-	public ArrayList< Node > getColouredExpandedNodes() {
-//		System.err.println(agents[0][0]+","+agents[0][1]);
+	public ArrayList< Node > getExpandedNodes() {
 		ArrayList< Node > expandedNodes = new ArrayList< Node >( Command.every.length );
 		for ( Command c : Command.every ) {
 			// Determine applicability of action
@@ -232,7 +159,7 @@ public class Node {
 					int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
 					// .. and that new cell of box is free
 					if ( cellIsFree( newBoxRow, newBoxCol ) ) {
-						System.err.println("push");
+
 						Node n = this.ChildNode();
 						n.action = c;
 						n.agents[agent.id][0] = newAgentRow;
@@ -247,12 +174,8 @@ public class Node {
 				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
 					int boxRow = agents[agent.id][0] + dirToRowChange( c.dir2 );
 					int boxCol = agents[agent.id][1] + dirToColChange( c.dir2 );
-					// .. and there's a box in "dir2" of the agent
-					if(boxAt( boxRow, boxCol ))
-					System.err.println(agent.color+" "+ colors.get(Character.toUpperCase(boxes[boxRow][boxCol]))+" "+boxes[boxRow][boxCol]+"!");
-					
+					// .. and there's a box in "dir2" of the agent					
 					if ( boxAt( boxRow, boxCol )  && agent.color == colors.get(boxes[boxRow][boxCol])) {
-						System.err.println("pull");
 						Node n = this.ChildNode();
 						n.action = c;
 						n.agents[agent.id][0] = newAgentRow;
@@ -311,12 +234,9 @@ public class Node {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + agentCol;
-		result = prime * result + agentRow;
 		result = prime * result + Arrays.deepHashCode( boxes );
 		result = prime * result + Arrays.deepHashCode( agents );
-//		result = prime * result + Arrays.deepHashCode( goals );
-//		result = prime * result + Arrays.deepHashCode( walls );
+
 		return result;
 	}
 
@@ -329,10 +249,6 @@ public class Node {
 		if ( getClass() != obj.getClass() )
 			return false;
 		Node other = (Node) obj;
-		if ( agentCol != other.agentCol )
-			return false;
-		if ( agentRow != other.agentRow )
-			return false;
 		if ( !Arrays.deepEquals( boxes, other.boxes ) ) {
 			return false;
 		}
@@ -344,16 +260,11 @@ public class Node {
 				}
 			}
 		}
-		
-//		if ( !Arrays.deepEquals( goals, other.goals ) )
-//			return false;
-//		if ( !Arrays.deepEquals( walls, other.walls ) )
-//			return false;
+
 		return true;
 	}
 
 	public String toString() {
-		//TODO: enable MA agent drawing
 		StringBuilder s = new StringBuilder();
 		for ( int row = 0; row < MAX_ROW; row++ ) {
 			if ( !Node.walls[row][0] ) {
@@ -366,10 +277,14 @@ public class Node {
 					s.append( Node.goals[row][col] );
 				} else if ( Node.walls[row][col] ) {
 					s.append( "+" );
-				} else if ( row == this.agentRow && col == this.agentCol ) {
-					s.append( "0" );
 				} else {
 					s.append( " " );
+				}
+				for (int i = 0; i < agents.length; i++) {
+					if(row==agents[i][0] && col ==agents[i][1]){
+						s.replace(s.length()-1, s.length(), i+"");
+//						s.append( i );
+					}
 				}
 			}
 
@@ -378,7 +293,7 @@ public class Node {
 		return s.toString();
 	}
 
-	public String getColor(Character c){
+	public Color getColor(Character c){
 		return colors.get(c);
 	}
 }

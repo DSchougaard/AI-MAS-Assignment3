@@ -64,7 +64,7 @@ public abstract class Heuristic implements Comparator< Node > {
 //							h=Math.abs(p.x-j)+Math.abs(p.y-i)+Math.abs(n.agentRow-j)+Math.abs(n.agentCol-i)-1;
 //							if(n.agentRow==3 && n.agentCol==14)
 //							System.err.println("position: "+n.agentRow+","+n.agentCol+" agent to box: "+(Math.abs(n.agentRow-j)+Math.abs(n.agentCol-i)-1)+"\nbox to goal: "+(Math.abs(p.x-j)+Math.abs(p.y-i))+"\n"+(n.g()));
-							h+=goals.get(Character.toLowerCase(n.boxes[j][i])).dist(j, i)+Point.dist(j, i, n.agentRow, n.agentCol)-1;
+							h+=goals.get(Character.toLowerCase(n.boxes[j][i])).dist(j, i)+Point.dist(j, i, n.agents[0][0], n.agents[0][1])-1;
 							
 						}
 					}

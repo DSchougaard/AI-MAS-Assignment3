@@ -19,9 +19,11 @@ import client.map.Level;
 public class SearchClient {
 
 
+	public enum Color{
+		blue,red,green,cyan,magenta,orage,pink,yellow,noColor
+	}
 
-	
-	
+
 	// Auxiliary static classes
 	public static void error( String msg ) throws Exception {
 		throw new Exception( "GSCError: " + msg );
@@ -58,10 +60,10 @@ public class SearchClient {
 		}
 	}
 
-	public Node initialState = null;
+	public Node state = null;
 
 	public SearchClient( BufferedReader serverMessages ) throws Exception {
-		Map< Character, String > colors = new HashMap< Character, String >();
+		HashMap< Character, Color > colors = new HashMap<>();
 		String line, color;
 
 		int agentCol = -1, agentRow = -1;
@@ -74,43 +76,70 @@ public class SearchClient {
 			color = colonSplit[0].trim();
 
 			for ( String id : colonSplit[1].split( "," ) ) {
-				colors.put( id.trim().charAt( 0 ), color );
+				Color colorEnum;
+				switch (color) {
+				case "red":
+					colorEnum=Color.red;
+					break;
+				case "blue":
+					colorEnum=Color.blue;
+					break;
+				case "green":
+					colorEnum=Color.green;
+					break;
+				case "magenta":
+					colorEnum=Color.magenta;
+					break;
+				case "cyan":
+					colorEnum=Color.cyan;
+					break;
+				case "orange":
+					colorEnum=Color.orage;
+					break;
+				case "pink":
+					colorEnum=Color.pink;
+					break;
+				default:
+					colorEnum=Color.noColor;
+					break;
+				}
+				colors.put( id.trim().charAt( 0 ), colorEnum );
 			}
 			colorLines++;
 		}
-		
+
 		if ( colorLines > 0 ) {
-			
+
 			System.err.println("Coloured expirence!!!");
 			colors.forEach(
 					(l,c)->{
-							System.err.println(l+" "+c);
+						System.err.println(l+" "+c);
 					}
-			);
+					);
 			colors.forEach(
 					(l,c)->{
-										if(Character.isDigit(l)){
-											agents.add(new Agent(Integer.parseInt(l+""), c));
-										}else{
-//											box color
-										}
-							}
-			);
-//			error( "Box colors not supported" );
+						if(Character.isDigit(l)){
+							agents.add(new Agent(Integer.parseInt(l+""), c));
+						}else{
+							//											box color
+						}
+					}
+					);
+			//			error( "Box colors not supported" );
 		}
-		
-		initialState = new Node( null, colors);
+
+		state = new Node( null, colors);
 
 		int max_column=0;
 		ArrayList<String> tmpLines = new ArrayList<>();
-		
+
 		while(!line.equals("")){
 			tmpLines.add(line);
 			max_column=Math.max(line.length(), max_column);
 			line=serverMessages.readLine();
 		}
 
-		initialState.init(tmpLines.size(), max_column);
+		state.init(tmpLines.size(), max_column);
 
 		for (String string : tmpLines) {
 			for (int i = 0; i < string.length(); i++) {
@@ -118,27 +147,37 @@ public class SearchClient {
 				if ( '+' == chr ) { // Walls
 					Node.walls[levelLines][i] = true;
 				} else if ( '0' <= chr && chr <= '9' ) { // Agents
-					initialState.agents[Integer.parseInt(chr+"")][0]=levelLines;
-					initialState.agents[Integer.parseInt(chr+"")][1]=i;
-					if ( agentCol != -1 || agentRow != -1 ) {
-						System.err.println( "Not a single agent level" );
+					int id =Integer.parseInt(chr+"");
+					if(!agents.stream().filter(a -> a.id == id).findAny().isPresent()){
+//						System.err.println("new Agent");
+						agents.add(new Agent(id));
 					}
-					initialState.agentRow = levelLines;
-					initialState.agentCol = i;
+					
+					state.agents[id][0]=levelLines;
+					state.agents[id][1]=i;
+//					if ( agentCol != -1 || agentRow != -1 ) {
+//						System.err.println( "Not a single agent level" );
+//					}
+//					state.agentRow = levelLines;
+//					state.agentCol = i;
 				} else if ( 'A' <= chr && chr <= 'Z' ) { // Boxes
-					initialState.boxes[levelLines][i] = chr;
+					if(!colors.keySet().contains(chr)){
+						System.err.println(colors.keySet());
+						colors.put(chr, Color.noColor);
+					}
+					state.boxes[levelLines][i] = chr;
 				} else if ( 'a' <= chr && chr <= 'z' ) { // Goal cells
 					Node.goals[levelLines][i] = chr;
 				}
 			}
-				levelLines++;
+			levelLines++;
 		}
 
 	}
 
 	public LinkedList< Node > Search( Strategy strategy ) throws IOException {
 		System.err.format( "Search starting with strategy %s\n", strategy );
-		strategy.addToFrontier( this.initialState );
+		strategy.addToFrontier( this.state );
 
 		int iterations = 0;
 		while ( true ) {
@@ -175,10 +214,10 @@ public class SearchClient {
 			iterations++;
 		}
 	}
-	
+
 	public LinkedList< Node > Search( Strategy strategy, Agent agent) throws IOException {
 		System.err.format( "Search starting with strategy %s\n", strategy );
-		strategy.addToFrontier( this.initialState );
+		strategy.addToFrontier( this.state );
 
 		int iterations = 0;
 		while ( true ) {
@@ -215,10 +254,10 @@ public class SearchClient {
 			iterations++;
 		}
 	}
-	
+
 	private static List< Agent > agents = new ArrayList< Agent >();
-	
-	
+
+
 	/**
 	 * Merges plans to an executable list of commands
 	 * @param solutions
@@ -226,14 +265,14 @@ public class SearchClient {
 	 */
 	public static String[] mergePlans(ArrayList< LinkedList< Node > > solutions){
 		String[] solution;
-		
+
 		int size=0;
 		for (int i = 0; i < solutions.size(); i++) {
-//			System.err.println(solutions.get(i));
+			//			System.err.println(solutions.get(i));
 			if(size<solutions.get(i).size()){
 				size=solutions.get(i).size();
 			}
-			
+
 		}
 		solution = new String[size];
 		for (int i = 0; i < solution.length; i++) {
@@ -241,7 +280,7 @@ public class SearchClient {
 		}
 
 		for (int i = 0; i < solutions.size(); i++) {
-			
+
 			for (int k = 0; k < size; k++) {
 				if(k<solutions.get(i).size()){
 					solution[k]+=solutions.get(i).get(k).action.toString();
@@ -257,73 +296,82 @@ public class SearchClient {
 		for (int i = 0; i < solution.length; i++) {
 			solution[i]+="]";
 		}
-		
+
 		System.err.println(Arrays.toString(solution));
 		return solution;
 	}
-	
-	
 
-	
+
+
+
 	public static void main( String[] args ) throws Exception {
 		BufferedReader serverMessages = new BufferedReader( new InputStreamReader( System.in ) );
-		
 
-		
+
+
 		// Use stderr to print to console
 		System.err.println( "SearchClient initializing. I am sending this using the error output stream." );
 
 		// Read level and create the initial state of the problem
 		SearchClient client = new SearchClient( serverMessages );
 
-
-
-		ArrayList< LinkedList< Node > > solutions = new ArrayList<LinkedList<Node>>();
-		
-		Strategy strategy = null;
-		for (Agent agent : agents) {
-		
-			Node AgentInitialState= modAgentIntialState(client.initialState, agent);
-
-			strategy = new StrategyBestFirst( new AStar( AgentInitialState) );
-//			strategy = new StrategyBestFirst( new WeightedAStar( AgentInitialState ) );
-//			strategy = new StrategyBestFirst( new Greedy( AgentInitialState ) );
-			solutions.add(client.Search( strategy ));
-			System.err.println(solutions.get(solutions.size()-1));
-			System.err.println("-----------------------------------------------------");
-			
-		}
-		//single agent
-		if(agents.size()==0){
-			strategy = new StrategyBestFirst( new Greedy( client.initialState ) );
-			solutions.add(client.Search( strategy ));
-			System.err.println(solutions.get(solutions.size()-1));
-		}
-		
-		String[] solution = mergePlans(solutions);
-		
-		
-		if ( solution.length == 0 ) {
-			System.err.println( "Unable to solve level" );
-			System.exit( 0 );
-		} else {
-			System.err.println( "\nSummary for " + strategy );
-			System.err.println( "Found solution of length " + solution.length );
-			System.err.println( strategy.searchStatus() );
-
-			for ( String n : solution ) {
-				System.out.println( n );
-				String response = serverMessages.readLine();
-				if ( response.contains( "false" ) ) {
-					System.err.format( "Server responsed with %s to the inapplicable action: %s\n", response, n );
-					System.err.format( "%s was attempted in \n%s\n", n, n );
-					break;
+		//online planning loop
+		while(true){
+			ArrayList< LinkedList< Node > > solutions = new ArrayList<LinkedList<Node>>();
+	
+			Strategy strategy = null;
+			for (Agent agent : agents) {
+	
+				Node AgentInitialState= modAgentIntialState(client.state, agent);
+	
+				strategy = new StrategyBestFirst( new AStar( AgentInitialState) );
+				//			strategy = new StrategyBestFirst( new WeightedAStar( AgentInitialState ) );
+				//			strategy = new StrategyBestFirst( new Greedy( AgentInitialState ) );
+				solutions.add(client.Search( strategy ));
+				//			System.err.println(solutions.get(solutions.size()-1));
+				//			System.err.println("-----------------------------------------------------");
+	
+			}
+			//single agent
+			if(agents.size()==0){
+				strategy = new StrategyBestFirst( new Greedy( client.state ) );
+				solutions.add(client.Search( strategy ));
+				//			System.err.println(solutions.get(solutions.size()-1));
+			}
+	
+			String[] solution = mergePlans(solutions);
+	
+	
+			if ( solution.length == 0 ) {
+				System.err.println( "Unable to solve level" );
+				System.exit( 0 );
+			} else {
+				System.err.println( "\nSummary for " + strategy );
+				System.err.println( "Found solution of length " + solution.length );
+				System.err.println( strategy.searchStatus() );
+	
+				for ( String n : solution ) {
+					System.out.println( n );
+					String response = serverMessages.readLine();
+					if ( response.contains( "false" ) ) {
+						System.err.format( "Server responsed with %s to the inapplicable action: %s\n", response, n );
+						System.err.format( "%s was attempted in \n%s\n", n, client.state );
+						break;
+					}else{
+						//TODO: update state;
+//						client.updateState(n);
+//						updateState(Client.state,n);
+					}
+	
 				}
 			}
+			
+			System.err.println("done");
+			System.exit(0);//tmp
 		}
 	}
 
-	
+
 	/**
 	 * creates an relaxed world for each agent, by removing things 
 	 * @param initialState
@@ -332,26 +380,26 @@ public class SearchClient {
 	 */
 	private static Node modAgentIntialState(Node initialState, Agent agent) {
 		// TODO Auto-generated method stub
-		
+
 		// TODO create new world by modifing intial state
-		
-		
-		
+
+
+
 		// TODO exchange wrong colored boxes with walls
-		
+
 		// TODO remove wrong colored goals 
-		
-		
-		
-//		n.init(initialState.level);
-//		
-//		boolean[][] walls = initialState.walls;
-//		char[][] goals = initialState.goals;
-//		
-//		
-//		
-//		char[][] boxes = n.boxes; 
-//		
+
+
+
+		//		n.init(initialState.level);
+		//		
+		//		boolean[][] walls = initialState.walls;
+		//		char[][] goals = initialState.goals;
+		//		
+		//		
+		//		
+		//		char[][] boxes = n.boxes; 
+		//		
 		initialState.agent=agent;
 		return initialState;
 	}

@@ -2,6 +2,8 @@ package client;
 
 import java.util.Random;
 
+import client.SearchClient.Color;
+
 public class Agent{
 	
 	
@@ -9,9 +11,14 @@ public class Agent{
 
 		// We don't actually use these for Randomly Walking Around
 		public int id;
-		public String color;
+		public Color color;
 
-		Agent( int id, String color ) {
+		Agent(int id){
+			this.id=id;
+			this.color=Color.noColor;
+		}
+		
+		Agent( int id, Color color ) {
 			this.id = id;
 			this.color = color;
 		}
