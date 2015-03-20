@@ -11,9 +11,11 @@ import client.Command.dir;
 import client.Command.type;
 import client.SearchClient.Color;
 import client.map.Level;
+
+
 public class Node {
 
-	private static Random rnd = new Random( 1 ); 
+	private static Random rnd = new Random( System.currentTimeMillis() );
 	public static int MAX_ROW = 70;
 	public static int MAX_COLUMN = 70;
 
@@ -49,6 +51,8 @@ public class Node {
 	
 	Agent agent;
 	
+	//position of the agents
+	//first dimension equals to agent id
 	public int[][] agents=new int[10][2];
 	{
 		for (int i = 0; i < agents.length; i++) {
@@ -116,17 +120,18 @@ public class Node {
 
 	
 	public boolean isGoalState() {
-//		System.err.println("-------"+colors.toString()+"  ----- "+agent.color);
+
 		for ( int row = 1; row < MAX_ROW - 1; row++ ) {
 			for ( int col = 1; col < MAX_COLUMN - 1; col++ ) {
 				char g = goals[row][col];
 				char b = Character.toLowerCase( boxes[row][col] );
 
 		
-				if(g>0 && colors.get(Character.toUpperCase(g)).equals(agent.color) && b != g){
+				if(g>0  && b != g){
 
+					if(agent == null || colors.get(Character.toUpperCase(g)).equals(agent.color)){
 						return false;
-					
+					}
 				}
 			}
 		}
@@ -238,11 +243,16 @@ public class Node {
 		case Pull:
 			int boxRow = agents[agentID][0] + dirToRowChange( c.dir2 );
 			int boxCol = agents[agentID][1] + dirToColChange( c.dir2 );
-
+			
+			int tmpAgentRow = agents[agentID][0];
+			int tmpAgentCol = agents[agentID][1];
+			
 			agents[agentID][0] = newAgentRow;
 			agents[agentID][1] = newAgentCol;
-			boxes[agents[agentID][0]][agents[agentID][1]] = boxes[boxRow][boxCol];
+			boxes[tmpAgentRow][tmpAgentCol] = boxes[boxRow][boxCol];
 			boxes[boxRow][boxCol] = 0;
+			
+			
 			break;
 
 		}

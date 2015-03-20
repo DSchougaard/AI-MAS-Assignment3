@@ -8,13 +8,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import client.Heuristic.AStar;
 import client.Heuristic.Greedy;
 import client.Heuristic.WeightedAStar;
 import client.Strategy.StrategyBestFirst;
-import client.map.Level;
 
 public class SearchClient {
 
@@ -61,12 +59,13 @@ public class SearchClient {
 	}
 
 	public Node state = null;
+	
+	private static List< Agent > agents = new ArrayList< Agent >();
 
 	public SearchClient( BufferedReader serverMessages ) throws Exception {
 		HashMap< Character, Color > colors = new HashMap<>();
 		String line, color;
 
-		int agentCol = -1, agentRow = -1;
 		int colorLines = 0, levelLines = 0;
 
 		// Read lines specifying colors
@@ -149,17 +148,17 @@ public class SearchClient {
 				} else if ( '0' <= chr && chr <= '9' ) { // Agents
 					int id =Integer.parseInt(chr+"");
 					if(!agents.stream().filter(a -> a.id == id).findAny().isPresent()){
-//						System.err.println("new Agent");
+						//						System.err.println("new Agent");
 						agents.add(new Agent(id));
 					}
-					
+
 					state.agents[id][0]=levelLines;
 					state.agents[id][1]=i;
-//					if ( agentCol != -1 || agentRow != -1 ) {
-//						System.err.println( "Not a single agent level" );
-//					}
-//					state.agentRow = levelLines;
-//					state.agentCol = i;
+					//					if ( agentCol != -1 || agentRow != -1 ) {
+					//						System.err.println( "Not a single agent level" );
+					//					}
+					//					state.agentRow = levelLines;
+					//					state.agentCol = i;
 				} else if ( 'A' <= chr && chr <= 'Z' ) { // Boxes
 					if(!colors.keySet().contains(chr)){
 						System.err.println(colors.keySet());
@@ -186,16 +185,19 @@ public class SearchClient {
 			}
 			if ( Memory.shouldEnd() ) {
 				System.err.format( "Memory limit almost reached, terminating search %s\n", Memory.stringRep() );
-				return null;
+				return new LinkedList<>();
+//				return null;
 			}
 			if ( strategy.timeSpent() > 300 ) { // Minutes timeout
 				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep() );
-				return null;
+				return new LinkedList<>();
+//				return null;
 			}
 
 			if ( strategy.frontierIsEmpty() ) {
 				System.err.println("empty");
-				return null;
+				return new LinkedList<>();
+//				return null;
 			}
 
 			Node leafNode = strategy.getAndRemoveLeaf();
@@ -215,47 +217,6 @@ public class SearchClient {
 		}
 	}
 
-	public LinkedList< Node > Search( Strategy strategy, Agent agent) throws IOException {
-		System.err.format( "Search starting with strategy %s\n", strategy );
-		strategy.addToFrontier( this.state );
-
-		int iterations = 0;
-		while ( true ) {
-			if ( iterations % 200 == 0 ) {
-				System.err.println( strategy.searchStatus() );
-			}
-			if ( Memory.shouldEnd() ) {
-				System.err.format( "Memory limit almost reached, terminating search %s\n", Memory.stringRep() );
-				return null;
-			}
-			if ( strategy.timeSpent() > 300 ) { // Minutes timeout
-				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep() );
-				return null;
-			}
-
-			if ( strategy.frontierIsEmpty() ) {
-				System.err.println("empty");
-				return null;
-			}
-
-			Node leafNode = strategy.getAndRemoveLeaf();
-
-			if ( leafNode.isGoalState() ) {
-				System.err.println("plan");
-				return leafNode.extractPlan();
-			}
-
-			strategy.addToExplored( leafNode );
-			for ( Node n : leafNode.getExpandedNodes() ) {
-				if ( !strategy.isExplored( n ) && !strategy.inFrontier( n ) ) {
-					strategy.addToFrontier( n );
-				}
-			}
-			iterations++;
-		}
-	}
-
-	private static List< Agent > agents = new ArrayList< Agent >();
 
 
 	/**
@@ -268,7 +229,7 @@ public class SearchClient {
 
 		int size=0;
 		for (int i = 0; i < solutions.size(); i++) {
-			//			System.err.println(solutions.get(i));
+//			System.err.println(solutions.get(i));
 			if(size<solutions.get(i).size()){
 				size=solutions.get(i).size();
 			}
@@ -316,32 +277,27 @@ public class SearchClient {
 		SearchClient client = new SearchClient( serverMessages );
 
 		//online planning loop
-		while(true){
+		while(!client.state.isGoalState()){
+			
 			ArrayList< LinkedList< Node > > solutions = new ArrayList<LinkedList<Node>>();
-	
+
 			Strategy strategy = null;
 			for (Agent agent : agents) {
-	
+
 				Node AgentInitialState= modAgentIntialState(client.state, agent);
-	
-				strategy = new StrategyBestFirst( new AStar( AgentInitialState) );
+
+				//			strategy = new StrategyBestFirst( new AStar( AgentInitialState) );
 				//			strategy = new StrategyBestFirst( new WeightedAStar( AgentInitialState ) );
-				//			strategy = new StrategyBestFirst( new Greedy( AgentInitialState ) );
+				strategy = new StrategyBestFirst( new Greedy( AgentInitialState ) );
 				solutions.add(client.Search( strategy ));
 				//			System.err.println(solutions.get(solutions.size()-1));
 				//			System.err.println("-----------------------------------------------------");
-	
+
 			}
-			//single agent
-			if(agents.size()==0){
-				strategy = new StrategyBestFirst( new Greedy( client.state ) );
-				solutions.add(client.Search( strategy ));
-				//			System.err.println(solutions.get(solutions.size()-1));
-			}
-	
+
 			String[] solution = mergePlans(solutions);
-	
-	
+
+
 			if ( solution.length == 0 ) {
 				System.err.println( "Unable to solve level" );
 				System.exit( 0 );
@@ -349,36 +305,36 @@ public class SearchClient {
 				System.err.println( "\nSummary for " + strategy );
 				System.err.println( "Found solution of length " + solution.length );
 				System.err.println( strategy.searchStatus() );
-	
+
 				int k=0;
 				for ( String n : solution ) {
 					System.out.println( n );
-					System.err.println("execute "+n);
-//					String response = serverMessages.readLine();
+					//					System.err.println("execute "+n);
 					String response;
 					do{
 						response = serverMessages.readLine();
 					}while(response.equals(""));
-				
+
 					if ( response.contains( "false" ) ) {
 						System.err.format( "Server responsed with %s to the inapplicable action: %s\n", response, n );
 						System.err.format( "%s was attempted in \n%s\n", n, client.state );
-//						TODO: update failed state
 						client.state=updateFailedState(client.state,solutions,k,response);
 						break;
 					}else{
 
 						client.state=updateState(client.state,solutions,k);
-						System.err.println(client.state);
-						
+
 					}
 					k++;
 				}
 			}
+			client.state.agent=null;
+
 			
 			System.err.println("done");
 			System.exit(0);//tmp
 		}
+		System.err.println("done");
 	}
 
 
@@ -386,10 +342,9 @@ public class SearchClient {
 	private static Node updateFailedState(Node n, ArrayList<LinkedList<Node>> solutions, int k, String response) {
 
 		String[] strings=response.split(",");
-		
 		int size=0;
 		for (int i = 0; i < solutions.size(); i++) {
-			//			System.err.println(solutions.get(i));
+
 			if(size<solutions.get(i).size()){
 				size=solutions.get(i).size();
 			}
@@ -397,11 +352,11 @@ public class SearchClient {
 		}
 		ArrayList<Command> commands= new ArrayList<>();
 		for (int i = 0; i < solutions.size(); i++) {
-				if(k<solutions.get(i).size() && !strings[i].contains("false")){
-					commands.add(solutions.get(i).get(k).action);
-				}else{
-					commands.add(null);
-				}
+			if(k<solutions.get(i).size() && !strings[i].contains("false")){
+				commands.add(solutions.get(i).get(k).action);
+			}else{
+				commands.add(null);
+			}
 
 		}
 		return n.excecuteCommands(commands);
@@ -410,7 +365,7 @@ public class SearchClient {
 	private static Node updateState(Node n, ArrayList<LinkedList<Node>> solutions, int k) {
 		int size=0;
 		for (int i = 0; i < solutions.size(); i++) {
-			//			System.err.println(solutions.get(i));
+//						System.err.println(solutions.get(i));
 			if(size<solutions.get(i).size()){
 				size=solutions.get(i).size();
 			}
@@ -418,11 +373,11 @@ public class SearchClient {
 		}
 		ArrayList<Command> commands= new ArrayList<>();
 		for (int i = 0; i < solutions.size(); i++) {
-				if(k<solutions.get(i).size()){
-					commands.add(solutions.get(i).get(k).action);
-				}else{
-					commands.add(null);
-				}
+			if(k<solutions.get(i).size()){
+				commands.add(solutions.get(i).get(k).action);
+			}else{
+				commands.add(null);
+			}
 
 		}
 		return n.excecuteCommands(commands);
@@ -446,16 +401,6 @@ public class SearchClient {
 		// TODO remove wrong colored goals 
 
 
-
-		//		n.init(initialState.level);
-		//		
-		//		boolean[][] walls = initialState.walls;
-		//		char[][] goals = initialState.goals;
-		//		
-		//		
-		//		
-		//		char[][] boxes = n.boxes; 
-		//		
 		initialState.agent=agent;
 		return initialState;
 	}

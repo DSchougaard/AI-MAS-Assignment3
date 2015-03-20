@@ -24,6 +24,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+@SuppressWarnings("serial")
 public class GuiClient extends JFrame {
 	private static ActionListener listener = new ActionListener() {
 		@Override

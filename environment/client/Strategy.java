@@ -47,76 +47,7 @@ public abstract class Strategy {
 	
 	public abstract String toString();
 
-	public static class StrategyBFS extends Strategy {
 
-		private ArrayDeque< Node > frontier;
-
-		public StrategyBFS() {
-			super();
-			frontier = new ArrayDeque< Node >();
-		}
-
-		public Node getAndRemoveLeaf() {
-			return frontier.pollFirst();
-		}
-
-		public void addToFrontier( Node n ) {
-			frontier.addLast( n );
-		}
-
-		public int countFrontier() {
-			return frontier.size();
-		}
-
-		public boolean frontierIsEmpty() {
-			return frontier.isEmpty();
-		}
-
-		public boolean inFrontier( Node n ) {
-			return frontier.contains( n );
-		}
-
-		public String toString() {
-			return "Breadth-first Search";
-		}
-	}
-
-	public static class StrategyDFS extends Strategy {
-		
-		private ArrayDeque< Node > frontier;
-		
-		public StrategyDFS() {
-			super();
-			frontier = new ArrayDeque< Node >();		
-		}
-
-		public Node getAndRemoveLeaf() {
-			return frontier.pollFirst();
-		}
-
-		public void addToFrontier( Node n ) {
-			frontier.addFirst( n );
-		}
-
-
-		public int countFrontier() {
-			return frontier.size();
-		}
-
-		public boolean frontierIsEmpty() {
-			return frontier.isEmpty();
-		}
-
-		public boolean inFrontier( Node n ) {
-			return frontier.contains( n );
-		}
-
-		public String toString() {
-			return "Depth-first Search";
-		}
-	}
-
-	// Ex 3: Best-first Search uses a priority queue (Java contains no implementation of a Heap data structure)
 	public static class StrategyBestFirst extends Strategy {
 		private Heuristic heuristic;
 		private PriorityQueue< Node > queue; 

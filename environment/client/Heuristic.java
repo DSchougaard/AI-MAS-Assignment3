@@ -23,24 +23,6 @@ public abstract class Heuristic implements Comparator< Node > {
 			}
 		}
 		
-		
-//		for (int i = 0; i < Node.MAX_COLUMN; i++) {
-//			for (int j = 0; j < Node.MAX_ROW; j++) {
-//				if(Character.isLetter(Node.goals[j][i])){
-//					ArrayList<Point> tmp;
-//					if(!goals.containsKey(Node.goals[j][i])){
-//						tmp = new ArrayList<>();
-//
-//					}else{
-//						tmp = goals.get(Node.goals[j][i]);
-//	
-//					}
-//					tmp.add(new Point(j,i));
-//					goals.put(Node.goals[j][i], tmp);
-//				}
-//			
-//			}
-//		}
 	}
 
 	public int compare( Node n1, Node n2 ) {
@@ -58,14 +40,8 @@ public abstract class Heuristic implements Comparator< Node > {
 					if(Character.isLetter(n.boxes[j][i])){
 						if(Character.toLowerCase(n.boxes[j][i])!=Node.goals[j][i]){
 						
+							h+=goals.get(Character.toLowerCase(n.boxes[j][i])).dist(j, i)+Point.dist(j, i, n.agents[n.agent.id][0], n.agents[n.agent.id][1])-1;
 
-//							Point p=goals.get(Character.toLowerCase(n.boxes[j][i]));
-//							
-//							h=Math.abs(p.x-j)+Math.abs(p.y-i)+Math.abs(n.agentRow-j)+Math.abs(n.agentCol-i)-1;
-//							if(n.agentRow==3 && n.agentCol==14)
-//							System.err.println("position: "+n.agentRow+","+n.agentCol+" agent to box: "+(Math.abs(n.agentRow-j)+Math.abs(n.agentCol-i)-1)+"\nbox to goal: "+(Math.abs(p.x-j)+Math.abs(p.y-i))+"\n"+(n.g()));
-							h+=goals.get(Character.toLowerCase(n.boxes[j][i])).dist(j, i)+Point.dist(j, i, n.agents[0][0], n.agents[0][1])-1;
-							
 						}
 					}
 				}
@@ -139,7 +115,7 @@ public abstract class Heuristic implements Comparator< Node > {
 			this.y=y;
 		}
 		public static int dist(int x, int y, int x2, int y2){
-//		System.err.println(x+ " "+ y +" to "+x2+" " +y2+": "+((int) Math.sqrt(Math.pow(Math.abs(x-x2),2)+Math.pow(Math.abs(y-y2),2)))+" : "+(Math.abs(x-x2)+Math.abs(y-y2)));
+
 			return (int) Math.sqrt(Math.pow(Math.abs(x-x2),2)+Math.pow(Math.abs(y-y2),2));
 		}
 		public int dist(int x, int y){
