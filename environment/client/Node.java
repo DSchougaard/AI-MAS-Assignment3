@@ -135,7 +135,6 @@ public class Node {
 				}
 			}
 		}
-		System.err.println("goal");
 		return true;
 	}
 
@@ -261,6 +260,11 @@ public class Node {
 	}
 
 	private boolean cellIsFree( int row, int col ) {
+		for (int i = 0; i < agents.length; i++) {
+			if(agents[i][0]==row &&agents[i][1]==col){
+				return false;
+			}
+		}
 		return ( !Node.walls[row][col] && this.boxes[row][col] == 0 );
 	}
 
@@ -290,11 +294,25 @@ public class Node {
 		copy.agent=this.agent;
 		return copy;
 	}
+	
+	public Node CopyNode() {
+		Node copy = new Node( this );
+		for ( int row = 0; row < MAX_ROW; row++ ) {
+			System.arraycopy( this.boxes[row], 0, copy.boxes[row], 0, MAX_COLUMN );
+		}
+		for (int i = 0; i < agents.length; i++) {
+			System.arraycopy( this.agents[i], 0, copy.agents[i], 0, 2 );
+		}
+		copy.agent=this.agent;
+		copy.parent=this.parent;
+		return copy;
+	}
+
 
 	public LinkedList< Node > extractPlan() {
 		LinkedList< Node > plan = new LinkedList< Node >();
 		Node n = this;
-		while( !n.isInitialState() ) {
+		while( !n.isInitialState() && n.action!=null) { //remove null
 			plan.addFirst( n );
 			n = n.parent;
 		}
@@ -354,7 +372,6 @@ public class Node {
 				for (int i = 0; i < agents.length; i++) {
 					if(row==agents[i][0] && col ==agents[i][1]){
 						s.replace(s.length()-1, s.length(), i+"");
-//						s.append( i );
 					}
 				}
 			}

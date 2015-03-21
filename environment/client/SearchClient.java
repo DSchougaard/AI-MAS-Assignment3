@@ -124,7 +124,6 @@ public class SearchClient {
 						}
 					}
 					);
-			//			error( "Box colors not supported" );
 		}
 
 		state = new Node( null, colors);
@@ -148,17 +147,13 @@ public class SearchClient {
 				} else if ( '0' <= chr && chr <= '9' ) { // Agents
 					int id =Integer.parseInt(chr+"");
 					if(!agents.stream().filter(a -> a.id == id).findAny().isPresent()){
-						//						System.err.println("new Agent");
+						//System.err.println("new Agent");
 						agents.add(new Agent(id));
 					}
 
 					state.agents[id][0]=levelLines;
 					state.agents[id][1]=i;
-					//					if ( agentCol != -1 || agentRow != -1 ) {
-					//						System.err.println( "Not a single agent level" );
-					//					}
-					//					state.agentRow = levelLines;
-					//					state.agentCol = i;
+
 				} else if ( 'A' <= chr && chr <= 'Z' ) { // Boxes
 					if(!colors.keySet().contains(chr)){
 						System.err.println(colors.keySet());
@@ -172,6 +167,13 @@ public class SearchClient {
 			levelLines++;
 		}
 
+	}
+
+	public SearchClient(Node initialState, Agent agent) {
+		Node n=initialState.CopyNode();
+		n.agent=agent;
+		n.parent=null;
+		this.state=n;
 	}
 
 	public LinkedList< Node > Search( Strategy strategy ) throws IOException {
@@ -203,7 +205,7 @@ public class SearchClient {
 			Node leafNode = strategy.getAndRemoveLeaf();
 
 			if ( leafNode.isGoalState() ) {
-				System.err.println("plan");
+				System.err.println("Found a plan");
 				return leafNode.extractPlan();
 			}
 
@@ -226,10 +228,10 @@ public class SearchClient {
 	 */
 	public static String[] mergePlans(ArrayList< LinkedList< Node > > solutions){
 		String[] solution;
-
+		
 		int size=0;
 		for (int i = 0; i < solutions.size(); i++) {
-//			System.err.println(solutions.get(i));
+
 			if(size<solutions.get(i).size()){
 				size=solutions.get(i).size();
 			}
@@ -239,11 +241,12 @@ public class SearchClient {
 		for (int i = 0; i < solution.length; i++) {
 			solution[i]="[";
 		}
-
+		
 		for (int i = 0; i < solutions.size(); i++) {
 
 			for (int k = 0; k < size; k++) {
 				if(k<solutions.get(i).size()){
+
 					solution[k]+=solutions.get(i).get(k).action.toString();
 				}else{
 					solution[k]+="NoOp";
@@ -283,13 +286,17 @@ public class SearchClient {
 
 			Strategy strategy = null;
 			for (Agent agent : agents) {
-
-				Node AgentInitialState= modAgentIntialState(client.state, agent);
-
+				System.err.println("agent "+agent.id+" planing");
+				SearchClient agentClient = new SearchClient( client.state, agent );
+				strategy = new StrategyBestFirst( new Greedy( agentClient.state ) );
+				solutions.add(agentClient.Search( strategy ));
+				
+				
+				//			Node AgentInitialState= modAgentIntialState(client.state, agent);
 				//			strategy = new StrategyBestFirst( new AStar( AgentInitialState) );
 				//			strategy = new StrategyBestFirst( new WeightedAStar( AgentInitialState ) );
-				strategy = new StrategyBestFirst( new Greedy( AgentInitialState ) );
-				solutions.add(client.Search( strategy ));
+//				strategy = new StrategyBestFirst( new Greedy( agentClient.state ) );
+//				solutions.add(client.Search( strategy ));
 				//			System.err.println(solutions.get(solutions.size()-1));
 				//			System.err.println("-----------------------------------------------------");
 
@@ -328,11 +335,7 @@ public class SearchClient {
 					k++;
 				}
 			}
-			client.state.agent=null;
 
-			
-			System.err.println("done");
-			System.exit(0);//tmp
 		}
 		System.err.println("done");
 	}
@@ -365,7 +368,6 @@ public class SearchClient {
 	private static Node updateState(Node n, ArrayList<LinkedList<Node>> solutions, int k) {
 		int size=0;
 		for (int i = 0; i < solutions.size(); i++) {
-//						System.err.println(solutions.get(i));
 			if(size<solutions.get(i).size()){
 				size=solutions.get(i).size();
 			}
@@ -383,25 +385,5 @@ public class SearchClient {
 		return n.excecuteCommands(commands);
 	}
 
-	/**
-	 * creates an relaxed world for each agent, by removing things 
-	 * @param initialState
-	 * @param agent
-	 * @return
-	 */
-	private static Node modAgentIntialState(Node initialState, Agent agent) {
-		// TODO Auto-generated method stub
 
-		// TODO create new world by modifing intial state
-
-
-
-		// TODO exchange wrong colored boxes with walls
-
-		// TODO remove wrong colored goals 
-
-
-		initialState.agent=agent;
-		return initialState;
-	}
 }
