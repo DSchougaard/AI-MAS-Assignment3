@@ -11,7 +11,7 @@ import java.util.HashMap;
 	@author: Daniel Schougaard
 */
 
-class Map{
+class Level implements MapInterface{
 
 
 	/*
@@ -28,7 +28,7 @@ class Map{
 	*/
 
 	/*
-		Private variables for Map
+		Private variables for Level
 	*/
 
 	private int maxRow;
@@ -63,7 +63,7 @@ class Map{
 
 
 	// Constructor
-	public Map(int maxCol, int maxRow){
+	public Level(int maxCol, int maxRow){
 		this.maxCol 	= maxCol;
 		this.maxRow 	= maxRow;
 
@@ -72,13 +72,13 @@ class Map{
 
 	}	
 
-	public Map(DistanceMap dmap){
+	public Level(DistanceMap dmap){
 		this.goals 				= new HashMap<Character, ArrayList<Cell> >();
 		this.dm 				= dmap;
 	}
 
 
-	// Setup methods for the Map
+	// Setup methods for the Level
 	public void addWall(int col, int row){
 		cell[col][row] = new Cell(Type.WALL);
 	}
