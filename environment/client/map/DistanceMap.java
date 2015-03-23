@@ -1,9 +1,9 @@
 package client.map;
 
-import client.map.Level.Cell;
+import java.awt.Point;
 
 public abstract class DistanceMap {
 
-	public abstract double distance(Cell a, Cell b);
+	public abstract double distance(Point a, Point b);
 
 }

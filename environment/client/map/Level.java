@@ -142,7 +142,7 @@ class Level{
 	public List<Cell> getGoals(char chr){
 		return this.goals.get(new Character(chr));
 	}
-	public Map<Character, List<Cell>> getAllGoals(){
+	public HashMap<Character, ArrayList<Cell>> getAllGoals(){
 		return this.goals;
 	}
 }
