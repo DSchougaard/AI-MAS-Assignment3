@@ -1,9 +1,11 @@
 package client.map;
 
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.*;
+import java.util.*;
+
+import java.awt.Point;
+
 
 
 
@@ -11,7 +13,7 @@ import java.util.HashMap;
 	@author: Daniel Schougaard
 */
 
-class Level implements MapInterface{
+class Level implements LevelInterface{
 
 
 	/*
@@ -55,7 +57,7 @@ class Level implements MapInterface{
 
 	public enum Type { SPACE, WALL, GOAL, BOX, AGENT }
 
-	private HashMap<Character, ArrayList<Cell> > goals;
+	private HashMap<Character, ArrayList<Point> > goals;
 
 
 
@@ -68,23 +70,30 @@ class Level implements MapInterface{
 		this.maxRow 	= maxRow;
 
 		map 			= new Cell[maxCol][maxRow];
-		this.goals 		= new HashMap<Character, ArrayList<Cell>>();
+		this.goals 		= new HashMap<Character, ArrayList<Point>>();
 
 	}	
 
 	public Level(DistanceMap dmap){
-		this.goals 				= new HashMap<Character, ArrayList<Cell> >();
+		this.goals 				= new HashMap<Character, ArrayList<Point> >();
 		this.dm 				= dmap;
 	}
 
 
 	// Setup methods for the Level
 	public void addWall(int col, int row){
-		cell[col][row] = new Cell(Type.WALL);
+		this.map[col][row] = new Cell(Type.WALL);
 	}
 
 	public void addGoal(int col, int row, char letter){
-		cell[col][row] = new Cell(Type.GOAL, letter);
+		this.map[col][row] = new Cell(Type.GOAL, letter);
+
+		if( !goals.containsKey(new Character(letter)) ){
+			goals.put( new Character(letter), new ArrayList<Point>() );
+		}
+
+		ArrayList<Point> tempGoals = goals.get( new Character(letter) );
+		tempGoals.add(new Point(col, row));
 	}
 
 
@@ -105,17 +114,23 @@ class Level implements MapInterface{
 
 
 	public char isGoal(int col, int row){
-		if( cell[col][row].type == Type.GOAL )
-			return cell[col][row].letter;
+		if( this.map[col][row].type == Type.GOAL )
+			return this.map[col][row].letter;
 
 		return '\0';
 	}
 
+	public boolean isWall(int col, int row){
+		return ( this.map[col][row].type == Type.WALL );
+	}
 
-	public List<Cell> getGoals(char chr){
+
+	public ArrayList<Point> getGoals(char chr){
 		return this.goals.get(new Character(chr));
 	}
-	public HashMap<Character, ArrayList<Cell>> getAllGoals(){
+
+
+	public HashMap<Character, ArrayList<Point>> getAllGoals(){
 		return this.goals;
 	}
 }
