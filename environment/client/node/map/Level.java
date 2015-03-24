@@ -70,7 +70,7 @@ public class Level implements LevelInterface{
 		this.maxCol 	= maxCol;
 		this.maxRow 	= maxRow;
 
-		map 			= new Cell[maxCol][maxRow];
+		map 			= new Cell[maxRow][maxCol];
 		this.goals 		= new HashMap<Character, ArrayList<Goal>>();
 
 	}	
@@ -83,11 +83,11 @@ public class Level implements LevelInterface{
 
 	// Setup methods for the Level
 	public void addWall(int row, int col){
-		this.map[row][col] = new Cell(Type.WALL);
+		Level.map[row][col] = new Cell(Type.WALL);
 	}
 
 	public void addGoal(int row, int col, char letter){
-		this.map[row][col] = new Cell(Type.GOAL, letter);
+		Level.map[row][col] = new Cell(Type.GOAL, letter);
 
 		if( !goals.containsKey(new Character(letter)) ){
 			goals.put( new Character(letter), new ArrayList<Goal>() );
@@ -98,7 +98,7 @@ public class Level implements LevelInterface{
 	}
 
 	public void addSpace(int row, int col){
-		this.map[row][col]  = new Cell(Type.SPACE);
+		Level.map[row][col]  = new Cell(Type.SPACE);
 	}
 
 
@@ -123,8 +123,11 @@ public class Level implements LevelInterface{
 		return '\0';
 	}
 
-	public boolean isWall(int col, int row){
-		return ( this.map[col][row].type == Type.WALL );
+	public boolean isWall(int row, int col){
+		if(this.map[row][col] == null)
+			System.err.println("------------"+row +" "+ col);
+			
+		return ( this.map[row][col].type == Type.WALL );
 	}
 
 

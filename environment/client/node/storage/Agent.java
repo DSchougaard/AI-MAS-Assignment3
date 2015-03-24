@@ -9,10 +9,14 @@ public class Agent extends Base{
 	public Color color;
 	public Boolean conflict =false;
 	
-	public Agent(char name, Color color, int row, int col){
+	public Agent(int name, Color color, int row, int col){
 		super(row, col);
-		this.id 	= (int)name;
-		this.color 	= color;
+		this.id 	= name;
+		if(color==null){
+			this.color = Color.noColor;
+		}else{
+			this.color = color;
+		}
 	}
 
 	public Agent(char name, int row, int col){

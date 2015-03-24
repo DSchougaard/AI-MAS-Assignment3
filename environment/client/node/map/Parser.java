@@ -54,14 +54,12 @@ public class Parser{
 
 		// Parse the preloaded array
 		for( int row = 0 ; row < maxRow ; row++ ){
-
-			int n 		= maxCol - tempMapContainer.get(row).length();
-			// Space padd the strings, if they're not of max length
-			//String line = String.format(tempMapContainer.get(row) + "$-" + n + "s");
-			line = String.format("%-" + n + "s", tempMapContainer.get(row)); 
-
+//			int n 		= maxCol - tempMapContainer.get(row).length();
+//			// Space padd the strings, if they're not of max length
+//			//String line = String.format(tempMapContainer.get(row) + "$-" + n + "s");
+//			line = String.format("%-" + n + "s", tempMapContainer.get(row)); 
+			line= tempMapContainer.get(row);
 			for( int col = 0 ; col < line.length() ; col++ ){
-
 				if( line.charAt( col ) == ' ' ){
 					// Space
 					level.addSpace(row, col);
@@ -70,13 +68,16 @@ public class Parser{
 					level.addWall(row, col);
 				}else if( line.charAt( col ) >= 'a' && line.charAt( col ) <= 'z' ){
 					// Goal
-					level.addGoal(col, row, line.charAt(col) );
+					level.addGoal(row, col, line.charAt(col) );
+					level.addSpace(row, col);
 				}else if( line.charAt( col ) >= 'A' && line.charAt( col ) <= 'Z' ){
 					// Box
 					node.addBox(line.charAt(col), colors.get(line.charAt(col)), row, col);
+					level.addSpace(row, col);
 				}else if( line.charAt( col ) >= '0' && line.charAt( col ) <= '9' ){
 					// Agent
 					node.addAgent(line.charAt(col), colors.get(line.charAt(col)), row, col);
+					level.addSpace(row, col);
 				}
 			}
 		}

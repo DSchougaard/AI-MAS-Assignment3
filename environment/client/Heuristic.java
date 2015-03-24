@@ -32,8 +32,7 @@ public abstract class Heuristic implements Comparator< Node > {
 		if(tmpH==null){
 
 			int h=0;
-			ArrayList<Goal> goals= n.getAllGoals();
-			Box[] boxs= n.getBoxes();
+			ArrayList<Box> boxs= n.getBoxes();
 			
 			
 			for (Box box : boxs) {

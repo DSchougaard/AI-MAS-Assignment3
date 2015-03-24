@@ -28,6 +28,10 @@ public class Node implements NodeInterface, LevelInterface{
 	private void boxAdd(Box box){
 		this.boxesByPoint.put(new Point(box.row, box.col), box);
 		ArrayList<Box> boxList = boxesByType.get(box.type);
+		if(boxList==null){
+			boxList= new ArrayList<>();
+			boxesByType.put(box.type, boxList);
+		}
 		boxList.add(box);
 	}
 
@@ -49,6 +53,17 @@ public class Node implements NodeInterface, LevelInterface{
 	public ArrayList<Command> actions= new ArrayList<>();
 	public Command action;
 	
+	private int g;
+	
+	
+	public Node(){
+		
+		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
+		boxesByPoint 	= new HashMap<Point, Box>();
+		agents 			= new Agent[10];
+
+	}
+	
 	public Node(Level level){
 		this.level = level;
 
@@ -57,16 +72,26 @@ public class Node implements NodeInterface, LevelInterface{
 		agents 			= new Agent[10];
 	}
 
-	public Node(Node parent){
-		System.err.println("Not yet implemented");
-	}
+//	public Node(Node parent){
+//		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
+//		boxesByPoint 	= new HashMap<Point, Box>();
+//		agents 			= new Agent[10];
+//		
+//		this.parent = parent;
+//		if ( parent == null ) {
+//			g = 0;
+//		} else {
+//
+//			g = parent.g() + 1;
+//		}
+//	}
 
 	// Add'ers for the setup
 	public void addAgent(char name, Color color, int row, int col){
 		int i = (int)name - 48;
 		if( agents[i] != null ) return;
 
-		agents[i] = new Agent(name, color, row, col);
+		agents[i] = new Agent(i, color, row, col);
 	}
 
 	public void addBox(char type, Color color, int row, int col){
@@ -91,9 +116,14 @@ public class Node implements NodeInterface, LevelInterface{
 		return boxesByType.get(new Character(color));
 	}
 
-	public Box[] getBoxes(){
+	public ArrayList<Box> getBoxes(){
+		Collection<Box> col = boxesByPoint.values();
+		ArrayList<Box> result = new ArrayList<>();
+		for (Object box : col) {
+			result.add((Box) box);
+		}
 		
-		return (Box[]) boxesByType.values().toArray();
+		return result;
 	}
 
 	public boolean cellIsFree(int row, int col){
@@ -119,7 +149,7 @@ public class Node implements NodeInterface, LevelInterface{
 
 	public Agent agentAt(int row, int col){
 		for( int i = 0 ; i < 10 ; i++ ){
-			if( this.agents[i].isAt(row, col) )
+			if( this.agents[i]!=null && this.agents[i].isAt(row, col) )
 				return this.agents[i];
 		}
 		return null;
@@ -277,9 +307,9 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	private Node ChildNode() {
-		//TODO:
-		Node child = new Node(parent);
-		
+		Node child =CopyNode();
+		child.parent=this;
+		child.g+=1;
 		
 		return child;
 	}
@@ -327,10 +357,11 @@ public class Node implements NodeInterface, LevelInterface{
 
 		return true;
 	}
+	
 	public int g() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return g;
 	}
+	
 	@Override
 	public Box[] getAllBoxes() {
 		// TODO Auto-generated method stub
@@ -338,24 +369,84 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 	@Override
 	public int distance(Base from, Base to) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		return distance(from.row, from.col, to.row, to.col);
+
 	}
 	public LinkedList<Node> extractPlan() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		LinkedList< Node > plan = new LinkedList< Node >();
+		Node n = this;
+		while( !n.isInitialState() && n.action!=null) { //remove null
+			plan.addFirst( n );
+			n = n.parent;
+		}
+		return plan;
 	}
-	public Node excecuteCommands(ArrayList<Command> commands) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public boolean isInitialState() {
+		return this.parent == null;
 	}
+
+	public Node excecuteCommands(ArrayList<Command> cs){
+		Node child = ChildNode();
+		for (int i = 0; i < cs.size(); i++) {
+			if(cs.get(i)!=null){
+				child.excecuteCommand(i, cs.get(i));
+			}
+		}
+
+		return child;
+		
+	}
+	
 	public Node CopyNode() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+		Node copy= new Node();
+		copy.level=this.level;
+		System.arraycopy( this.agents, 0, copy.agents, 0, this.agents.length );
+		this.boxesByPoint.values().forEach(box ->copy.boxAdd(box));
+		copy.g=this.g;
+		copy.parent=this.parent;
+		copy.agent=this.agent;
+		return copy;
 	}
 
+	private void excecuteCommand(int agentID, Command c){
+		actions.add(c);
+		int newAgentRow = agents[agentID].row + dirToRowChange( c.dir1 );
+		int newAgentCol = agents[agentID].col + dirToColChange( c.dir1 );
+		Box box;
+		switch (c.actType) {
+		case Move:
+			
+			agents[agentID].row = newAgentRow;
+			agents[agentID].col = newAgentCol;
+			break;
+		case Push:
+			int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
+			int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
 
+			agents[agentID].row = newAgentRow;
+			agents[agentID].col = newAgentCol;
+			boxMove(boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
+			
+			break;
+		case Pull:
+			int boxRow = agents[agentID].row + dirToRowChange( c.dir2 );
+			int boxCol = agents[agentID].col + dirToColChange( c.dir2 );
+			
+			int tmpAgentRow = agents[agentID].row;
+			int tmpAgentCol = agents[agentID].col;
+			
+			agents[agentID].row = newAgentRow;
+			agents[agentID].col = newAgentCol;
+			boxMove(boxAt(boxRow, boxCol), tmpAgentRow, tmpAgentCol);
+			break;
 
+		}
+
+		
+	}
+	public String toString(){
+		throw new UnsupportedOperationException();
+	}
 	
 	
 	//TODO: toString()

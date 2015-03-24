@@ -10,8 +10,13 @@ public class Box extends Base{
 
 	public Box(char t, Color color, int row, int col){ 
 		super(row, col);
-		this.type = t;
-		this.color = color;
+		this.type = Character.toLowerCase(t);
+		if(color==null){
+			this.color = Color.noColor;
+		}else{
+			this.color = color;
+		}
+		
 	}
 
 	@Override
