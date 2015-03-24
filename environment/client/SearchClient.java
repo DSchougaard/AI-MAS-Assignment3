@@ -238,7 +238,7 @@ public class SearchClient {
 		
 		int size=0;
 		for (int i = 0; i < solutions.size(); i++) {
-			System.err.println(solutions.get(i));
+//			System.err.println(solutions.get(i));
 			if(size<solutions.get(i).size()){
 				size=solutions.get(i).size();
 			}
@@ -249,16 +249,16 @@ public class SearchClient {
 			solution[i]="[";
 		}
 //		System.err.println(solution.length);
-		boolean cut=false;
-		int cutIndex=0;
+//		boolean cut=false;
+//		int cutIndex=0;
 		for (int i = 0; i < solutions.size(); i++) {
 
 			for (int k = 0; k < size; k++) {
 				if(k<solutions.get(i).size()){
 					if(solutions.get(i).get(k).action.actType==Command.type.NoOp){
 						solution[k]+="NoOp";
-						cut=true;
-						cutIndex=k;
+//						cut=true;
+//						cutIndex=k;
 					}else{
 						solution[k]+=solutions.get(i).get(k).action.toString();
 					}
@@ -273,16 +273,16 @@ public class SearchClient {
 			}
 		}
 		
-		if(cut){
-			System.err.println("-----------------");
-			System.err.println("cut "+cutIndex);
-			String tmp[]= new String[cutIndex+1];
-			tmp=Arrays.copyOfRange(solution, 0, cutIndex+1);
-			System.err.println(solution.length);
-			solution=tmp;
-			System.err.println("sol lenght "+solution.length);
-
-		}
+//		if(cut){
+//			System.err.println("-----------------");
+//			System.err.println("cut "+cutIndex);
+//			String tmp[]= new String[cutIndex+1];
+//			tmp=Arrays.copyOfRange(solution, 0, cutIndex+1);
+//			System.err.println(solution.length);
+//			solution=tmp;
+//			System.err.println("sol lenght "+solution.length);
+//
+//		}
 		for (int i = 0; i < solution.length; i++) {
 			solution[i]+="]";
 		}
@@ -333,13 +333,13 @@ public class SearchClient {
 				solutions.add(sol);
 
 			}
-//			
-//			if( conflict){
-//				
-//				solutions=Conflict.solve(solutions, agents);
-//				System.err.println("!!!!!!!!!!!"+solutions.size());
-//			}
-//			
+			
+			if( conflict){
+				
+				solutions=Conflict.solve(solutions, agents);
+				System.err.println("!!!!!!!!!!!"+solutions.size());
+			}
+			
 			
 			String[] solution = mergePlans(solutions);
 	
