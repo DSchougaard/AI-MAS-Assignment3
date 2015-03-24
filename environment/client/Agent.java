@@ -12,6 +12,7 @@ public class Agent{
 		// We don't actually use these for Randomly Walking Around
 		public int id;
 		public Color color;
+		public Boolean conflict =false;
 
 		Agent(int id){
 			this.id=id;
