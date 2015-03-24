@@ -1,7 +1,7 @@
-package client.map;
+package client.node.map;
 
-import client.map.DistanceMap;
-import client.map.Level.Cell;
+import client.node.map.DistanceMap;
+import client.node.map.Level.Cell;
 
 import java.awt.Point;
 

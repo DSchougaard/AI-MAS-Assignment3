@@ -1,9 +1,9 @@
-package client.map;
+package client.node.map;
 
 import java.awt.Point;
 import java.util.*;
 
-interface LevelInterface {
+public interface LevelInterface {
 
 	// Goals
 	ArrayList<Point> getGoals(char chr);

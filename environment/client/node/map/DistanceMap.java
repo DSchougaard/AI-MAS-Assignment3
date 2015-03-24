@@ -1,4 +1,4 @@
-package client.map;
+package client.node.map;
 
 import java.awt.Point;
 

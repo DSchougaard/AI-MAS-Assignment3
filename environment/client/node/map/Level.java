@@ -1,4 +1,4 @@
-package client.map;
+package client.node.map;
 
 
 import java.io.*;
@@ -13,7 +13,7 @@ import java.awt.Point;
 	@author: Daniel Schougaard
 */
 
-class Level implements LevelInterface{
+public class Level implements LevelInterface{
 
 
 	/*
@@ -96,7 +96,9 @@ class Level implements LevelInterface{
 		tempGoals.add(new Point(col, row));
 	}
 
-
+	public void addSpace(int col, int row){
+		this.map[col][row] = new Cell(Type.SPACE);
+	}
 
 
 

@@ -1,13 +1,14 @@
-package client.map;
+package client.node;
 
 
 import java.awt.Point;
-
 import java.io.*;
 import java.util.*;
 
+import client.node.map.*;
 
-class Node implements NodeInterface, LevelInterface{
+public class Node implements NodeInterface, LevelInterface{
+
 
 
 	public class Box{
@@ -34,21 +35,21 @@ class Node implements NodeInterface, LevelInterface{
 		}
 	}
 
-	private Map map;
+	private Level level;
 
 
 	// Box DS
-	HashMap<Character, HashSet<Box>> boxesByType;
+	HashMap<Character, ArrayList<Box>> boxesByType;
 	HashMap<Point, Box> boxesByPoint;
 
 	// Agents
 	HashMap<Character, Agent> agents;
 
 
-	public Node(Map map){
-		this.map = map;
+	public Node(Level level){
+		this.level = level;
 
-		boxesByType 	= new HashMap<Character, HashSet<Box>>();
+		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
 		agents 			= new HashMap<Character, Agent>();
 	}
@@ -64,11 +65,11 @@ class Node implements NodeInterface, LevelInterface{
 
 	public void addBox(char type, String color, int col, int row){
 		if( !boxesByType.containsKey( type ) ){
-			boxesByType.put( new Character(type), new HashSet<Box>() );
+			boxesByType.put( new Character(type), new ArrayList<Box>() );
 		}
 
 		Box newBox = new Box(type, color, col, row);
-		HashSet<Box> boxSet = boxesByType.get(new Character(type));
+		ArrayList<Box> boxSet = boxesByType.get(new Character(type));
 		boxSet.add(newBox);
 
 		boxesByPoint.put( new Point(col, row), newBox);
@@ -80,12 +81,12 @@ class Node implements NodeInterface, LevelInterface{
 
 
 	// Methods from NodeInterface
-	public ArrayList<Point> getBoxes(char color){
-		return null;
+	public ArrayList<Box> getBoxes(char color){
+		return boxesByType.get(new Character(color));
 	}
 
-	public HashMap<Character, List<Point>> getAllBoxes(){
-		return null;
+	public HashMap<Character, ArrayList<Box>> getAllBoxes(){
+		return this.boxesByType;
 	}
 
 
@@ -98,8 +99,8 @@ class Node implements NodeInterface, LevelInterface{
 		return null;
 	}
 
-	public boolean isWall(int row, int col){
-		return true;
+	public boolean isWall(int col, int row){
+		return this.level.isWall(row, col);
 	}
 
 

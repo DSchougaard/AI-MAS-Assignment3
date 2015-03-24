@@ -1,4 +1,4 @@
-package client.map;
+package client.node.map;
 
 import java.io.*;
 import java.util.*;
@@ -8,11 +8,11 @@ import java.awt.Point;
 
 
 
-import client.map.Node;
+import client.node.Node;
 
 
 
-class Parser{
+public class Parser{
 
 	private BufferedReader in;
 
@@ -49,7 +49,8 @@ class Parser{
 		maxRow = tempMapContainer.size();
 
 		// Create the data structures for the bookkeeping
-		Level m = new Level(maxCol, maxRow);
+		Level level = new Level(maxCol, maxRow);
+		Node node = new Node(level);
 
 
 		// Parse the preloaded array
@@ -64,14 +65,19 @@ class Parser{
 
 				if( line.charAt( col ) == ' ' ){
 					// Space
+					level.addSpace(col, row);
 				}else if(line.charAt( col ) == '+' ){
 					// Wall
+					level.addWall(col, row);
 				}else if( line.charAt( col ) >= 'a' && line.charAt( col ) <= 'z' ){
 					// Goal
+					level.addGoal(col, row, line.charAt(col) );
 				}else if( line.charAt( col ) >= 'A' && line.charAt( col ) <= 'Z' ){
 					// Box
+					node.addBox(line.charAt(col), colors.get(line.charAt(col)), col, row);
 				}else if( line.charAt( col ) >= '0' && line.charAt( col ) <= '9' ){
 					// Agent
+					node.addAgent(line.charAt(col), colors.get(line.charAt(col)), col, row);
 				}
 			}
 		}
