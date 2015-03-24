@@ -13,4 +13,14 @@ public class Box extends Base{
 		this.type = t;
 		this.color = color;
 	}
+
+	@Override
+	public boolean equals( Object obj ) {
+		if( getClass() != obj.getClass() )
+			return false;
+		super.equals( obj );
+
+		Box b = (Box)obj;
+		return ( this.type == b.type && this.color == b.color );
+	}
 }

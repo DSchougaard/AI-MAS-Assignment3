@@ -125,7 +125,38 @@ public class Node implements NodeInterface, LevelInterface{
 		return result;
 	}
 
+	@Override
+	public boolean equals( Object obj ) {
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Node other = (Node) obj;
+	
+		if( !Arrays.equals(this.agents, other.agents) )
+			return false;
 
+		if( !this.boxesByPoint.keySet().equals( other.boxesByPoint.keySet() ) )
+			return false;
+
+		for( Point p : boxesByPoint.keySet() ){
+			if( !boxesByPoint.get(p).equals( other.boxesByPoint.get(p) ) )
+				return false;
+		}
+
+		if( !this.boxesByType.keySet().equals( other.boxesByType.keySet() ) )
+			return false;
+
+		for( Character c : boxesByType.keySet() ){
+			if( !this.boxesByType.get(c).equals( other.boxesByType ) )
+				return false;
+		}
+
+
+		return true;
+	}
 
 
 

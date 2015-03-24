@@ -13,4 +13,14 @@ public class Agent extends Base{
 		this.name 	= name;
 		this.color 	= color;
 	}
+
+	@Override
+	public boolean equals( Object obj ) {
+		if( getClass() != obj.getClass() )
+			return false;
+		super.equals( obj );
+
+		Agent b = (Agent)obj;
+		return ( this.name == b.name && this.color == b.color );
+	}
 }

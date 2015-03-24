@@ -11,4 +11,14 @@ public class Base{
 	public boolean at(int row, int col){
 		return ( this.row == row && this.col == col );
 	}
+
+	@Override
+	public boolean equals( Object obj ) {
+		if( getClass() != obj.getClass() )
+			return false;
+		Base b = (Base)obj;
+		return ( this.row == b.row && this.col == b.col );
+	}
+
+
 }

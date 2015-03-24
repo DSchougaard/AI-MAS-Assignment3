@@ -10,4 +10,14 @@ public class Goal extends Base{
 		super(row, col);
 		this.type = type;
 	}
+
+	@Override
+	public boolean equals( Object obj ) {
+		if( getClass() != obj.getClass() )
+			return false;
+		super.equals( obj );
+
+		Goal b = (Goal)obj;
+		return ( this.type == b.type );
+	}
 }
