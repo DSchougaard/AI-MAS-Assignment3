@@ -6,8 +6,8 @@ import java.io.*;
 import java.util.*;
 
 import client.node.map.*;
-
 import client.node.storage.*;
+import client.node.Color;
 
 public class Node implements NodeInterface, LevelInterface{
 
@@ -41,7 +41,7 @@ public class Node implements NodeInterface, LevelInterface{
 		agents[i] = new Agent(name, color, row, col);
 	}
 
-	public void addBox(char type, String color, int row, int col){
+	public void addBox(char type, Color color, int row, int col){
 		if( !boxesByType.containsKey( type ) ){
 			boxesByType.put( new Character(type), new ArrayList<Box>() );
 		}
@@ -71,8 +71,8 @@ public class Node implements NodeInterface, LevelInterface{
 		return false;
 	}
 
-	public ArrayList<Agent> getAgents(){
-		return new ArrayList<Agent>(this.agents.values());
+	public Agent[] getAgents(){
+		return this.agents;
 	}
 
 	public Box boxAt(int row, int col){

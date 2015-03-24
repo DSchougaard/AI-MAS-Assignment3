@@ -9,6 +9,7 @@ import java.awt.Point;
 
 
 import client.node.Node;
+import client.node.Color;
 
 
 
@@ -22,7 +23,7 @@ public class Parser{
 	}
 
 	public void parse() throws IOException{
-		Map< Character, String > colors = new HashMap< Character, String >();
+		Map< Character, Color > colors = new HashMap< Character, Color >();
 		String line, color;
 		ArrayList<String> tempMapContainer = new ArrayList<String>();
 		/*
@@ -35,7 +36,7 @@ public class Parser{
 			color = line.split( ":" )[0];
 
 			for ( String id : line.split( ":" )[1].split( "," ) )
-				colors.put( id.charAt( 0 ), color );
+				colors.put( id.charAt( 0 ), Color.valueOf(color) );
 		}
 
 		// Read lines specifying level layout

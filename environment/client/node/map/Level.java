@@ -66,7 +66,7 @@ public class Level implements LevelInterface{
 
 
 	// Constructor
-	public Level(int maxCol, int maxRow){
+	public Level(int maxRow, int maxCol){
 		this.maxCol 	= maxCol;
 		this.maxRow 	= maxRow;
 
