@@ -144,11 +144,15 @@ public class Node implements NodeInterface, LevelInterface{
 
 	// Methods from LevelInterface. Parsed directly to LevelInterface.
 	public ArrayList<Goal> getGoals(char chr){
-		return null;
+		return this.level.getGoals(chr);
 	}
 
-	public HashMap<Character, ArrayList<Goal>> getAllGoals(){
-		return null;
+	public HashMap<Character, ArrayList<Goal>> getGoalMap(){
+		return this.level.getGoalMap();
+	}
+
+	public ArrayList<Goal> getAllGoals(){
+		return this.level.getAllGoals();
 	}
 
 	public boolean isWall(int row, int col){
@@ -158,6 +162,13 @@ public class Node implements NodeInterface, LevelInterface{
 	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
 		return this.level.distance(rowFrom, colFrom, rowTo, colTo);
 	}
+
+
+
+
+
+
+
 
 
 	@Override

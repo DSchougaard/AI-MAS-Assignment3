@@ -133,8 +133,16 @@ public class Level implements LevelInterface{
 	}
 
 
-	public HashMap<Character, ArrayList<Goal>> getAllGoals(){
+	public HashMap<Character, ArrayList<Goal>> getGoalMap(){
 		return this.goals;
+	}
+
+	public ArrayList<Goal> getAllGoals(){
+		ArrayList<Goal> returnGoals = new ArrayList<Goal>();
+		for( Character c  : goals.keySet() ){
+			returnGoals.addAll(this.goals.get(c));
+		}
+		return returnGoals;
 	}
 
 	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){

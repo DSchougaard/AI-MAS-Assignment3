@@ -9,7 +9,8 @@ public interface LevelInterface {
 
 	// Goals
 	ArrayList<Goal> getGoals(char chr);
-	HashMap<Character, ArrayList<Goal> > getAllGoals();
+	HashMap<Character, ArrayList<Goal>> getGoalMap();
+	ArrayList<Goal> getAllGoals();
 	boolean isWall(int row, int col);
 
 	int distance(int rowFrom, int colFrom, int rowTo, int colTo);
