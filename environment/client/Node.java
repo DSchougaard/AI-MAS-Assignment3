@@ -10,7 +10,6 @@ import java.util.Random;
 import client.Command.dir;
 import client.Command.type;
 import client.SearchClient.Color;
-import client.map.Level;
 
 
 public class Node {
@@ -37,7 +36,6 @@ public class Node {
 	public static boolean[][] walls = new boolean[MAX_ROW][MAX_COLUMN];
 	public static char[][] goals = new char[MAX_ROW][MAX_COLUMN];
 	
-	public Level level;
 	
 	public char[][] boxes = new char[MAX_ROW][MAX_COLUMN]; 
 	
@@ -69,7 +67,6 @@ public class Node {
 			g = 0;
 		} else {
 			g = parent.g() + 1;
-			level=parent.level;
 		}
 		
 	}
@@ -81,7 +78,6 @@ public class Node {
 			g = 0;
 		} else {
 			g = parent.g() + 1;
-			level=parent.level;
 		}
 		
 	}
@@ -93,7 +89,6 @@ public class Node {
 			g = 0;
 		} else {
 			g = parent.g() + 1;
-			level=parent.level;
 		}
 		
 	}
@@ -105,9 +100,7 @@ public class Node {
 		
 	}
 	
-	public void init(Level level){
-		this.level=level;
-	}
+
 
 	public int g() {
 		return g;
