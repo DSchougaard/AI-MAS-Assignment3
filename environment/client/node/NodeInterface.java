@@ -24,7 +24,7 @@ public interface NodeInterface {
 	// Goals
 	
 	public boolean isGoalState();
-	public boolean isGoalState(Color color);
+	//public boolean isGoalState(Color color);
 	//public boolean isGoalState(Goal goal);
 	
 
