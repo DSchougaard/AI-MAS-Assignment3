@@ -90,7 +90,6 @@ public class Node implements NodeInterface, LevelInterface{
 	public void addAgent(char name, Color color, int row, int col){
 		int i = (int)name - 48;
 		if( agents[i] != null ) return;
-
 		agents[i] = new Agent(i, color, row, col);
 	}
 
@@ -319,9 +318,9 @@ public class Node implements NodeInterface, LevelInterface{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result ^ this.boxesByType.hashCode();
-		result = prime * result ^ this.boxesByPoint.hashCode();
-		result = prime * result ^ Arrays.deepHashCode(agents);
+		result = prime * result + this.boxesByType.hashCode();
+		result = prime * result + this.boxesByPoint.hashCode();
+		result = prime * result + Arrays.deepHashCode(agents);
 		return result;
 	}
 
@@ -400,11 +399,17 @@ public class Node implements NodeInterface, LevelInterface{
 	public Node CopyNode() {
 		Node copy= new Node();
 		copy.level=this.level;
-		System.arraycopy( this.agents, 0, copy.agents, 0, this.agents.length );
+		for (int i = 0; i < agents.length; i++) {
+			if(this.agents[i]!=null){
+				copy.agents[i]=new Agent(this.agents[i]);
+			}
+		}
 		this.boxesByPoint.values().forEach(box ->copy.boxAdd(box));
 		copy.g=this.g;
 		copy.parent=this.parent;
-		copy.agent=this.agent;
+		if(this.agent!= null){
+			copy.agent=new Agent(this.agent);
+		}
 		return copy;
 	}
 
@@ -412,7 +417,7 @@ public class Node implements NodeInterface, LevelInterface{
 		actions.add(c);
 		int newAgentRow = agents[agentID].row + dirToRowChange( c.dir1 );
 		int newAgentCol = agents[agentID].col + dirToColChange( c.dir1 );
-		Box box;
+
 		switch (c.actType) {
 		case Move:
 			
@@ -439,13 +444,35 @@ public class Node implements NodeInterface, LevelInterface{
 			agents[agentID].col = newAgentCol;
 			boxMove(boxAt(boxRow, boxCol), tmpAgentRow, tmpAgentCol);
 			break;
+		default:
+			throw new UnsupportedOperationException();
 
 		}
 
 		
 	}
 	public String toString(){
-		throw new UnsupportedOperationException();
+		Character[][] map=level.toArray();
+		for (int i = 0; i < agents.length; i++) {
+			if(agents[i]!=null){
+				map[agents[i].row][agents[i].col]= (char) ((int)'0'+agents[i].id);
+				System.err.println("agent "+agents[i].row+" "+agents[i].col);
+			}
+		}
+		
+		getBoxes().forEach(box-> map[box.row][box.col]=Character.toUpperCase(box.type));
+		
+		getBoxes().forEach(box-> System.err.println("box "+box.row+" "+box.col));
+		StringBuilder s = new StringBuilder();
+		s.append("\n");
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[0].length; j++) {
+				s.append(map[i][j]);
+			}
+			s.append("\n");
+		}
+		
+		return s.toString();
 	}
 	
 	

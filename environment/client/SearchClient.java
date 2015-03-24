@@ -91,12 +91,10 @@ public class SearchClient {
 			if ( Memory.shouldEnd() ) {
 				System.err.format( "Memory limit almost reached, terminating search %s\n", Memory.stringRep() );
 				return new LinkedList<>();
-//				return null;
 			}
 			if ( strategy.timeSpent() > 300 ) { // Minutes timeout
 				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep() );
 				return new LinkedList<>();
-//				return null;
 			}
 
 			if ( strategy.frontierIsEmpty() ) {
@@ -108,8 +106,7 @@ public class SearchClient {
 					System.err.println("conflict");
 					return null;
 				}
-				
-//				return null;
+
 			}
 
 			Node leafNode = strategy.getAndRemoveLeaf();
@@ -141,7 +138,7 @@ public class SearchClient {
 		
 		int size=0;
 		for (int i = 0; i < solutions.size(); i++) {
-//			System.err.println(solutions.get(i));
+
 			if(size<solutions.get(i).size()){
 				size=solutions.get(i).size();
 			}
@@ -151,17 +148,14 @@ public class SearchClient {
 		for (int i = 0; i < solution.length; i++) {
 			solution[i]="[";
 		}
-//		System.err.println(solution.length);
-//		boolean cut=false;
-//		int cutIndex=0;
+
 		for (int i = 0; i < solutions.size(); i++) {
 
 			for (int k = 0; k < size; k++) {
 				if(k<solutions.get(i).size()){
 					if(solutions.get(i).get(k).action.actType==Command.type.NoOp){
 						solution[k]+="NoOp";
-//						cut=true;
-//						cutIndex=k;
+
 					}else{
 						solution[k]+=solutions.get(i).get(k).action.toString();
 					}
@@ -175,17 +169,7 @@ public class SearchClient {
 
 			}
 		}
-		
-//		if(cut){
-//			System.err.println("-----------------");
-//			System.err.println("cut "+cutIndex);
-//			String tmp[]= new String[cutIndex+1];
-//			tmp=Arrays.copyOfRange(solution, 0, cutIndex+1);
-//			System.err.println(solution.length);
-//			solution=tmp;
-//			System.err.println("sol lenght "+solution.length);
-//
-//		}
+
 		for (int i = 0; i < solution.length; i++) {
 			solution[i]+="]";
 		}
@@ -219,6 +203,7 @@ public class SearchClient {
 				SearchClient agentClient = new SearchClient( client.state, agent );
 //				strategy = new StrategyBestFirst( new Greedy( agentClient.state ) );
 				strategy = new StrategyBestFirst( new AStar( agentClient.state ) );
+				System.err.println(agentClient.state);
 				LinkedList< Node > sol=agentClient.Search( strategy );
 				
 				if(sol==null){
@@ -233,6 +218,7 @@ public class SearchClient {
 					sol.add(agentClient.state);
 //					System.exit(0);
 				}
+				System.err.println(sol);
 				solutions.add(sol);
 
 			}

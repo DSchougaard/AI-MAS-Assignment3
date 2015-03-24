@@ -26,6 +26,12 @@ public class Agent extends Base{
 	}
 
 	
+	public Agent(Agent agent) {
+		super(agent.row, agent.col);
+		this.id=agent.id;
+		this.color=agent.color;
+	}
+
 	@Override
 	public boolean equals( Object obj ) {
 		if( getClass() != obj.getClass() )

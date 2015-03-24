@@ -7,6 +7,7 @@ import java.awt.Point;
 
 
 
+
 import client.node.storage.*;
 
 
@@ -71,6 +72,11 @@ public class Level implements LevelInterface{
 		this.maxRow 	= maxRow;
 
 		map 			= new Cell[maxRow][maxCol];
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[0].length; j++) {
+				map[i][j]=new Cell(Type.SPACE);
+			}
+		}
 		this.goals 		= new HashMap<Character, ArrayList<Goal>>();
 
 	}	
@@ -149,6 +155,12 @@ public class Level implements LevelInterface{
 	}
 
 	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
+		if(dm==null){
+			//FIXME:
+//			System.err.println("Distance mp "+dm);
+			return 0;
+		}
+		
 		return this.dm.distance(rowFrom, colFrom, rowTo, colTo);
 	}
 
@@ -156,6 +168,29 @@ public class Level implements LevelInterface{
 	public int distance(Base from, Base to) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	public Character[][] toArray(){
+		Character[][] result= new Character[maxRow][maxCol];
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[0].length; j++) {
+				switch (map[i][j].type) {
+				case WALL:
+					result[i][j]='+';
+					break;
+				case SPACE:
+					result[i][j]=' ';
+					break;
+				case GOAL:
+					result[i][j]=map[i][j].letter;
+				break;
+				default:
+					result[i][j]='x';
+					break;
+				}
+			}
+		}
+		return result;
 	}
 }
 
