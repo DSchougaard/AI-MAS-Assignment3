@@ -5,13 +5,16 @@ import java.awt.Point;
 import java.io.*;
 import java.util.*;
 
+import client.Command;
+import client.Command.dir;
+import client.Command.type;
 import client.node.map.*;
 import client.node.storage.*;
 import client.node.Color;
 
 public class Node implements NodeInterface, LevelInterface{
 
-
+	private static Random rnd = new Random( System.currentTimeMillis() );
 	private Level level;
 	// Box DS
 	HashMap<Character, ArrayList<Box>> boxesByType;
@@ -20,7 +23,12 @@ public class Node implements NodeInterface, LevelInterface{
 	// Agents
 	Agent[] agents;
 
-
+	
+	// history
+	public Node parent;
+	public ArrayList<Command> actions= new ArrayList<>();
+	public Command action;
+	
 	public Node(Level level){
 		this.level = level;
 
@@ -178,11 +186,80 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 
+//	public ArrayList< Node > getExpandedNodes(Agent agent) {
+//		ArrayList< Node > expandedNodes = new ArrayList< Node >( Command.every.length );
+//		for ( Command c : Command.every ) {
+//			// Determine applicability of action
+//			
+//			int newAgentRow = agents[agent.id][0] + dirToRowChange( c.dir1 );
+//			int newAgentCol = agents[agent.id][1] + dirToColChange( c.dir1 );
+//
+//			if ( c.actType == type.Move ) {
+//				// Check if there's a wall or box on the cell to which the agent is moving
+//				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
+//					
+//					Node n = this.ChildNode();
+//					n.action = c;
+//					n.agents[agent.id][0] = newAgentRow;
+//					n.agents[agent.id][1] = newAgentCol;
+//					expandedNodes.add( n );
+//					
+//				}
+//			} else if ( c.actType == type.Push ) {
+//				// Make sure that there's actually a box to move
+//				if ( boxAt( newAgentRow, newAgentCol ) && agent.color.equals(colors.get(boxes[newAgentRow][newAgentCol]))) {
+////				if ( boxAt( newAgentRow, newAgentCol ) ) {
+//					int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
+//					int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
+//					// .. and that new cell of box is free
+//					if ( cellIsFree( newBoxRow, newBoxCol ) ) {
+//
+//						Node n = this.ChildNode();
+//						n.action = c;
+//						n.agents[agent.id][0] = newAgentRow;
+//						n.agents[agent.id][1] = newAgentCol;
+//						
+//						n.boxes[newBoxRow][newBoxCol] = this.boxes[newAgentRow][newAgentCol];
+//						n.boxes[newAgentRow][newAgentCol] = 0;
+//						expandedNodes.add( n );
+//					}
+//				}
+//			} else if ( c.actType == type.Pull ) {
+//				// Cell is free where agent is going
+//				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
+//					int boxRow = agents[agent.id][0] + dirToRowChange( c.dir2 );
+//					int boxCol = agents[agent.id][1] + dirToColChange( c.dir2 );
+//					// .. and there's a box in "dir2" of the agent					
+//					if ( boxAt( boxRow, boxCol )  && agent.color == colors.get(boxes[boxRow][boxCol])) {
+//						Node n = this.ChildNode();
+//						n.action = c;
+//						n.agents[agent.id][0] = newAgentRow;
+//						n.agents[agent.id][1] = newAgentCol;
+//						n.boxes[agents[agent.id][0]][agents[agent.id][1]] = this.boxes[boxRow][boxCol];
+//						n.boxes[boxRow][boxCol] = 0;
+//						expandedNodes.add( n );
+//					}
+//				}
+//			}
+//		}
+//		Collections.shuffle( expandedNodes, rnd );
+//		
+//		return expandedNodes;
+//	}
 
+	private static int dirToRowChange( dir d ) { 
+		return ( d == dir.S ? 1 : ( d == dir.N ? -1 : 0 ) ); // South is down one row (1), north is up one row (-1)
+	}
 
+	private static int dirToColChange( dir d ) {
+		return ( d == dir.E ? 1 : ( d == dir.W ? -1 : 0 ) ); // East is left one column (1), west is right one column (-1)
+	}
 
-
-
+	private Node ChildNode() {
+		//TODO:
+		
+		return null;
+	}
 
 
 	@Override
