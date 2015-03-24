@@ -49,7 +49,7 @@ public class Parser{
 		maxRow = tempMapContainer.size();
 
 		// Create the data structures for the bookkeeping
-		Level level = new Level(maxCol, maxRow);
+		Level level = new Level(maxRow, maxCol);
 		Node node = new Node(level);
 
 
@@ -65,24 +65,21 @@ public class Parser{
 
 				if( line.charAt( col ) == ' ' ){
 					// Space
-					level.addSpace(col, row);
+					level.addSpace(row, col);
 				}else if(line.charAt( col ) == '+' ){
 					// Wall
-					level.addWall(col, row);
+					level.addWall(row, col);
 				}else if( line.charAt( col ) >= 'a' && line.charAt( col ) <= 'z' ){
 					// Goal
 					level.addGoal(col, row, line.charAt(col) );
 				}else if( line.charAt( col ) >= 'A' && line.charAt( col ) <= 'Z' ){
 					// Box
-					node.addBox(line.charAt(col), colors.get(line.charAt(col)), col, row);
+					node.addBox(line.charAt(col), colors.get(line.charAt(col)), row, col);
 				}else if( line.charAt( col ) >= '0' && line.charAt( col ) <= '9' ){
 					// Agent
-					node.addAgent(line.charAt(col), colors.get(line.charAt(col)), col, row);
+					node.addAgent(line.charAt(col), colors.get(line.charAt(col)), row, col);
 				}
 			}
 		}
-
-
-
 	}
 }
