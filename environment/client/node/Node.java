@@ -68,11 +68,32 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	public boolean cellIsFree(int row, int col){
-		return false;
+		// Sanity check on coords
+		if( !(row >= 0 && col >= 0 && row <= this.level.getRow() && col <= this.level.getCol()) )
+			return false;
+
+		if( this.level.isWall(row, col) )
+			return false;
+
+		if( this.boxesByPoint.containsKey( new Point(row, col) ) )
+			return false;
+
+		if( this.agentAt(row, col) != null )
+			return false;
+
+		return true;
 	}
 
 	public Agent[] getAgents(){
 		return this.agents;
+	}
+
+	public Agent agentAt(int row, int col){
+		for( int i = 0 ; i < 10 ; i++ ){
+			if( this.agents[i].at(row, col) )
+				return this.agents[i];
+		}
+		return null;
 	}
 
 	public Box boxAt(int row, int col){
@@ -96,6 +117,30 @@ public class Node implements NodeInterface, LevelInterface{
 		// Nothing was found
 		return null;
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// Methods from LevelInterface. Parsed directly to LevelInterface.
 	public ArrayList<Goal> getGoals(char chr){

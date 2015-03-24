@@ -16,6 +16,7 @@ public interface NodeInterface {
 
 	// Agents
 	Agent[] getAgents();
+	Agent agentAt(int row, int col);
 
 	// Cells
 	boolean cellIsFree(int row, int col);
