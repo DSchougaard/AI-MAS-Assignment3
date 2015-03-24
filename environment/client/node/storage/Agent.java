@@ -5,15 +5,23 @@ package client.node.storage;
 import client.node.Color;
 
 public class Agent extends Base{
-	public int name;
+	public int id;
 	public Color color;
-
+	public Boolean conflict =false;
+	
 	public Agent(char name, Color color, int row, int col){
 		super(row, col);
-		this.name 	= (int)name;
+		this.id 	= (int)name;
 		this.color 	= color;
 	}
 
+	public Agent(char name, int row, int col){
+		super(row, col);
+		this.id 	= (int)name;
+		this.color 	= Color.noColor;
+	}
+
+	
 	@Override
 	public boolean equals( Object obj ) {
 		if( getClass() != obj.getClass() )
@@ -21,6 +29,6 @@ public class Agent extends Base{
 		super.equals( obj );
 
 		Agent b = (Agent)obj;
-		return ( this.name == b.name && this.color == b.color );
+		return ( this.id == b.id && this.color == b.color );
 	}
 }

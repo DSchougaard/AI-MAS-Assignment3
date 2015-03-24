@@ -3,6 +3,7 @@ package client;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.PriorityQueue;
+import client.node.Node;
 
 import client.SearchClient.Memory;
 

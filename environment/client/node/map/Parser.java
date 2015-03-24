@@ -15,23 +15,19 @@ import client.node.Color;
 
 public class Parser{
 
-	private BufferedReader in;
 
-
-	public Parser(BufferedReader in){
-		this.in = in;
-	}
-
-	Node parse() throws IOException{
+	public static Node parse(BufferedReader in) throws IOException{
+		
 		Map< Character, Color > colors = new HashMap< Character, Color >();
 		String line, color;
 		ArrayList<String> tempMapContainer = new ArrayList<String>();
 		/*
 		Skeleton code borrowed from example
 		*/
-
+		System.err.println("parsing");
 		// Read lines specifying colors
 		while ( ( line = in.readLine() ).matches( "^[a-z]+:\\s*[0-9A-Z](,\\s*[0-9A-Z])*\\s*$" ) ) {
+			System.err.println(line);
 			line = line.replaceAll( "\\s", "" );
 			color = line.split( ":" )[0];
 
@@ -45,7 +41,9 @@ public class Parser{
 			if( line.length() > maxCol ){
 				maxCol = line.length();
 			}
+			System.err.println(line);
 			tempMapContainer.add(line);
+			line=in.readLine();
 		}
 		maxRow = tempMapContainer.size();
 

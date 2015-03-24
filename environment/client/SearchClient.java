@@ -10,17 +10,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 import client.Heuristic.AStar;
-import client.Heuristic.Greedy;
-import client.Heuristic.WeightedAStar;
 import client.Strategy.StrategyBestFirst;
+import client.node.Color;
+import client.node.Node;
+import client.node.map.Level;
+import client.node.map.Parser;
+import client.node.storage.Agent;
 
 public class SearchClient {
 
 
-	public enum Color{
-		blue,red,green,cyan,magenta,orage,pink,yellow,noColor
-	}
-
+	
 
 	// Auxiliary static classes
 	public static void error( String msg ) throws Exception {
@@ -63,110 +63,13 @@ public class SearchClient {
 	private static List< Agent > agents = new ArrayList< Agent >();
 
 	public SearchClient( BufferedReader serverMessages ) throws Exception {
-		HashMap< Character, Color > colors = new HashMap<>();
-		String line, color;
-
-		int colorLines = 0, levelLines = 0;
-
-		// Read lines specifying colors
-		while ( ( line = serverMessages.readLine() ).matches( "^[a-z]+:\\s*[0-9A-Z](,\\s*[0-9A-Z])*\\s*$" ) ) {
-			line = line.replaceAll( "\\s", "" );
-			String[] colonSplit = line.split( ":" );
-			color = colonSplit[0].trim();
-
-			for ( String id : colonSplit[1].split( "," ) ) {
-				Color colorEnum;
-				switch (color) {
-				case "red":
-					colorEnum=Color.red;
-					break;
-				case "blue":
-					colorEnum=Color.blue;
-					break;
-				case "green":
-					colorEnum=Color.green;
-					break;
-				case "magenta":
-					colorEnum=Color.magenta;
-					break;
-				case "cyan":
-					colorEnum=Color.cyan;
-					break;
-				case "orange":
-					colorEnum=Color.orage;
-					break;
-				case "pink":
-					colorEnum=Color.pink;
-					break;
-				default:
-					colorEnum=Color.noColor;
-					break;
-				}
-				colors.put( id.trim().charAt( 0 ), colorEnum );
+		
+		state=Parser.parse(serverMessages);
+		for (int i = 0; i < state.agents.length; i++) {
+			if(state.agents[i]!=null){
+				agents.add(state.agents[i]);
 			}
-			colorLines++;
 		}
-
-		if ( colorLines > 0 ) {
-
-			System.err.println("Coloured expirence!!!");
-			colors.forEach(
-					(l,c)->{
-						System.err.println(l+" "+c);
-					}
-					);
-			colors.forEach(
-					(l,c)->{
-						if(Character.isDigit(l)){
-							agents.add(new Agent(Integer.parseInt(l+""), c));
-						}else{
-							//											box color
-						}
-					}
-					);
-		}
-
-		state = new Node( null, colors);
-
-		int max_column=0;
-		ArrayList<String> tmpLines = new ArrayList<>();
-
-		while(!line.equals("")){
-			tmpLines.add(line);
-			max_column=Math.max(line.length(), max_column);
-			line=serverMessages.readLine();
-		}
-
-		state.init(tmpLines.size(), max_column);
-
-		for (String string : tmpLines) {
-			for (int i = 0; i < string.length(); i++) {
-				char chr = string.charAt( i );
-				if ( '+' == chr ) { // Walls
-					Node.walls[levelLines][i] = true;
-				} else if ( '0' <= chr && chr <= '9' ) { // Agents
-					int id =Integer.parseInt(chr+"");
-					if(!agents.stream().filter(a -> a.id == id).findAny().isPresent()){
-						//System.err.println("new Agent");
-						agents.add(new Agent(id));
-					}
-
-					state.agents[id][0]=levelLines;
-					state.agents[id][1]=i;
-
-				} else if ( 'A' <= chr && chr <= 'Z' ) { // Boxes
-					if(!colors.keySet().contains(chr)){
-						System.err.println(colors.keySet());
-						colors.put(chr, Color.noColor);
-					}
-					state.boxes[levelLines][i] = chr;
-				} else if ( 'a' <= chr && chr <= 'z' ) { // Goal cells
-					Node.goals[levelLines][i] = chr;
-				}
-			}
-			levelLines++;
-		}
-
 	}
 
 	public SearchClient(Node initialState, Agent agent) {
@@ -304,7 +207,7 @@ public class SearchClient {
 
 		// Read level and create the initial state of the problem
 		SearchClient client = new SearchClient( serverMessages );
-
+		System.err.println("level loaded");
 		//online planning loop
 		while(!client.state.isGoalState()){
 			

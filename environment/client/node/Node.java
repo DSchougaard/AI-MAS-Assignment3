@@ -31,10 +31,18 @@ public class Node implements NodeInterface, LevelInterface{
 		boxList.add(box);
 	}
 
+	private void boxMove(Box box, int row, int col){
+		boxesByPoint.remove(new Point(box.row, box.col));
+		box.row=row;
+		box.col=col;
+		
+		boxesByPoint.put(new Point(box.row, box.col),box);
+
+	}
 
 	// Agents
-	Agent[] agents;
-
+	public Agent[] agents;
+	public Agent agent;
 	
 	// history
 	public Node parent;
@@ -83,8 +91,9 @@ public class Node implements NodeInterface, LevelInterface{
 		return boxesByType.get(new Character(color));
 	}
 
-	public HashMap<Character, ArrayList<Box>> getAllBoxes(){
-		return this.boxesByType;
+	public Box[] getBoxes(){
+		
+		return (Box[]) boxesByType.values().toArray();
 	}
 
 	public boolean cellIsFree(int row, int col){
@@ -198,66 +207,66 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 
-//	public ArrayList< Node > getExpandedNodes(Agent agent) {
-//		ArrayList< Node > expandedNodes = new ArrayList< Node >( Command.every.length );
-//		for ( Command c : Command.every ) {
-//			// Determine applicability of action
-//			
-//			int newAgentRow = agents[agent.id][0] + dirToRowChange( c.dir1 );
-//			int newAgentCol = agents[agent.id][1] + dirToColChange( c.dir1 );
-//
-//			if ( c.actType == type.Move ) {
-//				// Check if there's a wall or box on the cell to which the agent is moving
-//				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
-//					
-//					Node n = this.ChildNode();
-//					n.action = c;
-//					n.agents[agent.id][0] = newAgentRow;
-//					n.agents[agent.id][1] = newAgentCol;
-//					expandedNodes.add( n );
-//					
-//				}
-//			} else if ( c.actType == type.Push ) {
-//				// Make sure that there's actually a box to move
-//				if ( boxAt( newAgentRow, newAgentCol ) && agent.color.equals(colors.get(boxes[newAgentRow][newAgentCol]))) {
-////				if ( boxAt( newAgentRow, newAgentCol ) ) {
-//					int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
-//					int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
-//					// .. and that new cell of box is free
-//					if ( cellIsFree( newBoxRow, newBoxCol ) ) {
-//
-//						Node n = this.ChildNode();
-//						n.action = c;
-//						n.agents[agent.id][0] = newAgentRow;
-//						n.agents[agent.id][1] = newAgentCol;
-//						
-//						n.boxes[newBoxRow][newBoxCol] = this.boxes[newAgentRow][newAgentCol];
-//						n.boxes[newAgentRow][newAgentCol] = 0;
-//						expandedNodes.add( n );
-//					}
-//				}
-//			} else if ( c.actType == type.Pull ) {
-//				// Cell is free where agent is going
-//				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
-//					int boxRow = agents[agent.id][0] + dirToRowChange( c.dir2 );
-//					int boxCol = agents[agent.id][1] + dirToColChange( c.dir2 );
-//					// .. and there's a box in "dir2" of the agent					
-//					if ( boxAt( boxRow, boxCol )  && agent.color == colors.get(boxes[boxRow][boxCol])) {
-//						Node n = this.ChildNode();
-//						n.action = c;
-//						n.agents[agent.id][0] = newAgentRow;
-//						n.agents[agent.id][1] = newAgentCol;
-//						n.boxes[agents[agent.id][0]][agents[agent.id][1]] = this.boxes[boxRow][boxCol];
-//						n.boxes[boxRow][boxCol] = 0;
-//						expandedNodes.add( n );
-//					}
-//				}
-//			}
-//		}
-//		Collections.shuffle( expandedNodes, rnd );
-//		
-//		return expandedNodes;
-//	}
+	public ArrayList< Node > getExpandedNodes() {
+		ArrayList< Node > expandedNodes = new ArrayList< Node >( Command.every.length );
+		for ( Command c : Command.every ) {
+			// Determine applicability of action
+			
+			int newAgentRow = agents[agent.id].row + dirToRowChange( c.dir1 );
+			int newAgentCol = agents[agent.id].col + dirToColChange( c.dir1 );
+			Box box;
+			if ( c.actType == type.Move ) {
+				// Check if there's a wall or box on the cell to which the agent is moving
+				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
+					
+					Node n = this.ChildNode();
+					n.action = c;
+					n.agents[agent.id].row = newAgentRow;
+					n.agents[agent.id].col = newAgentCol;
+					expandedNodes.add( n );
+					
+				}
+			} else if ( c.actType == type.Push ) {
+				// Make sure that there's actually a box to move
+				box = boxAt(newAgentRow, newAgentCol);
+				if ( box!=null && agent.color.equals(box.color)) {
+					int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
+					int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
+					// .. and that new cell of box is free
+					if ( cellIsFree( newBoxRow, newBoxCol ) ) {
+
+						Node n = this.ChildNode();
+						n.action = c;
+						n.agents[agent.id].row = newAgentRow;
+						n.agents[agent.id].col = newAgentCol;
+						
+						n.boxMove(box, newBoxRow, newBoxRow);
+
+						expandedNodes.add( n );
+					}
+				}
+			} else if ( c.actType == type.Pull ) {
+				// Cell is free where agent is going
+				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
+					int boxRow = agents[agent.id].row + dirToRowChange( c.dir2 );
+					int boxCol = agents[agent.id].col + dirToColChange( c.dir2 );
+					// .. and there's a box in "dir2" of the agent	
+					box = boxAt( boxRow, boxCol );
+					if ( box!= null  && agent.color == box.color) {
+						Node n = this.ChildNode();
+						n.action = c;
+						n.agents[agent.id].row = newAgentRow;
+						n.agents[agent.id].col = newAgentCol;
+						n.boxMove(box, agents[agent.id].row, agents[agent.id].col);
+						expandedNodes.add( n );
+					}
+				}
+			}
+		}
+		Collections.shuffle( expandedNodes, rnd );
+		
+		return expandedNodes;
+	}
 
 	private static int dirToRowChange( dir d ) { 
 		return ( d == dir.S ? 1 : ( d == dir.N ? -1 : 0 ) ); // South is down one row (1), north is up one row (-1)
@@ -269,8 +278,10 @@ public class Node implements NodeInterface, LevelInterface{
 
 	private Node ChildNode() {
 		//TODO:
+		Node child = new Node(parent);
 		
-		return null;
+		
+		return child;
 	}
 
 
@@ -316,9 +327,37 @@ public class Node implements NodeInterface, LevelInterface{
 
 		return true;
 	}
+	public int g() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+	@Override
+	public Box[] getAllBoxes() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+	@Override
+	public int distance(Base from, Base to) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+	public LinkedList<Node> extractPlan() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+	public Node excecuteCommands(ArrayList<Command> commands) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+	public Node CopyNode() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 
 
 
+	
+	
 	//TODO: toString()
 	//TODO: hashCode()
 	//TODO: equals(Object o)

@@ -12,7 +12,7 @@ public interface NodeInterface {
 	// Boxes
 	public Box boxAt(int row, int col);
 	public List<Box> getBoxes(char color);
-	public HashMap<Character, ArrayList<Box>> getAllBoxes();
+	public Box[] getAllBoxes();
 
 	// Agents
 	public Agent[] getAgents();

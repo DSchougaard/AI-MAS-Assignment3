@@ -1,7 +1,13 @@
 package client;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+
+import client.node.Node;
+import client.node.storage.Agent;
+import client.node.storage.Box;
+import client.node.storage.Goal;
 
 public abstract class Heuristic implements Comparator< Node > {
 
@@ -13,15 +19,6 @@ public abstract class Heuristic implements Comparator< Node > {
 	public Heuristic(Node initialState) {
 		this.initialState = initialState;
 
-		for (int i = 0; i < Node.MAX_COLUMN; i++) {
-			for (int j = 0; j < Node.MAX_ROW; j++) {
-				if(Character.isLetter(Node.goals[j][i])){
-					
-					goals.put(Node.goals[j][i], new Point(j,i));
-				}
-			
-			}
-		}
 		
 	}
 
@@ -35,16 +32,17 @@ public abstract class Heuristic implements Comparator< Node > {
 		if(tmpH==null){
 
 			int h=0;
-			for (int i = 0; i < Node.MAX_COLUMN; i++) {
-				for (int j = 0; j < Node.MAX_ROW; j++) {
-					if(Character.isLetter(n.boxes[j][i])){
-						if(Character.toLowerCase(n.boxes[j][i])!=Node.goals[j][i]){
-						
-							h+=goals.get(Character.toLowerCase(n.boxes[j][i])).dist(j, i)+Point.dist(j, i, n.agents[n.agent.id][0], n.agents[n.agent.id][1])-1;
-
-						}
-					}
+			ArrayList<Goal> goals= n.getAllGoals();
+			Box[] boxs= n.getBoxes();
+			
+			
+			for (Box box : boxs) {
+				Goal goal=n.getGoals(box.type).get(0);
+				if(goal.type == box.type){
+					h+=n.distance(box, goal)+n.distance(n.agent, goal);
 				}
+				
+				
 			}
 			hs.put(n, h);
 			return h;
@@ -54,14 +52,14 @@ public abstract class Heuristic implements Comparator< Node > {
 		
 	}
 
-	public abstract int f( Node n );
+	public abstract int f( Node n);
 
 	public static class AStar extends Heuristic {
 		public AStar(Node initialState) {
 			super( initialState );
 		}
 
-		public int f( Node n ) {
+		public int f( Node n) {
 			return n.g() + h( n );
 		}
 

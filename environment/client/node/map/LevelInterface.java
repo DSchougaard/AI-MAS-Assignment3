@@ -14,4 +14,5 @@ public interface LevelInterface {
 	boolean isWall(int row, int col);
 
 	int distance(int rowFrom, int colFrom, int rowTo, int colTo);
+	int distance(Base from, Base to);
 }

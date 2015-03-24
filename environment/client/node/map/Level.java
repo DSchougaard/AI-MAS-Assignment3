@@ -3,8 +3,8 @@ package client.node.map;
 
 import java.io.*;
 import java.util.*;
-
 import java.awt.Point;
+
 
 
 import client.node.storage.*;
@@ -147,6 +147,12 @@ public class Level implements LevelInterface{
 
 	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
 		return this.dm.distance(rowFrom, colFrom, rowTo, colTo);
+	}
+
+	@Override
+	public int distance(Base from, Base to) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
 
