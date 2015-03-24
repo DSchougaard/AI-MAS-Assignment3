@@ -7,36 +7,36 @@ import client.node.storage.*;
 
 public interface NodeInterface {
 	// Index query
-	Object WTF(int row, int col);
+	public Object WTF(int row, int col);
 
 	// Boxes
-	Box boxAt(int row, int col);
-	List<Box> getBoxes(char color);
-	HashMap<Character, ArrayList<Box>> getAllBoxes();
+	public Box boxAt(int row, int col);
+	public List<Box> getBoxes(char color);
+	public HashMap<Character, ArrayList<Box>> getAllBoxes();
 
 	// Agents
-	Agent[] getAgents();
-	Agent agentAt(int row, int col);
+	public Agent[] getAgents();
+	public Agent agentAt(int row, int col);
 
 	// Cells
-	boolean cellIsFree(int row, int col);
+	public boolean cellIsFree(int row, int col);
 
 	// Goals
-	/*
-	boolean isGoalState();
-	boolean isGoalState(Color color);
-	boolean isGoalState(Goal goal);
-	*/
+	
+	public boolean isGoalState();
+	//public boolean isGoalState(Color color);
+	//public boolean isGoalState(Goal goal);
+	
 
 	// Relaxation
 	/*
-	Node subdomain(Color color);
-	Node subdomain(Agent agent, Color color);
+	public Node subdomain(Color color);
+	public Node subdomain(Agent agent, Color color);
 	*/
 
 
 	// Search functions
-	// getExpandedNodes();
-	// extractPlan();
-	// boolean isGoalState();
+	// public getExpandedNodes();
+	// public extractPlan();
+	// public boolean isGoalState();
 }

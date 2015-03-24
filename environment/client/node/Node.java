@@ -90,7 +90,7 @@ public class Node implements NodeInterface, LevelInterface{
 
 	public Agent agentAt(int row, int col){
 		for( int i = 0 ; i < 10 ; i++ ){
-			if( this.agents[i].at(row, col) )
+			if( this.agents[i].isAt(row, col) )
 				return this.agents[i];
 		}
 		return null;
@@ -110,7 +110,7 @@ public class Node implements NodeInterface, LevelInterface{
 
 		// Check for agents
 		for( int i = 0; i < 10 ; i++ ){
-			if( agents[i].at(row, col) )
+			if( agents[i].isAt(row, col) )
 				return agents[i];
 		}
 
@@ -118,6 +118,20 @@ public class Node implements NodeInterface, LevelInterface{
 		return null;
 	}
 
+	public boolean isGoalState(){
+		ArrayList<Goal> goals = this.level.getAllGoals();
+
+		for( int i = 0 ; i < goals.size() ; i++ ){
+			Point p = goals.get(i).getPoint();
+			if( !this.boxesByPoint.containsKey(p) )
+				return false;
+
+			Box b = this.boxesByPoint.get(p);
+			if( b.type != goals.get(i).type )
+				return false;
+		}
+		return true;
+	}
 
 
 

@@ -1,5 +1,7 @@
 package client.node.storage; 
 
+import java.awt.Point;
+
 public class Base{
 	public int row, col;
 
@@ -8,8 +10,12 @@ public class Base{
 		this.col = col;
 	}
 
-	public boolean at(int row, int col){
+	public boolean isAt(int row, int col){
 		return ( this.row == row && this.col == col );
+	}
+
+	public Point getPoint(){
+		return new Point(this.row, this.col);
 	}
 
 	@Override
