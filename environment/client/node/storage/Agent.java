@@ -5,12 +5,12 @@ package client.node.storage;
 import client.node.Color;
 
 public class Agent extends Base{
-	public char name;
+	public int name;
 	public Color color;
 
 	public Agent(char name, Color color, int row, int col){
 		super(row, col);
-		this.name 	= name;
+		this.name 	= (int)name;
 		this.color 	= color;
 	}
 

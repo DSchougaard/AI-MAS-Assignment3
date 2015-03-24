@@ -20,6 +20,18 @@ public class Node implements NodeInterface, LevelInterface{
 	HashMap<Character, ArrayList<Box>> boxesByType;
 	HashMap<Point, Box> boxesByPoint;
 
+	private void boxRemove(Box box){
+		this.boxesByPoint.remove(new Point(box.row, box.col));
+		ArrayList<Box> boxList = boxesByType.get(box.type);
+		boxList.remove(box);
+	}
+	private void boxAdd(Box box){
+		this.boxesByPoint.put(new Point(box.row, box.col), box);
+		ArrayList<Box> boxList = boxesByType.get(box.type);
+		boxList.add(box);
+	}
+
+
 	// Agents
 	Agent[] agents;
 
