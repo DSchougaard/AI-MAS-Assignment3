@@ -3,22 +3,40 @@ package client.node;
 import java.awt.Point;
 import java.util.*;
 
-import client.node.Node.Box;
+import client.node.storage.*;
 
 public interface NodeInterface {
+	// Index query
+	public Object WTF(int row, int col);
+
 	// Boxes
-	Box boxAt(int row, int col);
-	List<Box> getBoxes(char color);
-	HashMap<Character, ArrayList<Box>> getAllBoxes();
+	public Box boxAt(int row, int col);
+	public List<Box> getBoxes(char color);
+	public HashMap<Character, ArrayList<Box>> getAllBoxes();
 
 	// Agents
-	List<Agent> getAgents();
+	public Agent[] getAgents();
+	public Agent agentAt(int row, int col);
 
 	// Cells
-	boolean cellIsFree(int row, int col);
+	public boolean cellIsFree(int row, int col);
+
+	// Goals
+	
+	public boolean isGoalState();
+	//public boolean isGoalState(Color color);
+	//public boolean isGoalState(Goal goal);
+	
+
+	// Relaxation
+	/*
+	public Node subdomain(Color color);
+	public Node subdomain(Agent agent, Color color);
+	*/
+
 
 	// Search functions
-	// getExpandedNodes();
-	// extractPlan();
-	// boolean isGoalState();
+	// public getExpandedNodes();
+	// public extractPlan();
+	// public boolean isGoalState();
 }
