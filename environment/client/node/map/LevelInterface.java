@@ -6,7 +6,9 @@ import java.util.*;
 public interface LevelInterface {
 
 	// Goals
-	ArrayList<Point> getGoals(char chr);
-	HashMap<Character, ArrayList<Point> > getAllGoals();
+	ArrayList<Goal> getGoals(char chr);
+	HashMap<Character, ArrayList<Goal> > getAllGoals();
 	boolean isWall(int row, int col);
+
+	int distance(int rowFrom, int colFrom, int rowTo, int colTo);
 }

@@ -105,4 +105,20 @@ public class Node implements NodeInterface, LevelInterface{
 
 
 
+
+
+
+
+
+
+
+	//TODO: toString()
+	//TODO: hashCode()
+	//TODO: equals(Object o)
+
+
+
+
+
+
 }
