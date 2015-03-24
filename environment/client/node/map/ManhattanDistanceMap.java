@@ -20,6 +20,10 @@ public class ManhattanDistanceMap extends DistanceMap{
 		return a.distance(b);
 	}
 
+	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
+		return (int)(new Point(rowFrom, colFrom)).distance( new Point(rowTo, colTo));
+	}
+	
 	public ManhattanDistanceMap(Level map){
 		for( int row = 0 ; row < map.getRow() ; row++ ){
 			for( int col = 0 ; col < map.getCol() ; col++ ){

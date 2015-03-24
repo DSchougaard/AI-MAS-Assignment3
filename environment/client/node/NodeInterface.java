@@ -3,7 +3,7 @@ package client.node;
 import java.awt.Point;
 import java.util.*;
 
-import client.node.Node.Box;
+import client.node.storage.*;
 
 public interface NodeInterface {
 	// Boxes
@@ -16,6 +16,14 @@ public interface NodeInterface {
 
 	// Cells
 	boolean cellIsFree(int row, int col);
+
+	// Goals
+	/*
+	boolean isGoalState();
+	boolean isGoalState(Color color);
+	boolean isGoalState(Goal goal);
+	*/
+
 
 	// Search functions
 	// getExpandedNodes();

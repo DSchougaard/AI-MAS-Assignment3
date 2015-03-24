@@ -7,6 +7,7 @@ import java.util.*;
 import java.awt.Point;
 
 
+import client.node.storage.*;
 
 
 /*
@@ -57,7 +58,7 @@ public class Level implements LevelInterface{
 
 	public enum Type { SPACE, WALL, GOAL, BOX, AGENT }
 
-	private HashMap<Character, ArrayList<Point> > goals;
+	private HashMap<Character, ArrayList<Goal> > goals;
 
 
 
@@ -70,34 +71,34 @@ public class Level implements LevelInterface{
 		this.maxRow 	= maxRow;
 
 		map 			= new Cell[maxCol][maxRow];
-		this.goals 		= new HashMap<Character, ArrayList<Point>>();
+		this.goals 		= new HashMap<Character, ArrayList<Goal>>();
 
 	}	
 
 	public Level(DistanceMap dmap){
-		this.goals 				= new HashMap<Character, ArrayList<Point> >();
+		this.goals 				= new HashMap<Character, ArrayList<Goal> >();
 		this.dm 				= dmap;
 	}
 
 
 	// Setup methods for the Level
-	public void addWall(int col, int row){
-		this.map[col][row] = new Cell(Type.WALL);
+	public void addWall(int row, int col){
+		this.map[row][col] = new Cell(Type.WALL);
 	}
 
-	public void addGoal(int col, int row, char letter){
-		this.map[col][row] = new Cell(Type.GOAL, letter);
+	public void addGoal(int row, int col, char letter){
+		this.map[row][col] = new Cell(Type.GOAL, letter);
 
 		if( !goals.containsKey(new Character(letter)) ){
-			goals.put( new Character(letter), new ArrayList<Point>() );
+			goals.put( new Character(letter), new ArrayList<Goal>() );
 		}
 
-		ArrayList<Point> tempGoals = goals.get( new Character(letter) );
-		tempGoals.add(new Point(col, row));
+		ArrayList<Goal> tempGoals = goals.get( new Character(letter) );
+		tempGoals.add(new Goal(letter, row, col));
 	}
 
-	public void addSpace(int col, int row){
-		this.map[col][row] = new Cell(Type.SPACE);
+	public void addSpace(int row, int col){
+		this.map[row][col]  = new Cell(Type.SPACE);
 	}
 
 
@@ -115,9 +116,9 @@ public class Level implements LevelInterface{
 	}
 
 
-	public char isGoal(int col, int row){
-		if( this.map[col][row].type == Type.GOAL )
-			return this.map[col][row].letter;
+	public char isGoal(int row, int col){
+		if( this.map[row][col] .type == Type.GOAL )
+			return this.map[row][col] .letter;
 
 		return '\0';
 	}
@@ -127,13 +128,17 @@ public class Level implements LevelInterface{
 	}
 
 
-	public ArrayList<Point> getGoals(char chr){
+	public ArrayList<Goal> getGoals(char chr){
 		return this.goals.get(new Character(chr));
 	}
 
 
-	public HashMap<Character, ArrayList<Point>> getAllGoals(){
+	public HashMap<Character, ArrayList<Goal>> getAllGoals(){
 		return this.goals;
+	}
+
+	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
+		return this.dm.distance(rowFrom, colFrom, rowTo, colTo);
 	}
 }
 

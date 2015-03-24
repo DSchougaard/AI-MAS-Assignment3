@@ -3,6 +3,8 @@ package client.node.map;
 import java.awt.Point;
 import java.util.*;
 
+import client.node.storage.*;
+
 public interface LevelInterface {
 
 	// Goals

@@ -7,37 +7,12 @@ import java.util.*;
 
 import client.node.map.*;
 
+import client.node.storage.*;
+
 public class Node implements NodeInterface, LevelInterface{
 
 
-
-	public class Box{
-		public char type;
-		public String color;
-		public int col, row;
-		public Box(char t, String color, int col, int row){ 
-			this.type = t;
-			this.color = color;
-			this.col = col;
-			this.row = row;
-		}
-	}
-
-	public class Agent{
-		public char name;
-		public String color;
-		public int col, row;
-		public Agent(char name, String color, int col, int row){
-			this.name 	= name;
-			this.color 	= color;
-			this.col 	= col;
-			this.row 	= row;
-		}
-	}
-
 	private Level level;
-
-
 	// Box DS
 	HashMap<Character, ArrayList<Box>> boxesByType;
 	HashMap<Point, Box> boxesByPoint;
@@ -89,13 +64,24 @@ public class Node implements NodeInterface, LevelInterface{
 		return this.boxesByType;
 	}
 
+	public boolean cellIsFree(int row, int col){
+		return false;
+	}
+
+	public ArrayList<Agent> getAgents(){
+		return new ArrayList<Agent>(this.agents.values());
+	}
+
+	public Box boxAt(int row, int col){
+		return this.boxesByPoint.get(new Point(row, col));
+	}
 
 	// Methods from LevelInterface. Parsed directly to LevelInterface.
-	public ArrayList<Point> getGoals(char chr){
+	public ArrayList<Goal> getGoals(char chr){
 		return null;
 	}
 
-	public HashMap<Character, ArrayList<Point>> getAllGoals(){
+	public HashMap<Character, ArrayList<Goal>> getAllGoals(){
 		return null;
 	}
 
@@ -103,10 +89,9 @@ public class Node implements NodeInterface, LevelInterface{
 		return this.level.isWall(row, col);
 	}
 
-
-
-
-
+	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
+		return this.level.distance(rowFrom, colFrom, rowTo, colTo);
+	}
 
 
 
