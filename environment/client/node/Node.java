@@ -118,9 +118,7 @@ public class Node implements NodeInterface, LevelInterface{
 		return null;
 	}
 
-	public boolean isGoalState(){
-		ArrayList<Goal> goals = this.level.getAllGoals();
-
+	private boolean calculateGoalState(ArrayList<Goal> goals){
 		for( int i = 0 ; i < goals.size() ; i++ ){
 			Point p = goals.get(i).getPoint();
 			if( !this.boxesByPoint.containsKey(p) )
@@ -132,6 +130,15 @@ public class Node implements NodeInterface, LevelInterface{
 		}
 		return true;
 	}
+
+	public isGoalState(){
+		return calculateGoalState(this.levgel.getAllGoals());
+	}
+
+	public isGoalState(Color color){
+
+	}
+
 
 
 
