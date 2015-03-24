@@ -198,7 +198,14 @@ public class SearchClient {
 
 			if ( strategy.frontierIsEmpty() ) {
 				System.err.println("empty");
-				return new LinkedList<>();
+				if(state.isGoalState()){
+					System.err.println("done");
+					return new LinkedList<>();
+				}else{
+					System.err.println("conflict");
+					return null;
+				}
+				
 //				return null;
 			}
 
@@ -231,7 +238,7 @@ public class SearchClient {
 		
 		int size=0;
 		for (int i = 0; i < solutions.size(); i++) {
-
+			System.err.println(solutions.get(i));
 			if(size<solutions.get(i).size()){
 				size=solutions.get(i).size();
 			}
@@ -241,13 +248,21 @@ public class SearchClient {
 		for (int i = 0; i < solution.length; i++) {
 			solution[i]="[";
 		}
-		
+//		System.err.println(solution.length);
+		boolean cut=false;
+		int cutIndex=0;
 		for (int i = 0; i < solutions.size(); i++) {
 
 			for (int k = 0; k < size; k++) {
 				if(k<solutions.get(i).size()){
-
-					solution[k]+=solutions.get(i).get(k).action.toString();
+					if(solutions.get(i).get(k).action.actType==Command.type.NoOp){
+						solution[k]+="NoOp";
+						cut=true;
+						cutIndex=k;
+					}else{
+						solution[k]+=solutions.get(i).get(k).action.toString();
+					}
+					
 				}else{
 					solution[k]+="NoOp";
 				}
@@ -256,6 +271,17 @@ public class SearchClient {
 				}
 
 			}
+		}
+		
+		if(cut){
+			System.err.println("-----------------");
+			System.err.println("cut "+cutIndex);
+			String tmp[]= new String[cutIndex+1];
+			tmp=Arrays.copyOfRange(solution, 0, cutIndex+1);
+			System.err.println(solution.length);
+			solution=tmp;
+			System.err.println("sol lenght "+solution.length);
+
 		}
 		for (int i = 0; i < solution.length; i++) {
 			solution[i]+="]";
@@ -283,27 +309,40 @@ public class SearchClient {
 		while(!client.state.isGoalState()){
 			
 			ArrayList< LinkedList< Node > > solutions = new ArrayList<LinkedList<Node>>();
-
+			boolean conflict=false;
 			Strategy strategy = null;
 			for (Agent agent : agents) {
 				System.err.println("agent "+agent.id+" planing");
 				SearchClient agentClient = new SearchClient( client.state, agent );
-				strategy = new StrategyBestFirst( new Greedy( agentClient.state ) );
-				solutions.add(agentClient.Search( strategy ));
-				
-				
-				//			Node AgentInitialState= modAgentIntialState(client.state, agent);
-				//			strategy = new StrategyBestFirst( new AStar( AgentInitialState) );
-				//			strategy = new StrategyBestFirst( new WeightedAStar( AgentInitialState ) );
 //				strategy = new StrategyBestFirst( new Greedy( agentClient.state ) );
-//				solutions.add(client.Search( strategy ));
-				//			System.err.println(solutions.get(solutions.size()-1));
-				//			System.err.println("-----------------------------------------------------");
+				strategy = new StrategyBestFirst( new AStar( agentClient.state ) );
+				LinkedList< Node > sol=agentClient.Search( strategy );
+				
+				if(sol==null){
+					System.err.println("conflict!!!");
+					conflict=true;
+					agent.conflict=true;
+					//what is the problem
+//						agent / agent with box
+//						box
+					sol = new LinkedList<Node>();
+					agentClient.state.action=new Command();
+					sol.add(agentClient.state);
+//					System.exit(0);
+				}
+				solutions.add(sol);
 
 			}
-
+//			
+//			if( conflict){
+//				
+//				solutions=Conflict.solve(solutions, agents);
+//				System.err.println("!!!!!!!!!!!"+solutions.size());
+//			}
+//			
+			
 			String[] solution = mergePlans(solutions);
-
+	
 
 			if ( solution.length == 0 ) {
 				System.err.println( "Unable to solve level" );

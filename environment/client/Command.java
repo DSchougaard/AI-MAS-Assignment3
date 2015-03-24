@@ -39,7 +39,7 @@ public class Command {
 	};
 	
 	public static enum type {
-		Move, Push, Pull
+		Move, Push, Pull, NoOp
 	};
 
 	public final type actType;
@@ -51,6 +51,13 @@ public class Command {
 		dir1 = d;
 		dir2 = null;
 	}
+	
+	public Command(  ) {
+		actType = type.NoOp;
+		dir1 = null;
+		dir2 = null;
+	}
+
 
 	public Command( type t, dir d1, dir d2 ) {
 		actType = t;
