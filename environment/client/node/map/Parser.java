@@ -22,7 +22,7 @@ public class Parser{
 		this.in = in;
 	}
 
-	public void parse() throws IOException{
+	Node parse() throws IOException{
 		Map< Character, Color > colors = new HashMap< Character, Color >();
 		String line, color;
 		ArrayList<String> tempMapContainer = new ArrayList<String>();
@@ -82,5 +82,7 @@ public class Parser{
 				}
 			}
 		}
+
+		return node;
 	}
 }
