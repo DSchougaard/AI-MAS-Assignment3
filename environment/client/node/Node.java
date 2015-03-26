@@ -269,7 +269,7 @@ public class Node implements NodeInterface, LevelInterface{
 						n.agents[agent.id].row = newAgentRow;
 						n.agents[agent.id].col = newAgentCol;
 						
-						n.boxMove(box, newBoxRow, newBoxRow);
+						n.boxMove(box, newBoxRow, newBoxCol);
 
 						expandedNodes.add( n );
 					}
@@ -404,7 +404,9 @@ public class Node implements NodeInterface, LevelInterface{
 				copy.agents[i]=new Agent(this.agents[i]);
 			}
 		}
-		this.boxesByPoint.values().forEach(box ->copy.boxAdd(box));
+		
+		this.boxesByPoint.values().forEach(box ->copy.boxAdd(new Box(box)));
+
 		copy.g=this.g;
 		copy.parent=this.parent;
 		if(this.agent!= null){
@@ -427,9 +429,10 @@ public class Node implements NodeInterface, LevelInterface{
 		case Push:
 			int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
 			int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
-
+			System.err.println("Agent "+ agents[agentID].row+" "+agents[agentID].col);
 			agents[agentID].row = newAgentRow;
 			agents[agentID].col = newAgentCol;
+			System.err.println("Agent "+ agents[agentID].row+" "+agents[agentID].col);
 			boxMove(boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
 			
 			break;

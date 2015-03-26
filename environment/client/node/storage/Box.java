@@ -19,6 +19,12 @@ public class Box extends Base{
 		
 	}
 
+	public Box(Box box) {
+		super(box.row, box.col);
+		this.color=box.color;
+		this.type=box.type;
+	}
+
 	@Override
 	public boolean equals( Object obj ) {
 		if( getClass() != obj.getClass() )

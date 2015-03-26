@@ -34,11 +34,24 @@ public class Agent extends Base{
 
 	@Override
 	public boolean equals( Object obj ) {
-		if( getClass() != obj.getClass() )
+		if( getClass() != obj.getClass() ){
 			return false;
-		super.equals( obj );
+		}
+			
+		if(!super.equals( obj )){
+			return false;
+		}
 
 		Agent b = (Agent)obj;
 		return ( this.id == b.id && this.color == b.color );
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + super.hashCode();
+		result = prime * result + this.id;
+		return result;
 	}
 }

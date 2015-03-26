@@ -26,5 +26,13 @@ public class Base{
 		return ( this.row == b.row && this.col == b.col );
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.row;
+		result = prime * result + this.col;
+		return result;
+	}
 
 }
