@@ -26,14 +26,11 @@ public interface NodeInterface {
 	public boolean isGoalState(Color color);
 	public boolean isGoalState(Goal goal);
 	
-
 	// Relaxation
 	public Node subdomain(Color color);
 	public Node subdomain(ArrayList<Agent> agents);
 	public Node subdomain(Color color, Agent agent);
 	
-
-
 	// Search functions
 	// public getExpandedNodes();
 	// public extractPlan();
