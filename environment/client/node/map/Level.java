@@ -9,7 +9,7 @@ import java.awt.Point;
 
 
 import client.node.storage.*;
-
+import client.node.Color;
 
 /*
 	@author: Daniel Schougaard
@@ -60,6 +60,7 @@ public class Level implements LevelInterface{
 	public enum Type { SPACE, WALL, GOAL, BOX, AGENT }
 
 	private HashMap<Character, ArrayList<Goal> > goals;
+	private HashMap<Color, Character> goalTypeByColor;
 
 
 
@@ -74,15 +75,16 @@ public class Level implements LevelInterface{
 		map 			= new Cell[maxRow][maxCol];
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[0].length; j++) {
-				map[i][j]=new Cell(Type.SPACE);
+				map[i][j] = new Cell(Type.SPACE);
 			}
 		}
-		this.goals 		= new HashMap<Character, ArrayList<Goal>>();
-
+		this.goals 				= new HashMap<Character, ArrayList<Goal>>();
+		this.goalTypeByColor 	= new HashMap<Color, Character>();
 	}	
 
 	public Level(DistanceMap dmap){
 		this.goals 				= new HashMap<Character, ArrayList<Goal> >();
+		this.goalTypeByColor 	= new HashMap<Color, Character>();
 		this.dm 				= dmap;
 	}
 
@@ -105,6 +107,10 @@ public class Level implements LevelInterface{
 
 	public void addSpace(int row, int col){
 		Level.map[row][col]  = new Cell(Type.SPACE);
+	}
+
+	public void addColor(char letter, Color color){
+		goalTypeByColor.put(color, new Character(letter));
 	}
 
 
@@ -152,6 +158,14 @@ public class Level implements LevelInterface{
 			returnGoals.addAll(this.goals.get(c));
 		}
 		return returnGoals;
+	}
+
+	public ArrayList<Goal> getGoalsByColor(Color color){
+		if( !this.goalTypeByColor.containsKey(color) )
+			return null;
+		if( !this.goals.containsKey(this.goalTypeByColor.get(color)) )
+			return null;
+		return this.goals.get(this.goalTypeByColor.get(color));
 	}
 
 	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){

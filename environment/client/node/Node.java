@@ -177,23 +177,8 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	public boolean isGoalState(Color color){
-		//N.B. kinda inefficient.
-
-		// Finds all chars which is asscociated with that color
-		ArrayList<Character> chars = new ArrayList<Character>();
-		for( Box b : this.boxesByPoint.values() ){
-			if( b.color == color )
-				chars.add(new Character(b.type));
-		}
-
-		ArrayList<Goal> goals = new ArrayList<Goal>();
-		// Retrieves all goals from the set of chars, which is of a specific color
-		for( Character c : chars ){
-			goals.addAll( this.level.getGoals(c.charValue()) );
-		}
-
 		// GoalEval on the reduced subset of goals
-		return internalGoalEval(goals);
+		return internalGoalEval( this.getGoalsByColor(color) );
 	}
 
 	public boolean isGoalState(Goal goal){
@@ -273,6 +258,11 @@ public class Node implements NodeInterface, LevelInterface{
 	public ArrayList<Goal> getGoals(char chr){
 		return this.level.getGoals(chr);
 	}
+
+	public ArrayList<Goal> getGoalsByColor(Color color){
+		return this.level.getGoalsByColor(color);
+	}
+ 
 
 	public HashMap<Character, ArrayList<Goal>> getGoalMap(){
 		return this.level.getGoalMap();
