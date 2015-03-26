@@ -4,7 +4,7 @@ package client.node.map;
 import java.util.*;
 import java.awt.Point;
 
-public class ManhattanDistanceMapWithCache{
+public class ManhattanDistanceMapWithCache extends DistanceMap{
 
 	private HashMap<Point, HashMap<Point, Integer> > cache;
 	private BasicManhattanDistanceMap dm;

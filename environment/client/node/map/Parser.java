@@ -47,7 +47,7 @@ public class Parser{
 		maxRow = tempMapContainer.size();
 
 		// Create the data structures for the bookkeeping
-		Level level = new Level(maxRow, maxCol);
+		Level level = new Level(maxRow, maxCol, new ManhattanDistanceMapWithCache());
 		Node node = new Node(level);
 
 

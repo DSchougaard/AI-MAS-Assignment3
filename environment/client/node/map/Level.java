@@ -68,10 +68,9 @@ public class Level implements LevelInterface{
 
 
 	// Constructor
-	public Level(int maxRow, int maxCol){
+	public Level(int maxRow, int maxCol, DistanceMap dm){
 		this.maxCol 	= maxCol;
 		this.maxRow 	= maxRow;
-
 		map 			= new Cell[maxRow][maxCol];
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[0].length; j++) {
@@ -80,13 +79,8 @@ public class Level implements LevelInterface{
 		}
 		this.goals 				= new HashMap<Character, ArrayList<Goal>>();
 		this.goalTypeByColor 	= new HashMap<Color, Character>();
+		this.dm 				= dm;
 	}	
-
-	public Level(DistanceMap dmap){
-		this.goals 				= new HashMap<Character, ArrayList<Goal> >();
-		this.goalTypeByColor 	= new HashMap<Color, Character>();
-		this.dm 				= dmap;
-	}
 
 
 	// Setup methods for the Level

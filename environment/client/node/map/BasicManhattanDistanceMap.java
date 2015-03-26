@@ -1,14 +1,16 @@
 package client.node.map;
 
 import client.node.map.DistanceMap;
-import client.node.map.Level.Cell;
+import client.node.map.Level;
 
 import java.awt.Point;
 
 
 public class BasicManhattanDistanceMap extends DistanceMap{
 
-	public BasicManhattanDistanceMap(){ ; }
+	public BasicManhattanDistanceMap(){
+
+	}
 
 
 	private class KeyWrapper{
