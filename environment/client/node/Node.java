@@ -41,7 +41,6 @@ public class Node implements NodeInterface, LevelInterface{
 		box.col=col;
 		
 		boxesByPoint.put(new Point(box.row, box.col),box);
-
 	}
 
 	// Agents
@@ -57,7 +56,6 @@ public class Node implements NodeInterface, LevelInterface{
 	
 	
 	public Node(){
-		
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
 		agents 			= new Agent[10];
@@ -66,7 +64,6 @@ public class Node implements NodeInterface, LevelInterface{
 	
 	public Node(Level level){
 		this.level = level;
-
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
 		agents 			= new Agent[10];
@@ -184,6 +181,34 @@ public class Node implements NodeInterface, LevelInterface{
 				return false;
 
 			Box b = this.boxesByPoint.get(p);
+			if( b.type != goals.get(i).type )
+				return false;
+		}
+		return true;
+	}
+
+	public boolean isGoalState(Color color){
+		ArrayList<Character> chars = new ArrayList<Character>();
+		for( Box b : this.boxesByPoint.values() ){
+			if( b.color == color )
+				chars.add(new Character(b.type));
+		}
+
+		ArrayList<Goal> goals = new ArrayList<Goal>();
+		for( Character c : chars ){
+			goals.addAll( this.level.getGoals(c.charValue()) );
+		}
+
+		return internalGoalEval(goals);
+
+	}
+
+	public boolean internalGoalEval(ArrayList<Goal> goals){
+		for( int i = 0 ; i < goals.size() ; i++ ){
+			Point p = goals.get(i).getPoint();
+			if( !this.boxesByPoint.containsKey(p) )
+				return false;
+			Box b = this.boxesByPoint.get(i);
 			if( b.type != goals.get(i).type )
 				return false;
 		}
