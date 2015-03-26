@@ -188,7 +188,7 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	public boolean isGoalState(Goal goal){
-		return ( this.boxesByPoint.containsKey( goal.getPoint() ) && this.boxesByPoint.get( goal.getPoint() ).type == goal.type );
+		return ( this.boxesByPoint.containsKey( goal.getPoint() ) && this.boxesByPoint.get( goal.getPoint() ).getType() == goal.type );
 	}
 
 	public boolean internalGoalEval(ArrayList<Goal> goals){
