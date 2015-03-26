@@ -196,14 +196,11 @@ public class Node implements NodeInterface, LevelInterface{
 			Point p = goals.get(i).getPoint();
 			if( !this.boxesByPoint.containsKey(p) )
 				return false;
-<<<<<<< HEAD
+
 
 			Box b = this.boxesByPoint.get(p);
 			if( b.getType() != goals.get(i).type )
-=======
-			Box b = this.boxesByPoint.get(i);
-			if( b.type != goals.get(i).type )
->>>>>>> 91be6c1928ea4f80975b06bceff3ae3132f271f0
+
 				return false;
 		}
 		return true;
