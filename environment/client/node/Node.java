@@ -1,6 +1,5 @@
 package client.node;
 
-
 import java.awt.Point;
 import java.io.*;
 import java.util.*;
@@ -8,6 +7,7 @@ import java.util.*;
 import client.Command;
 import client.Command.dir;
 import client.Command.type;
+
 import client.node.map.*;
 import client.node.storage.*;
 import client.node.Color;
@@ -34,7 +34,6 @@ public class Node implements NodeInterface, LevelInterface{
 		}
 		boxList.add(box);
 	}
-
 	private void boxMove(Box box, int row, int col){
 		boxesByPoint.remove(new Point(box.row, box.col));
 		box.row=row;
@@ -47,11 +46,10 @@ public class Node implements NodeInterface, LevelInterface{
 	public Agent[] agents;
 	public Agent agent;
 	
-	// history
+	// History
 	public Node parent;
 	public ArrayList<Command> actions= new ArrayList<>();
 	public Command action;
-	
 	private int g;
 	
 	
@@ -174,20 +172,14 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	public boolean isGoalState(){
-		ArrayList<Goal> goals = this.level.getAllGoals();
-		for( int i = 0 ; i < goals.size() ; i++ ){
-			Point p = goals.get(i).getPoint();
-			if( !this.boxesByPoint.containsKey(p) )
-				return false;
-
-			Box b = this.boxesByPoint.get(p);
-			if( b.type != goals.get(i).type )
-				return false;
-		}
-		return true;
+		return internalGoalEval(this.level.getAllGoals());
+	
 	}
 
 	public boolean isGoalState(Color color){
+		//N.B. kinda inefficient.
+
+		// Finds all chars which is asscociated with that color
 		ArrayList<Character> chars = new ArrayList<Character>();
 		for( Box b : this.boxesByPoint.values() ){
 			if( b.color == color )
@@ -195,12 +187,17 @@ public class Node implements NodeInterface, LevelInterface{
 		}
 
 		ArrayList<Goal> goals = new ArrayList<Goal>();
+		// Retrieves all goals from the set of chars, which is of a specific color
 		for( Character c : chars ){
 			goals.addAll( this.level.getGoals(c.charValue()) );
 		}
 
+		// GoalEval on the reduced subset of goals
 		return internalGoalEval(goals);
+	}
 
+	public boolean isGoalState(Goal goal){
+		return ( this.boxesByPoint.containsKey( goal.getPoint() ) && this.boxesByPoint.get( goal.getPoint() ).type == goal.type );
 	}
 
 	public boolean internalGoalEval(ArrayList<Goal> goals){
@@ -216,9 +213,42 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 
+	public Node subdomain(Color color){
+		Node subdomainNode = new Node(this.level);
+		// Determine which agents falls within the color
+		for( int i = 0 ; i < this.agents.length ; i++ ){
+			if( this.agents[i].color == color )
+				subdomainNode.agents[i] = new Agent(this.agents[i]);
+		}
+		for( Box b : this.boxesByPoint.values() ){
+			if( b.color == color )
+				subdomainNode.boxAdd(b);
+		}
+		return subdomainNode;
+	}
 
+	public Node subdomain(ArrayList<Agent> agents){
+		Node subdomainNode = new Node(this.level);
+		for( Agent a : agents ){
+			subdomainNode.agents[a.id] = new Agent(a);
+		}
+		for( Box b  : this.boxesByPoint.values() ){
+			for( Agent a : agents ){
+				if( a.color == b.color )
+					subdomainNode.boxAdd(b);
+			}
+		}
+		return subdomainNode;
+	}
 
+	public Node subdomain(Color color, Agent agent){
+		if( agent.color != color )
+			return null;
 
+		ArrayList<Agent> a = new ArrayList<Agent>();
+		a.add(agent);
+		return subdomain(a);
+	}
 
 
 
