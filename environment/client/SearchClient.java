@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import client.Command.dir;
+import client.Command.type;
 import client.Heuristic.AStar;
 import client.Strategy.StrategyBestFirst;
 import client.node.Color;
@@ -60,7 +62,7 @@ public class SearchClient {
 
 	public Node state = null;
 	
-	private static List< Agent > agents = new ArrayList< Agent >();
+	public List< Agent > agents = new ArrayList< Agent >();
 
 	public SearchClient( BufferedReader serverMessages ) throws Exception {
 		
@@ -180,7 +182,6 @@ public class SearchClient {
 
 
 
-
 	public static void main( String[] args ) throws Exception {
 		BufferedReader serverMessages = new BufferedReader( new InputStreamReader( System.in ) );
 
@@ -198,7 +199,7 @@ public class SearchClient {
 			ArrayList< LinkedList< Node > > solutions = new ArrayList<LinkedList<Node>>();
 			boolean conflict=false;
 			Strategy strategy = null;
-			for (Agent agent : agents) {
+			for (Agent agent : client.agents) {
 				System.err.println("agent "+agent.id+" planing");
 				SearchClient agentClient = new SearchClient( client.state, agent );
 //				strategy = new StrategyBestFirst( new Greedy( agentClient.state ) );
@@ -225,7 +226,7 @@ public class SearchClient {
 			
 			if( conflict){
 				
-				solutions=Conflict.solve(solutions, agents);
+				solutions=Conflict.solve(solutions, client.agents);
 				System.err.println("!!!!!!!!!!!"+solutions.size());
 			}
 			

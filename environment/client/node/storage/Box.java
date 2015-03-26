@@ -5,12 +5,12 @@ package client.node.storage;
 import client.node.Color;
 
 public class Box extends Base{
-	public char type;
+	private char type;
 	public Color color;
 
 	public Box(char t, Color color, int row, int col){ 
 		super(row, col);
-		this.type = Character.toLowerCase(t);
+		this.setType(t);
 		if(color==null){
 			this.color = Color.noColor;
 		}else{
@@ -22,7 +22,7 @@ public class Box extends Base{
 	public Box(Box box) {
 		super(box.row, box.col);
 		this.color=box.color;
-		this.type=box.type;
+		this.setType(box.getType());
 	}
 
 	@Override
@@ -32,6 +32,14 @@ public class Box extends Base{
 		super.equals( obj );
 
 		Box b = (Box)obj;
-		return ( this.type == b.type && this.color == b.color );
+		return ( this.getType() == b.getType() && this.color == b.color );
+	}
+
+	public char getType() {
+		return type;
+	}
+
+	public void setType(char type) {
+		this.type = Character.toLowerCase(type);
 	}
 }

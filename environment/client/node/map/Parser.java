@@ -24,10 +24,9 @@ public class Parser{
 		/*
 		Skeleton code borrowed from example
 		*/
-		System.err.println("parsing");
 		// Read lines specifying colors
 		while ( ( line = in.readLine() ).matches( "^[a-z]+:\\s*[0-9A-Z](,\\s*[0-9A-Z])*\\s*$" ) ) {
-			System.err.println(line);
+		
 			line = line.replaceAll( "\\s", "" );
 			color = line.split( ":" )[0];
 
@@ -37,11 +36,11 @@ public class Parser{
 
 		// Read lines specifying level layout
 		int maxCol = 0, maxRow = 0;
-		while ( !line.equals( "" ) ) {
+		while (line!=null && !line.equals( "" ) ) {
 			if( line.length() > maxCol ){
 				maxCol = line.length();
 			}
-			System.err.println(line);
+//			System.err.println(line);
 			tempMapContainer.add(line);
 			line=in.readLine();
 		}

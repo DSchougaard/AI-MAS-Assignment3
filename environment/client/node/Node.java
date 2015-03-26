@@ -2,15 +2,23 @@ package client.node;
 
 
 import java.awt.Point;
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Random;
 
 import client.Command;
 import client.Command.dir;
 import client.Command.type;
-import client.node.map.*;
-import client.node.storage.*;
-import client.node.Color;
+import client.node.map.Level;
+import client.node.map.LevelInterface;
+import client.node.storage.Agent;
+import client.node.storage.Base;
+import client.node.storage.Box;
+import client.node.storage.Goal;
 
 public class Node implements NodeInterface, LevelInterface{
 
@@ -22,15 +30,15 @@ public class Node implements NodeInterface, LevelInterface{
 
 	private void boxRemove(Box box){
 		this.boxesByPoint.remove(new Point(box.row, box.col));
-		ArrayList<Box> boxList = boxesByType.get(box.type);
+		ArrayList<Box> boxList = boxesByType.get(box.getType());
 		boxList.remove(box);
 	}
 	private void boxAdd(Box box){
 		this.boxesByPoint.put(new Point(box.row, box.col), box);
-		ArrayList<Box> boxList = boxesByType.get(box.type);
+		ArrayList<Box> boxList = boxesByType.get(box.getType());
 		if(boxList==null){
 			boxList= new ArrayList<>();
-			boxesByType.put(box.type, boxList);
+			boxesByType.put(box.getType(), boxList);
 		}
 		boxList.add(box);
 	}
@@ -94,12 +102,13 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	public void addBox(char type, Color color, int row, int col){
-		if( !boxesByType.containsKey( type ) ){
-			boxesByType.put( new Character(type), new ArrayList<Box>() );
+		Box newBox = new Box(type, color, row, col);
+		if( !boxesByType.containsKey( newBox.getType() ) ){
+			boxesByType.put( newBox.getType(), new ArrayList<Box>() );
 		}
 
-		Box newBox = new Box(type, color, row, col);
-		ArrayList<Box> boxSet = boxesByType.get(new Character(type));
+		
+		ArrayList<Box> boxSet = boxesByType.get(newBox.getType());
 		boxSet.add(newBox);
 
 		boxesByPoint.put( new Point(row, col), newBox);
@@ -184,7 +193,7 @@ public class Node implements NodeInterface, LevelInterface{
 				return false;
 
 			Box b = this.boxesByPoint.get(p);
-			if( b.type != goals.get(i).type )
+			if( b.getType() != goals.get(i).type )
 				return false;
 		}
 		return true;
@@ -248,12 +257,15 @@ public class Node implements NodeInterface, LevelInterface{
 				// Check if there's a wall or box on the cell to which the agent is moving
 				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
 					
-					Node n = this.ChildNode();
+					Node n = ChildNode();
+					System.err.println("move "+boxAt(1, 2));
+					System.err.println(n);
+					System.err.println(this);
 					n.action = c;
 					n.agents[agent.id].row = newAgentRow;
 					n.agents[agent.id].col = newAgentCol;
 					expandedNodes.add( n );
-					
+					System.err.println("move "+n.boxAt(1, 2));
 				}
 			} else if ( c.actType == type.Push ) {
 				// Make sure that there's actually a box to move
@@ -263,17 +275,26 @@ public class Node implements NodeInterface, LevelInterface{
 					int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
 					// .. and that new cell of box is free
 					if ( cellIsFree( newBoxRow, newBoxCol ) ) {
-
+						
 						Node n = this.ChildNode();
+//						System.err.println("move3 "+n.boxAt(1, 2));
 						n.action = c;
 						n.agents[agent.id].row = newAgentRow;
 						n.agents[agent.id].col = newAgentCol;
 						
-						n.boxMove(box, newBoxRow, newBoxCol);
 
+						n.boxMove(box, newBoxRow, newBoxCol);
+//						System.err.println("move3 "+n.boxAt(1, 2));
 						expandedNodes.add( n );
+						
 					}
+					
+
 				}
+				
+
+
+
 			} else if ( c.actType == type.Pull ) {
 				// Cell is free where agent is going
 				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
@@ -282,11 +303,15 @@ public class Node implements NodeInterface, LevelInterface{
 					// .. and there's a box in "dir2" of the agent	
 					box = boxAt( boxRow, boxCol );
 					if ( box!= null  && agent.color == box.color) {
+						
 						Node n = this.ChildNode();
+						System.err.println("move2 "+n.boxAt(1, 2));
 						n.action = c;
 						n.agents[agent.id].row = newAgentRow;
 						n.agents[agent.id].col = newAgentCol;
+	
 						n.boxMove(box, agents[agent.id].row, agents[agent.id].col);
+						System.err.println("move2 "+n.boxAt(1, 2));
 						expandedNodes.add( n );
 					}
 				}
@@ -332,6 +357,8 @@ public class Node implements NodeInterface, LevelInterface{
 			return false;
 		if ( getClass() != obj.getClass() )
 			return false;
+		
+		
 		Node other = (Node) obj;
 	
 		if( !Arrays.equals(this.agents, other.agents) )
@@ -344,13 +371,14 @@ public class Node implements NodeInterface, LevelInterface{
 			if( !boxesByPoint.get(p).equals( other.boxesByPoint.get(p) ) )
 				return false;
 		}
-
-		if( !this.boxesByType.keySet().equals( other.boxesByType.keySet() ) )
+		if( !this.boxesByType.keySet().equals( other.boxesByType.keySet() ) ){
 			return false;
+		}
 
 		for( Character c : boxesByType.keySet() ){
-			if( !this.boxesByType.get(c).equals( other.boxesByType ) )
+			if( !this.boxesByType.get(c).equals( other.boxesByType.get(c) ) ){	
 				return false;
+			}
 		}
 
 
@@ -362,9 +390,8 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 	
 	@Override
-	public Box[] getAllBoxes() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+	public HashMap<Character, ArrayList<Box>> getAllBoxes() {
+		return boxesByType;
 	}
 	@Override
 	public int distance(Base from, Base to) {
@@ -395,44 +422,23 @@ public class Node implements NodeInterface, LevelInterface{
 		return child;
 		
 	}
-	
-	public Node CopyNode() {
-		Node copy= new Node();
-		copy.level=this.level;
-		for (int i = 0; i < agents.length; i++) {
-			if(this.agents[i]!=null){
-				copy.agents[i]=new Agent(this.agents[i]);
-			}
-		}
-		
-		this.boxesByPoint.values().forEach(box ->copy.boxAdd(new Box(box)));
 
-		copy.g=this.g;
-		copy.parent=this.parent;
-		if(this.agent!= null){
-			copy.agent=new Agent(this.agent);
-		}
-		return copy;
-	}
 
 	private void excecuteCommand(int agentID, Command c){
 		actions.add(c);
 		int newAgentRow = agents[agentID].row + dirToRowChange( c.dir1 );
 		int newAgentCol = agents[agentID].col + dirToColChange( c.dir1 );
-
 		switch (c.actType) {
 		case Move:
-			
 			agents[agentID].row = newAgentRow;
 			agents[agentID].col = newAgentCol;
 			break;
 		case Push:
 			int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
 			int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
-			System.err.println("Agent "+ agents[agentID].row+" "+agents[agentID].col);
+//			System.err.println("Agent "+ agents[agentID].row+" "+agents[agentID].col);
 			agents[agentID].row = newAgentRow;
 			agents[agentID].col = newAgentCol;
-			System.err.println("Agent "+ agents[agentID].row+" "+agents[agentID].col);
 			boxMove(boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
 			
 			break;
@@ -454,18 +460,36 @@ public class Node implements NodeInterface, LevelInterface{
 
 		
 	}
+	
+	public Node CopyNode() {
+		Node copy= new Node();
+		copy.level=this.level;
+		for (int i = 0; i < agents.length; i++) {
+			if(this.agents[i]!=null){
+				copy.agents[i]=new Agent(this.agents[i]);
+			}
+		}
+		
+		this.boxesByPoint.values().forEach(box ->copy.boxAdd(new Box(box)));
+
+		copy.g=this.g;
+		copy.parent=this.parent;
+		if(this.agent!= null){
+			copy.agent=new Agent(this.agent);
+		}
+		return copy;
+	}
 	public String toString(){
 		Character[][] map=level.toArray();
 		for (int i = 0; i < agents.length; i++) {
 			if(agents[i]!=null){
 				map[agents[i].row][agents[i].col]= (char) ((int)'0'+agents[i].id);
-				System.err.println("agent "+agents[i].row+" "+agents[i].col);
 			}
 		}
 		
-		getBoxes().forEach(box-> map[box.row][box.col]=Character.toUpperCase(box.type));
+		getBoxes().forEach(box-> map[box.row][box.col]=Character.toUpperCase(box.getType()));
 		
-		getBoxes().forEach(box-> System.err.println("box "+box.row+" "+box.col));
+//		getBoxes().forEach(box-> System.err.println("box "+box.row+" "+box.col));
 		StringBuilder s = new StringBuilder();
 		s.append("\n");
 		for (int i = 0; i < map.length; i++) {
@@ -478,11 +502,6 @@ public class Node implements NodeInterface, LevelInterface{
 		return s.toString();
 	}
 	
-	
-	//TODO: toString()
-	//TODO: hashCode()
-	//TODO: equals(Object o)
-
 
 
 

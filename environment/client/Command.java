@@ -63,6 +63,7 @@ public class Command {
 		actType = t;
 		dir1 = d1;
 		dir2 = d2;
+		
 	}
 
 	public String toString() {
@@ -75,6 +76,16 @@ public class Command {
 
 	public String toActionString() {
 		return "[" + this.toString() + "]";
+	}
+	
+	@Override
+	public boolean equals( Object obj ) {
+		if( getClass() != obj.getClass() ){
+			return false;
+		}
+		
+		return this.toString().equals(obj.toString());
+		
 	}
 
 }

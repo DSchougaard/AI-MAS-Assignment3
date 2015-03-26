@@ -36,8 +36,8 @@ public abstract class Heuristic implements Comparator< Node > {
 			
 			
 			for (Box box : boxs) {
-				Goal goal=n.getGoals(box.type).get(0);
-				if(goal.type == box.type){
+				Goal goal=n.getGoals(box.getType()).get(0);
+				if(goal.type == box.getType()){
 					h+=n.distance(box, goal)+n.distance(n.agent, goal);
 				}
 				
