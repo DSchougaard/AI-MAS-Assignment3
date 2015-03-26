@@ -1,6 +1,5 @@
 package client.node;
 
-
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,12 +12,10 @@ import java.util.Random;
 import client.Command;
 import client.Command.dir;
 import client.Command.type;
-import client.node.map.Level;
-import client.node.map.LevelInterface;
-import client.node.storage.Agent;
-import client.node.storage.Base;
-import client.node.storage.Box;
-import client.node.storage.Goal;
+import client.node.map.*;
+import client.node.storage.*;
+import client.node.Color;
+
 
 public class Node implements NodeInterface, LevelInterface{
 
@@ -42,30 +39,26 @@ public class Node implements NodeInterface, LevelInterface{
 		}
 		boxList.add(box);
 	}
-
 	private void boxMove(Box box, int row, int col){
 		boxesByPoint.remove(new Point(box.row, box.col));
 		box.row=row;
 		box.col=col;
 		
 		boxesByPoint.put(new Point(box.row, box.col),box);
-
 	}
 
 	// Agents
 	public Agent[] agents;
 	public Agent agent;
 	
-	// history
+	// History
 	public Node parent;
 	public ArrayList<Command> actions= new ArrayList<>();
 	public Command action;
-	
 	private int g;
 	
 	
 	public Node(){
-		
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
 		agents 			= new Agent[10];
@@ -74,7 +67,6 @@ public class Node implements NodeInterface, LevelInterface{
 	
 	public Node(Level level){
 		this.level = level;
-
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
 		agents 			= new Agent[10];
@@ -186,23 +178,74 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	public boolean isGoalState(){
-		ArrayList<Goal> goals = this.level.getAllGoals();
+		return internalGoalEval(this.level.getAllGoals());
+	
+	}
+
+	public boolean isGoalState(Color color){
+		// GoalEval on the reduced subset of goals
+		return internalGoalEval( this.getGoalsByColor(color) );
+	}
+
+	public boolean isGoalState(Goal goal){
+		return ( this.boxesByPoint.containsKey( goal.getPoint() ) && this.boxesByPoint.get( goal.getPoint() ).type == goal.type );
+	}
+
+	public boolean internalGoalEval(ArrayList<Goal> goals){
 		for( int i = 0 ; i < goals.size() ; i++ ){
 			Point p = goals.get(i).getPoint();
 			if( !this.boxesByPoint.containsKey(p) )
 				return false;
+<<<<<<< HEAD
 
 			Box b = this.boxesByPoint.get(p);
 			if( b.getType() != goals.get(i).type )
+=======
+			Box b = this.boxesByPoint.get(i);
+			if( b.type != goals.get(i).type )
+>>>>>>> 91be6c1928ea4f80975b06bceff3ae3132f271f0
 				return false;
 		}
 		return true;
 	}
 
 
+	public Node subdomain(Color color){
+		Node subdomainNode = new Node(this.level);
+		// Determine which agents falls within the color
+		for( int i = 0 ; i < this.agents.length ; i++ ){
+			if( this.agents[i].color == color )
+				subdomainNode.agents[i] = new Agent(this.agents[i]);
+		}
+		for( Box b : this.boxesByPoint.values() ){
+			if( b.color == color )
+				subdomainNode.boxAdd(b);
+		}
+		return subdomainNode;
+	}
 
+	public Node subdomain(ArrayList<Agent> agents){
+		Node subdomainNode = new Node(this.level);
+		for( Agent a : agents ){
+			subdomainNode.agents[a.id] = new Agent(a);
+		}
+		for( Box b  : this.boxesByPoint.values() ){
+			for( Agent a : agents ){
+				if( a.color == b.color )
+					subdomainNode.boxAdd(b);
+			}
+		}
+		return subdomainNode;
+	}
 
+	public Node subdomain(Color color, Agent agent){
+		if( agent.color != color )
+			return null;
 
+		ArrayList<Agent> a = new ArrayList<Agent>();
+		a.add(agent);
+		return subdomain(a);
+	}
 
 
 
@@ -227,6 +270,11 @@ public class Node implements NodeInterface, LevelInterface{
 	public ArrayList<Goal> getGoals(char chr){
 		return this.level.getGoals(chr);
 	}
+
+	public ArrayList<Goal> getGoalsByColor(Color color){
+		return this.level.getGoalsByColor(color);
+	}
+ 
 
 	public HashMap<Character, ArrayList<Goal>> getGoalMap(){
 		return this.level.getGoalMap();
