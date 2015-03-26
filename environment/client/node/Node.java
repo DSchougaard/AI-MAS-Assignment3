@@ -32,12 +32,16 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 	private void boxAdd(Box box){
 		this.boxesByPoint.put(new Point(box.row, box.col), box);
-		ArrayList<Box> boxList = boxesByType.get(box.getType());
+		
+		ArrayList<Box> boxList= boxesByType.get(box.getType());
 		if(boxList==null){
-			boxList= new ArrayList<>();
-			boxesByType.put(box.getType(), boxList);
+			boxesByType.put(box.getType(), new ArrayList<>());
+			boxList= boxesByType.get(box.getType());
 		}
+		
 		boxList.add(box);
+		
+		
 	}
 	private void boxMove(Box box, int row, int col){
 		boxesByPoint.remove(new Point(box.row, box.col));
@@ -302,15 +306,12 @@ public class Node implements NodeInterface, LevelInterface{
 				// Check if there's a wall or box on the cell to which the agent is moving
 				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
 					
-					Node n = ChildNode();
-					System.err.println("move "+boxAt(1, 2));
-					System.err.println(n);
-					System.err.println(this);
-					n.action = c;
-					n.agents[agent.id].row = newAgentRow;
-					n.agents[agent.id].col = newAgentCol;
-					expandedNodes.add( n );
-					System.err.println("move "+n.boxAt(1, 2));
+					Node child = ChildNode();
+					child.action = c;
+					child.agents[agent.id].row = newAgentRow;
+					child.agents[agent.id].col = newAgentCol;
+					expandedNodes.add( child );
+
 				}
 			} else if ( c.actType == type.Push ) {
 				// Make sure that there's actually a box to move
@@ -322,14 +323,12 @@ public class Node implements NodeInterface, LevelInterface{
 					if ( cellIsFree( newBoxRow, newBoxCol ) ) {
 						
 						Node n = this.ChildNode();
-//						System.err.println("move3 "+n.boxAt(1, 2));
 						n.action = c;
 						n.agents[agent.id].row = newAgentRow;
 						n.agents[agent.id].col = newAgentCol;
-						
 
-						n.boxMove(box, newBoxRow, newBoxCol);
-//						System.err.println("move3 "+n.boxAt(1, 2));
+						n.boxMove(n.boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
+
 						expandedNodes.add( n );
 						
 					}
@@ -343,23 +342,26 @@ public class Node implements NodeInterface, LevelInterface{
 			} else if ( c.actType == type.Pull ) {
 				// Cell is free where agent is going
 				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
+					
 					int boxRow = agents[agent.id].row + dirToRowChange( c.dir2 );
 					int boxCol = agents[agent.id].col + dirToColChange( c.dir2 );
 					// .. and there's a box in "dir2" of the agent	
 					box = boxAt( boxRow, boxCol );
 					if ( box!= null  && agent.color == box.color) {
-						
+
 						Node n = this.ChildNode();
-						System.err.println("move2 "+n.boxAt(1, 2));
 						n.action = c;
 						n.agents[agent.id].row = newAgentRow;
 						n.agents[agent.id].col = newAgentCol;
 	
-						n.boxMove(box, agents[agent.id].row, agents[agent.id].col);
-						System.err.println("move2 "+n.boxAt(1, 2));
+						n.boxMove(n.boxAt(boxRow, boxCol), agents[agent.id].row, agents[agent.id].col);
+
 						expandedNodes.add( n );
 					}
 				}
+				
+				
+
 			}
 		}
 		Collections.shuffle( expandedNodes, rnd );
@@ -481,7 +483,6 @@ public class Node implements NodeInterface, LevelInterface{
 		case Push:
 			int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
 			int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
-//			System.err.println("Agent "+ agents[agentID].row+" "+agents[agentID].col);
 			agents[agentID].row = newAgentRow;
 			agents[agentID].col = newAgentCol;
 			boxMove(boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
@@ -515,8 +516,12 @@ public class Node implements NodeInterface, LevelInterface{
 			}
 		}
 		
-		this.boxesByPoint.values().forEach(box ->copy.boxAdd(new Box(box)));
-
+//		this.boxesByPoint.values().forEach(box ->copy.boxAdd(new Box(box)));
+		for (Box box : this.boxesByPoint.values()) {
+			copy.boxAdd(new Box(box));
+		}
+		
+		
 		copy.g=this.g;
 		copy.parent=this.parent;
 		if(this.agent!= null){

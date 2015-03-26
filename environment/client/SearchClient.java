@@ -204,7 +204,7 @@ public class SearchClient {
 				SearchClient agentClient = new SearchClient( client.state, agent );
 //				strategy = new StrategyBestFirst( new Greedy( agentClient.state ) );
 				strategy = new StrategyBestFirst( new AStar( agentClient.state ) );
-				System.err.println(agentClient.state);
+//				System.err.println(agentClient.state);
 				LinkedList< Node > sol=agentClient.Search( strategy );
 				
 				if(sol==null){
@@ -219,7 +219,7 @@ public class SearchClient {
 					sol.add(agentClient.state);
 //					System.exit(0);
 				}
-				System.err.println(sol);
+//				System.err.println(sol);
 				solutions.add(sol);
 
 			}
