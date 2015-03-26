@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import client.node.Node;
-import client.node.storage.Agent;
 import client.node.storage.Box;
 import client.node.storage.Goal;
 

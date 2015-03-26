@@ -1,10 +1,11 @@
 package client.node.map;
 
-import java.awt.Point;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-import client.node.storage.*;
 import client.node.Color;
+import client.node.storage.Base;
+import client.node.storage.Goal;
 
 
 public interface LevelInterface {

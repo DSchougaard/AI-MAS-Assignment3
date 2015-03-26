@@ -5,17 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import client.Command.dir;
-import client.Command.type;
 import client.Heuristic.AStar;
 import client.Strategy.StrategyBestFirst;
-import client.node.Color;
 import client.node.Node;
-import client.node.map.Level;
 import client.node.map.Parser;
 import client.node.storage.Agent;
 

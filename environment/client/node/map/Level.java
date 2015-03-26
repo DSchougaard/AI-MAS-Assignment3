@@ -1,15 +1,12 @@
 package client.node.map;
 
 
-import java.io.*;
-import java.util.*;
-import java.awt.Point;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-
-
-
-import client.node.storage.*;
 import client.node.Color;
+import client.node.storage.Base;
+import client.node.storage.Goal;
 
 /*
 	@author: Daniel Schougaard
@@ -123,17 +120,17 @@ public class Level implements LevelInterface{
 
 
 	public char isGoal(int row, int col){
-		if( this.map[row][col] .type == Type.GOAL )
-			return this.map[row][col] .letter;
+		if( Level.map[row][col] .type == Type.GOAL )
+			return Level.map[row][col] .letter;
 
 		return '\0';
 	}
 
 	public boolean isWall(int row, int col){
-		if(this.map[row][col] == null)
+		if(Level.map[row][col] == null)
 			System.err.println("------------"+row +" "+ col);
 			
-		return ( this.map[row][col].type == Type.WALL );
+		return ( Level.map[row][col].type == Type.WALL );
 	}
 
 
@@ -165,7 +162,7 @@ public class Level implements LevelInterface{
 	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
 		if(dm==null){
 			//FIXME:
-//			System.err.println("Distance mp "+dm);
+			System.err.println("Distance mp "+dm);
 			return 0;
 		}
 		
@@ -175,6 +172,7 @@ public class Level implements LevelInterface{
 	@Override
 	public int distance(Base from, Base to) {
 		// TODO Auto-generated method stub
+		System.err.println("gak");
 		return 0;
 	}
 	

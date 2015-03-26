@@ -1,9 +1,12 @@
 package client.node;
 
-import java.awt.Point;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import client.node.storage.*;
+import client.node.storage.Agent;
+import client.node.storage.Box;
+import client.node.storage.Goal;
 
 public interface NodeInterface {
 	// Index query
