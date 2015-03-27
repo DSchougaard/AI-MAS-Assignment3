@@ -98,7 +98,7 @@ public class SearchClient {
 
 			if ( strategy.frontierIsEmpty() ) {
 				System.err.println("empty");
-				if(state.isGoalState()){
+				if(state.isGoalState(agent.color)){
 					System.err.println("done");
 					return new LinkedList<>();
 				}else{
@@ -116,7 +116,7 @@ public class SearchClient {
 			}
 
 			strategy.addToExplored( leafNode );
-			for ( Node n : leafNode.getExpandedNodes(agent) ) {
+			for ( Node n : leafNode.getExpandedNodes(agent.id) ) {
 				if ( !strategy.isExplored( n ) && !strategy.inFrontier( n ) ) {
 					strategy.addToFrontier( n );
 				}
@@ -199,8 +199,8 @@ public class SearchClient {
 			for (Agent agent : client.agents) {
 				System.err.println("agent "+agent.id+" planing");
 				SearchClient agentClient = new SearchClient( client.state, agent);
-				strategy = new StrategyBestFirst( new Greedy( agentClient.state, agent ) );
-//				strategy = new StrategyBestFirst( new AStar( agentClient.state ) );
+//				strategy = new StrategyBestFirst( new Greedy( agentClient.state, agent ) );
+				strategy = new StrategyBestFirst( new AStar( agentClient.state, agent.id ) );
 //				strategy = new StrategyBestFirst( new WeightedAStar( agentClient.state ) );
 				
 //				System.err.println(agentClient.state);

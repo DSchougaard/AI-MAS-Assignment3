@@ -57,7 +57,7 @@ public class Level implements LevelInterface{
 	public enum Type { SPACE, WALL, GOAL, BOX, AGENT }
 
 	private HashMap<Character, ArrayList<Goal> > goals;
-	private HashMap<Color, Character> goalTypeByColor;
+	private HashMap<Color, ArrayList<Goal>> goalTypeByColor;
 
 
 
@@ -75,7 +75,7 @@ public class Level implements LevelInterface{
 			}
 		}
 		this.goals 				= new HashMap<Character, ArrayList<Goal>>();
-		this.goalTypeByColor 	= new HashMap<Color, Character>();
+		this.goalTypeByColor 	= new HashMap<Color, ArrayList<Goal>>();
 		this.dm 				= dm;
 	}	
 
@@ -86,25 +86,34 @@ public class Level implements LevelInterface{
 	}
 
 	public void addGoal(int row, int col, char letter, Color color){
+		letter=Character.toLowerCase(letter);
 		Level.map[row][col] = new Cell(Type.GOAL, letter);
 
 		if( !goals.containsKey(new Character(letter)) ){
-			goals.put( new Character(letter), new ArrayList<Goal>() );
+			goals.put( letter, new ArrayList<Goal>() );
 		}
 		if(color==null){
 			color=Color.noColor;
 		}
-		addColor(letter, color);
+		Goal goal=new Goal(letter, row, col);
 		ArrayList<Goal> tempGoals = goals.get( new Character(letter) );
-		tempGoals.add(new Goal(letter, row, col));
+		
+		tempGoals.add(goal);
+		
+		addColor(goal, color);
 	}
 
 	public void addSpace(int row, int col){
 		Level.map[row][col]  = new Cell(Type.SPACE);
 	}
 
-	public void addColor(char letter, Color color){
-		goalTypeByColor.put(color, Character.toLowerCase(letter));
+	public void addColor(Goal goal, Color color){
+		ArrayList<Goal> chrs= goalTypeByColor.get(color);
+		if(chrs==null){
+			chrs=new ArrayList<>();
+			goalTypeByColor.put(color, chrs);
+		}
+		chrs.add(goal);
 	}
 
 
@@ -156,11 +165,18 @@ public class Level implements LevelInterface{
 
 	public ArrayList<Goal> getGoalsByColor(Color color){
 		if( !this.goalTypeByColor.containsKey(color) ){
+			System.err.println("hmm");
+			System.err.println(color);
 			return null;
 		}
-		if( !this.goals.containsKey(this.goalTypeByColor.get(color)) )
-			return null;
-		return this.goals.get(this.goalTypeByColor.get(color));
+//		if( !this.goals.containsKey(this.goalTypeByColor.get(color)) ){
+//			System.err.println("hmmh");
+//			System.err.println(color);
+//			return null;
+//		}
+//			
+		
+		return this.goalTypeByColor.get(color);
 	}
 
 	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){

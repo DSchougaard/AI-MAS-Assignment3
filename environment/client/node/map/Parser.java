@@ -29,7 +29,7 @@ public class Parser{
 			color = line.split( ":" )[0];
 
 			for ( String id : line.split( ":" )[1].split( "," ) )
-				colors.put( id.charAt( 0 ), Color.valueOf(color) );
+				colors.put( Character.toLowerCase(id.charAt( 0 )), Color.valueOf(color) );
 		}
 
 		// Read lines specifying level layout
@@ -65,10 +65,10 @@ public class Parser{
 					level.addWall(row, col);
 				}else if( line.charAt( col ) >= 'a' && line.charAt( col ) <= 'z' ){
 					// Goal
-					level.addGoal(row, col, line.charAt(col), colors.get(Character.toUpperCase(line.charAt(col))) );
+					level.addGoal(row, col, line.charAt(col), colors.get(Character.toLowerCase(line.charAt(col))) );
 				}else if( line.charAt( col ) >= 'A' && line.charAt( col ) <= 'Z' ){
 					// Box
-					node.addBox(line.charAt(col), colors.get(line.charAt(col)), row, col);
+					node.addBox(line.charAt(col), colors.get(Character.toLowerCase(line.charAt(col))), row, col);
 					level.addSpace(row, col);
 				}else if( line.charAt( col ) >= '0' && line.charAt( col ) <= '9' ){
 					// Agent

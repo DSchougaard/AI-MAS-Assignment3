@@ -282,13 +282,13 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 
-	public ArrayList< Node > getExpandedNodes(Agent agent) {
+	public ArrayList< Node > getExpandedNodes(int agentID) {
 		ArrayList< Node > expandedNodes = new ArrayList< Node >( Command.every.length );
 		for ( Command c : Command.every ) {
 			// Determine applicability of action
 			
-			int newAgentRow = agents[agent.id].row + dirToRowChange( c.dir1 );
-			int newAgentCol = agents[agent.id].col + dirToColChange( c.dir1 );
+			int newAgentRow = agents[agentID].row + dirToRowChange( c.dir1 );
+			int newAgentCol = agents[agentID].col + dirToColChange( c.dir1 );
 			Box box;
 			if ( c.actType == type.Move ) {
 				// Check if there's a wall or box on the cell to which the agent is moving
@@ -296,15 +296,17 @@ public class Node implements NodeInterface, LevelInterface{
 					
 					Node child = ChildNode();
 					child.action = c;
-					child.agents[agent.id].row = newAgentRow;
-					child.agents[agent.id].col = newAgentCol;
+					child.agents[agentID].row = newAgentRow;
+					child.agents[agentID].col = newAgentCol;
 					expandedNodes.add( child );
 
 				}
 			} else if ( c.actType == type.Push ) {
+				
 				// Make sure that there's actually a box to move
 				box = boxAt(newAgentRow, newAgentCol);
-				if ( box!=null && agent.color.equals(box.color)) {
+				if ( box!=null && agents[agentID].color.equals(box.color)) {
+					
 					int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
 					int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
 					// .. and that new cell of box is free
@@ -312,8 +314,8 @@ public class Node implements NodeInterface, LevelInterface{
 						
 						Node n = this.ChildNode();
 						n.action = c;
-						n.agents[agent.id].row = newAgentRow;
-						n.agents[agent.id].col = newAgentCol;
+						n.agents[agentID].row = newAgentRow;
+						n.agents[agentID].col = newAgentCol;
 
 						n.boxMove(n.boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
 
@@ -331,18 +333,18 @@ public class Node implements NodeInterface, LevelInterface{
 				// Cell is free where agent is going
 				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
 					
-					int boxRow = agents[agent.id].row + dirToRowChange( c.dir2 );
-					int boxCol = agents[agent.id].col + dirToColChange( c.dir2 );
+					int boxRow = agents[agentID].row + dirToRowChange( c.dir2 );
+					int boxCol = agents[agentID].col + dirToColChange( c.dir2 );
 					// .. and there's a box in "dir2" of the agent	
 					box = boxAt( boxRow, boxCol );
-					if ( box!= null  && agent.color == box.color) {
+					if ( box!= null  && agents[agentID].color == box.color) {
 
 						Node n = this.ChildNode();
 						n.action = c;
-						n.agents[agent.id].row = newAgentRow;
-						n.agents[agent.id].col = newAgentCol;
+						n.agents[agentID].row = newAgentRow;
+						n.agents[agentID].col = newAgentCol;
 	
-						n.boxMove(n.boxAt(boxRow, boxCol), agents[agent.id].row, agents[agent.id].col);
+						n.boxMove(n.boxAt(boxRow, boxCol), agents[agentID].row, agents[agentID].col);
 
 						expandedNodes.add( n );
 					}
@@ -454,6 +456,18 @@ public class Node implements NodeInterface, LevelInterface{
 			}
 		}
 
+		return child;
+		
+	}
+	
+	public Node excecuteCommands(ArrayList<Command> cs, int agent){
+		Node child = ChildNode();
+		for (int i = 0; i < cs.size(); i++) {
+			if(cs.get(i)!=null){
+				child.excecuteCommand(agent, cs.get(i));
+			}
+		}
+		
 		return child;
 		
 	}
