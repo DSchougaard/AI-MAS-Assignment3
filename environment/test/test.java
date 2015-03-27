@@ -25,18 +25,18 @@ public class test {
 	public void addBoxes(){
 		Node n = new Node();
 		assertEquals(0,n.getAllBoxes().size());
-		assertEquals(0,n.getBoxes().size());
+		assertEquals(0,n.getBoxes().length);
 		n.addBox('k', Color.blue, 2, 4);
 		assertEquals(1,n.getAllBoxes().size());
-		assertEquals(1,n.getBoxes().size());
-		assertEquals(Color.blue,n.getBoxes().get(0).color);
-		assertEquals('k',n.getBoxes().get(0).getType());
+		assertEquals(1,n.getBoxes().length);
+		assertEquals(Color.blue,n.getBoxes()[0].color);
+		assertEquals('k',n.getBoxes()[0].getType());
 		
 		n.addBox('g', Color.blue, 2, 6);
 		assertEquals(2,n.getAllBoxes().size());
-		assertEquals(2,n.getBoxes().size());
+		assertEquals(2,n.getBoxes().length);
 		n.addBox('k', Color.red, 2, 8);
-		assertEquals(3,n.getBoxes().size());
+		assertEquals(3,n.getBoxes().length);
 		assertEquals(2,n.getAllBoxes().size());
 		ArrayList<Box>bs=n.getAllBoxes().get('k');
 		assertEquals(2, bs.size());
@@ -58,7 +58,7 @@ public class test {
 		assertEquals(1, client.state.distance(1, 2, 1, 3));
 		assertEquals(2, client.state.distance(1, 1, 1, 3));
 		
-		assertEquals(1, client.state.distance(client.state.agents[0],client.state.getBoxes().get(0)));
+		assertEquals(1, client.state.distance(client.state.agents[0],client.state.getBoxes()[0]));
 	}
 	
 	@Test

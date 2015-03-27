@@ -127,8 +127,8 @@ public class Level implements LevelInterface{
 	}
 
 	public boolean isWall(int row, int col){
-		if(Level.map[row][col] == null)
-			System.err.println("------------"+row +" "+ col);
+//		if(Level.map[row][col] == null)
+//			System.err.println("------------"+row +" "+ col);
 			
 		return ( Level.map[row][col].type == Type.WALL );
 	}

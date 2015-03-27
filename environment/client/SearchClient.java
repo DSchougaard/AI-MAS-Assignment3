@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import client.Heuristic.AStar;
+import client.Heuristic.*;
 import client.Strategy.StrategyBestFirst;
 import client.node.Node;
 import client.node.map.Parser;
@@ -180,7 +180,7 @@ public class SearchClient {
 	public static void main( String[] args ) throws Exception {
 		BufferedReader serverMessages = new BufferedReader( new InputStreamReader( System.in ) );
 
-
+		
 
 		// Use stderr to print to console
 		System.err.println( "SearchClient initializing. I am sending this using the error output stream." );
@@ -197,8 +197,10 @@ public class SearchClient {
 			for (Agent agent : client.agents) {
 				System.err.println("agent "+agent.id+" planing");
 				SearchClient agentClient = new SearchClient( client.state, agent );
-//				strategy = new StrategyBestFirst( new Greedy( agentClient.state ) );
-				strategy = new StrategyBestFirst( new AStar( agentClient.state ) );
+				strategy = new StrategyBestFirst( new Greedy( agentClient.state ) );
+//				strategy = new StrategyBestFirst( new AStar( agentClient.state ) );
+//				strategy = new StrategyBestFirst( new WeightedAStar( agentClient.state ) );
+				
 //				System.err.println(agentClient.state);
 				LinkedList< Node > sol=agentClient.Search( strategy );
 				
@@ -261,6 +263,7 @@ public class SearchClient {
 			}
 
 		}
+
 		System.err.println("done");
 	}
 
