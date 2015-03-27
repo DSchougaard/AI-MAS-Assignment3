@@ -59,6 +59,8 @@ public class SearchClient {
 	
 	public List< Agent > agents = new ArrayList< Agent >();
 
+	private Agent agent;
+
 	public SearchClient( BufferedReader serverMessages ) throws Exception {
 		
 		state=Parser.parse(serverMessages);
@@ -71,7 +73,7 @@ public class SearchClient {
 
 	public SearchClient(Node initialState, Agent agent) {
 		Node n=initialState.CopyNode();
-		n.agent=agent;
+		this.agent=agent;
 		n.parent=null;
 		this.state=n;
 	}
@@ -108,13 +110,13 @@ public class SearchClient {
 
 			Node leafNode = strategy.getAndRemoveLeaf();
 
-			if ( leafNode.isGoalState() ) {
+			if ( leafNode.isGoalState(agent.color)) {
 				System.err.println("Found a plan");
 				return leafNode.extractPlan();
 			}
 
 			strategy.addToExplored( leafNode );
-			for ( Node n : leafNode.getExpandedNodes() ) {
+			for ( Node n : leafNode.getExpandedNodes(agent) ) {
 				if ( !strategy.isExplored( n ) && !strategy.inFrontier( n ) ) {
 					strategy.addToFrontier( n );
 				}
@@ -196,8 +198,8 @@ public class SearchClient {
 			Strategy strategy = null;
 			for (Agent agent : client.agents) {
 				System.err.println("agent "+agent.id+" planing");
-				SearchClient agentClient = new SearchClient( client.state, agent );
-				strategy = new StrategyBestFirst( new Greedy( agentClient.state ) );
+				SearchClient agentClient = new SearchClient( client.state, agent);
+				strategy = new StrategyBestFirst( new Greedy( agentClient.state, agent ) );
 //				strategy = new StrategyBestFirst( new AStar( agentClient.state ) );
 //				strategy = new StrategyBestFirst( new WeightedAStar( agentClient.state ) );
 				

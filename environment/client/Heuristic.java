@@ -1,22 +1,23 @@
 package client;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
 import client.node.Node;
+import client.node.storage.Agent;
 import client.node.storage.Box;
 import client.node.storage.Goal;
 
 public abstract class Heuristic implements Comparator< Node > {
 
 	public Node initialState;
+	public Agent agent;
 	
 	public HashMap<Node, Integer> hs =new HashMap<>();
 	
-	public Heuristic(Node initialState) {
+	public Heuristic(Node initialState, Agent agent) {
 		this.initialState = initialState;
-
+		this.agent=agent;
 		
 	}
 
@@ -36,7 +37,7 @@ public abstract class Heuristic implements Comparator< Node > {
 			for (Box box : boxs) {
 				Goal goal=n.getGoals(box.getType()).get(0);
 				if(goal.type == box.getType()){
-					h+=n.distance(box, goal)+n.distance(n.agent, goal);
+					h+=n.distance(box, goal)+n.distance(agent, goal);
 				}
 				
 				
@@ -52,8 +53,8 @@ public abstract class Heuristic implements Comparator< Node > {
 	public abstract int f( Node n);
 
 	public static class AStar extends Heuristic {
-		public AStar(Node initialState) {
-			super( initialState );
+		public AStar(Node initialState, Agent agent) {
+			super( initialState, agent);
 		}
 
 		public int f( Node n) {
@@ -68,8 +69,8 @@ public abstract class Heuristic implements Comparator< Node > {
 	public static class WeightedAStar extends Heuristic {
 		private int W;
 
-		public WeightedAStar(Node initialState) {
-			super( initialState );
+		public WeightedAStar(Node initialState, Agent agent) {
+			super( initialState, agent);
 			W = 5; // You're welcome to test this out with different values, but for the reporting part you must at least indicate benchmarks for W = 5
 		}
 
@@ -84,8 +85,8 @@ public abstract class Heuristic implements Comparator< Node > {
 
 	public static class Greedy extends Heuristic {
 
-		public Greedy(Node initialState) {
-			super( initialState );
+		public Greedy(Node initialState, Agent agent) {
+			super( initialState, agent);
 		}
 		
 

@@ -65,7 +65,7 @@ public class Parser{
 					level.addWall(row, col);
 				}else if( line.charAt( col ) >= 'a' && line.charAt( col ) <= 'z' ){
 					// Goal
-					level.addGoal(row, col, line.charAt(col) );
+					level.addGoal(row, col, line.charAt(col), colors.get(Character.toUpperCase(line.charAt(col))) );
 				}else if( line.charAt( col ) >= 'A' && line.charAt( col ) <= 'Z' ){
 					// Box
 					node.addBox(line.charAt(col), colors.get(line.charAt(col)), row, col);

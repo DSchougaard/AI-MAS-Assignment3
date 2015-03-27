@@ -49,7 +49,7 @@ public abstract class Strategy {
 
 
 	public static class StrategyBestFirst extends Strategy {
-		private Heuristic heuristic;
+		public Heuristic heuristic;
 		private PriorityQueue< Node > queue; 
 		public StrategyBestFirst( Heuristic heuristic ) {
 			super();

@@ -85,13 +85,16 @@ public class Level implements LevelInterface{
 		Level.map[row][col] = new Cell(Type.WALL);
 	}
 
-	public void addGoal(int row, int col, char letter){
+	public void addGoal(int row, int col, char letter, Color color){
 		Level.map[row][col] = new Cell(Type.GOAL, letter);
 
 		if( !goals.containsKey(new Character(letter)) ){
 			goals.put( new Character(letter), new ArrayList<Goal>() );
 		}
-
+		if(color==null){
+			color=Color.noColor;
+		}
+		addColor(letter, color);
 		ArrayList<Goal> tempGoals = goals.get( new Character(letter) );
 		tempGoals.add(new Goal(letter, row, col));
 	}
@@ -101,7 +104,7 @@ public class Level implements LevelInterface{
 	}
 
 	public void addColor(char letter, Color color){
-		goalTypeByColor.put(color, new Character(letter));
+		goalTypeByColor.put(color, Character.toLowerCase(letter));
 	}
 
 
@@ -152,8 +155,9 @@ public class Level implements LevelInterface{
 	}
 
 	public ArrayList<Goal> getGoalsByColor(Color color){
-		if( !this.goalTypeByColor.containsKey(color) )
+		if( !this.goalTypeByColor.containsKey(color) ){
 			return null;
+		}
 		if( !this.goals.containsKey(this.goalTypeByColor.get(color)) )
 			return null;
 		return this.goals.get(this.goalTypeByColor.get(color));

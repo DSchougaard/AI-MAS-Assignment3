@@ -46,19 +46,25 @@ public class test {
 	
 	@Test
 	public void distance() throws Exception{
-		BufferedReader serverMessages = null;
-		try {
-			serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/simple.lvl")) );
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/simple.lvl")) );
+	
 		SearchClient client = new SearchClient( serverMessages );
 		
 		assertEquals(1, client.state.distance(1, 2, 1, 3));
 		assertEquals(2, client.state.distance(1, 1, 1, 3));
 		
 		assertEquals(1, client.state.distance(client.state.agents[0],client.state.getBoxes()[0]));
+	}
+	
+	@Test
+	public void goals() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/simple.lvl")) );
+		
+		SearchClient client = new SearchClient( serverMessages );
+		
+		assertEquals(1, client.state.getAllGoals().size());
+		assertNull( client.state.getGoalsByColor(Color.cyan));
+		assertEquals(1, client.state.getGoalsByColor(Color.noColor).size());
 	}
 	
 	@Test
@@ -98,7 +104,7 @@ public class test {
 		assertEquals(client.state, agentClient.state);
 		
 
-		ArrayList<Node>expanded =agentClient.state.getExpandedNodes();
+		ArrayList<Node>expanded =agentClient.state.getExpandedNodes(client.state.agents[0]);
 	
 		assertEquals(1, expanded.size());
 		assertEquals(new Command(type.Push, dir.E, dir.E), expanded.get(0).action);
@@ -181,11 +187,11 @@ public class test {
 
 		
 
-		ArrayList<Node>expanded =agentClient.state.getExpandedNodes();
+		ArrayList<Node>expanded =agentClient.state.getExpandedNodes(client.state.agents[0]);
 	
 		Node expanded1=expanded.get(0);
 		
-		expanded =expanded1.getExpandedNodes();
+		expanded =expanded1.getExpandedNodes(client.state.agents[0]);
 		
 		assertNotNull(expanded1.agentAt(1, 2));
 		assertNull(expanded1.agentAt(1, 1));
@@ -231,4 +237,18 @@ public class test {
 	
 	}
 
+	
+	@Test
+	public void multiAgent() throws Exception {
+		
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAsimple1.lvl")) );
+
+		SearchClient client = new SearchClient( serverMessages );
+
+
+		SearchClient agentClient = new SearchClient( client.state, client.state.agents[0] );
+		SearchClient agentClient2 = new SearchClient( client.state, client.state.agents[1] );
+
+		fail();
+	}
 }

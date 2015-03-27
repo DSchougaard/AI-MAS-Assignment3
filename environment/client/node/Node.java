@@ -55,7 +55,7 @@ public class Node implements NodeInterface, LevelInterface{
 
 	// Agents
 	public Agent[] agents;
-	public Agent agent;
+//	public Agent agent;
 	
 	// History
 	public Node parent;
@@ -282,7 +282,7 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 
-	public ArrayList< Node > getExpandedNodes() {
+	public ArrayList< Node > getExpandedNodes(Agent agent) {
 		ArrayList< Node > expandedNodes = new ArrayList< Node >( Command.every.length );
 		for ( Command c : Command.every ) {
 			// Determine applicability of action
@@ -487,8 +487,10 @@ public class Node implements NodeInterface, LevelInterface{
 			agents[agentID].col = newAgentCol;
 			boxMove(boxAt(boxRow, boxCol), tmpAgentRow, tmpAgentCol);
 			break;
+		case NoOp:
+			break;
 		default:
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException(c.toString());
 
 		}
 
@@ -512,9 +514,9 @@ public class Node implements NodeInterface, LevelInterface{
 		
 		copy.g=this.g;
 		copy.parent=this.parent;
-		if(this.agent!= null){
-			copy.agent=new Agent(this.agent);
-		}
+//		if(this.agent!= null){
+//			copy.agent=new Agent(this.agent);
+//		}
 		return copy;
 	}
 	public String toString(){
