@@ -164,18 +164,6 @@ public class Level implements LevelInterface{
 	}
 
 	public ArrayList<Goal> getGoalsByColor(Color color){
-		if( !this.goalTypeByColor.containsKey(color) ){
-			System.err.println("hmm");
-			System.err.println(color);
-			return null;
-		}
-//		if( !this.goals.containsKey(this.goalTypeByColor.get(color)) ){
-//			System.err.println("hmmh");
-//			System.err.println(color);
-//			return null;
-//		}
-//			
-		
 		return this.goalTypeByColor.get(color);
 	}
 
@@ -191,9 +179,7 @@ public class Level implements LevelInterface{
 
 	@Override
 	public int distance(Base from, Base to) {
-		// TODO Auto-generated method stub
-		System.err.println("gak");
-		return 0;
+		return distance(from.row, from.col, to.row, to.col);
 	}
 	
 	public Character[][] toArray(){

@@ -20,8 +20,8 @@ import client.node.storage.Goal;
 
 
 public class Node implements NodeInterface, LevelInterface{
-//	private static Random rnd = new Random( System.currentTimeMillis() );
-	private static Random rnd = new Random( 1 );
+	private static Random rnd = new Random( System.currentTimeMillis() );
+//	private static Random rnd = new Random( 1 );
 	private Level level;
 	// Box DS
 	HashMap<Character, ArrayList<Box>> boxesByType;
@@ -186,14 +186,14 @@ public class Node implements NodeInterface, LevelInterface{
 	public boolean internalGoalEval(ArrayList<Goal> goals){
 		for( int i = 0 ; i < goals.size() ; i++ ){
 			Point p = goals.get(i).getPoint();
-			if( !this.boxesByPoint.containsKey(p) )
-				return false;
-
-
 			Box b = this.boxesByPoint.get(p);
-			if( b.getType() != goals.get(i).type )
-
+			if( b==null ){
 				return false;
+			}
+
+			if( b.getType() != goals.get(i).type ){
+				return false;
+			}
 		}
 		return true;
 	}
@@ -380,7 +380,8 @@ public class Node implements NodeInterface, LevelInterface{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + this.boxesByType.hashCode();
+		result = prime * result + Arrays.deepHashCode(this.getBoxes());
+//		result = prime * result + this.boxesByType.hashCode();
 //		result = prime * result + this.boxesByPoint.hashCode();
 		result = prime * result + Arrays.deepHashCode(agents);
 		return result;
@@ -398,25 +399,39 @@ public class Node implements NodeInterface, LevelInterface{
 		
 		Node other = (Node) obj;
 	
-//		if( !Arrays.equals(this.agents, other.agents) )
-//			return false;
-
-		if( !this.boxesByPoint.keySet().equals( other.boxesByPoint.keySet() ) )
-			return false;
-
-		for( Point p : boxesByPoint.keySet() ){
-			if( !boxesByPoint.get(p).equals( other.boxesByPoint.get(p) ) )
-				return false;
-		}
-//		if( !this.boxesByType.keySet().equals( other.boxesByType.keySet() ) ){
-//			return false;
-//		}
-//
-//		for( Character c : boxesByType.keySet() ){
-//			if( !this.boxesByType.get(c).equals( other.boxesByType.get(c) ) ){	
+//		for (Box box : this.getBoxes()) {
+//			if(other.boxAt(box.row, box.col) != box){
+//				System.err.println("hhh");
 //				return false;
 //			}
 //		}
+
+
+		if( !Arrays.equals(this.agents, other.agents) ){
+//			System.err.println("h1");
+			return false;
+		}
+
+		if( !this.boxesByPoint.keySet().equals( other.boxesByPoint.keySet() ) ){
+//			System.err.println("h2");
+			return false;
+		}
+		for( Point p : boxesByPoint.keySet() ){
+			if( !boxesByPoint.get(p).equals( other.boxesByPoint.get(p) ) ){
+//				System.err.println("h3");
+				return false;
+			}
+		}
+		if( !this.boxesByType.keySet().equals( other.boxesByType.keySet() ) ){
+//			System.err.println("h4");
+			return false;
+		}
+
+		for( Character c : boxesByType.keySet() ){
+			if( !this.boxesByType.get(c).equals( other.boxesByType.get(c) ) ){	
+				return false;
+			}
+		}
 
 
 		return true;

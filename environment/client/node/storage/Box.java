@@ -29,10 +29,22 @@ public class Box extends Base{
 	public boolean equals( Object obj ) {
 		if( getClass() != obj.getClass() )
 			return false;
-		super.equals( obj );
+		
+		if(!super.equals( obj )){
+			return false;
+		}
 
 		Box b = (Box)obj;
-		return ( this.getType() == b.getType() && this.color == b.color );
+		return ( this.getType() == b.getType() && this.color ==b.color );
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 17;
+		result = prime * result + super.hashCode();
+		result = prime * result + this.type;
+		return result;
 	}
 
 	public char getType() {

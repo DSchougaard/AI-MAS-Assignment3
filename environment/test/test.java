@@ -115,6 +115,7 @@ public class test {
 		assertNull(client.state.boxAt(1, 3));
 
 		assertFalse(client.state.isGoalState());
+		assertFalse(client.state.isGoalState(Color.noColor));
 		
 		assertEquals(4, client.state.getGoalsByColor(Color.noColor).size());
 
@@ -291,6 +292,12 @@ public class test {
 		assertNull(client.state.boxAt(1, 3));
 
 		assertFalse(client.state.isGoalState());
+		
+		assertEquals(1, client.state.getGoalsByColor(Color.red).size());
+		assertEquals(Color.red, client.state.boxAt(1, 23).color);
+		
+		assertEquals(1, client.state.getGoalsByColor(Color.green).size());
+		assertEquals(Color.green, client.state.boxAt(2, 23).color);
 	}
 	
 	@Test
@@ -377,6 +384,61 @@ public class test {
 		
 	}
 	
+
+	@Test
+	public void MAsingleExpand2()throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAsimple1.lvl")) );
+		
+		SearchClient client = new SearchClient( serverMessages );
+		
+		
+		
+		SearchClient agentClient = new SearchClient( client.state, client.agents.get(0) );
+
+		Strategy strategy1 = new StrategyBestFirst( new AStar( agentClient.state, client.agents.get(0).id ) );
+		assertTrue( strategy1.frontierIsEmpty());
+		strategy1.addToFrontier(agentClient.state);
+		assertEquals(client.state, agentClient.state);
+
+		ArrayList<Node>expanded =agentClient.state.getExpandedNodes(0);
+		assertEquals(3, expanded.size());
+		for (Node node : expanded) {
+			System.err.println(node);
+			System.err.println(node.hashCode());
+			if(!strategy1.inFrontier(node)){
+				System.err.println("damm");
+				strategy1.addToFrontier(node);
+			}
+		}
+		assertNotEquals(agentClient.state.toString(), expanded.get(0).toString());
+		assertNotEquals(agentClient.state, expanded.get(0));
+		assertNotEquals(expanded.get(0), expanded.get(1));
+		assertEquals(4, strategy1.countFrontier());
+
+		ArrayList<Command>cmds=new ArrayList<>();
+		expanded.forEach(n->cmds.add(n.action));
+		assertTrue(cmds.contains(new Command(dir.E)));
+		assertTrue(cmds.contains(new Command(dir.W)));
+		assertTrue(cmds.contains(new Command(dir.S)));
+		
+		
+		
+		expanded =expanded.get(0).getExpandedNodes(0);
+		
+		assertEquals(3, expanded.size());
+		cmds.clear();
+		expanded.forEach(n->cmds.add(n.action));
+		assertTrue(cmds.contains(new Command(dir.E)));
+		assertTrue(cmds.contains(new Command(dir.W)));
+		assertTrue(cmds.contains(new Command(dir.S)));
+		
+		
+		
+		
+
+		
+		
+	}
 	@Test
 	public void multiAgent() throws Exception {
 		
@@ -391,14 +453,14 @@ public class test {
 		SearchClient agentClient = new SearchClient( client.state, client.state.agents[0] );
 		Strategy strategy1 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[0].id ) );
 		LinkedList<Node> sol1=agentClient.Search(strategy1);
-//		assertEquals(Color.green, agentClient.);
 		assertEquals(9, sol1.size());
+		System.err.println(client.state.agents[0].color);
 		SearchClient agentClient2 = new SearchClient( client.state, client.state.agents[1] );
 		Strategy strategy2 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[1].id ) );
 		LinkedList<Node> sol2=agentClient2.Search(strategy2);
 		assertEquals(17, sol2.size());
 
-		fail();
+
 	}
 	
 	

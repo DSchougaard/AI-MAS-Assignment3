@@ -84,6 +84,7 @@ public class SearchClient {
 
 		int iterations = 0;
 		while ( true ) {
+
 			if ( iterations % 200 == 0 ) {
 				System.err.println( strategy.searchStatus() );
 			}
@@ -110,14 +111,17 @@ public class SearchClient {
 
 			Node leafNode = strategy.getAndRemoveLeaf();
 
+//			System.err.println(leafNode.action);
 			if ( leafNode.isGoalState(agent.color)) {
-				System.err.println("Found a plan");
+//				System.err.println("Found a plan");
 				return leafNode.extractPlan();
 			}
 
 			strategy.addToExplored( leafNode );
+
 			for ( Node n : leafNode.getExpandedNodes(agent.id) ) {
 				if ( !strategy.isExplored( n ) && !strategy.inFrontier( n ) ) {
+					
 					strategy.addToFrontier( n );
 				}
 			}
@@ -199,9 +203,9 @@ public class SearchClient {
 			for (Agent agent : client.agents) {
 				System.err.println("agent "+agent.id+" planing");
 				SearchClient agentClient = new SearchClient( client.state, agent);
-//				strategy = new StrategyBestFirst( new Greedy( agentClient.state, agent ) );
+//				strategy = new StrategyBestFirst( new Greedy( agentClient.state, agent.id ) );
 				strategy = new StrategyBestFirst( new AStar( agentClient.state, agent.id ) );
-//				strategy = new StrategyBestFirst( new WeightedAStar( agentClient.state ) );
+//				strategy = new StrategyBestFirst( new WeightedAStar( agentClient.state, agent.id ) );
 				
 //				System.err.println(agentClient.state);
 				LinkedList< Node > sol=agentClient.Search( strategy );
