@@ -39,4 +39,8 @@ public class ManhattanDistanceMapWithCache extends DistanceMap{
 
 		return this.distance( new Point(rowFrom, colFrom), new Point(rowTo, colTo));
 	}	
+
+	public String name(){
+		return "ManhattanDistanceMapWithCache";
+	}
 }

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import client.node.Color;
+import client.ArgumentParser;
+import client.SettingsContainer;
 import client.node.Node;
 
 
@@ -14,7 +16,7 @@ import client.node.Node;
 public class Parser{
 
 
-	public static Node parse(BufferedReader in) throws IOException{
+	public static Node parse(BufferedReader in, SettingsContainer settings) throws IOException{
 		
 		Map< Character, Color > colors = new HashMap< Character, Color >();
 		String line, color;
@@ -45,7 +47,7 @@ public class Parser{
 		maxRow = tempMapContainer.size();
 
 		// Create the data structures for the bookkeeping
-		Level level = new Level(maxRow, maxCol, new ManhattanDistanceMapWithCache());
+		Level level = new Level(maxRow, maxCol, settings.dm);
 		Node node = new Node(level);
 
 

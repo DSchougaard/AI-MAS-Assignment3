@@ -13,6 +13,7 @@ import client.Strategy.StrategyBestFirst;
 import client.node.Node;
 import client.node.map.Parser;
 import client.node.storage.Agent;
+import client.ArgumentParser;
 
 public class SearchClient {
 
@@ -61,9 +62,11 @@ public class SearchClient {
 
 	private Agent agent;
 
-	public SearchClient( BufferedReader serverMessages ) throws Exception {
+
+	public SearchClient( BufferedReader serverMessages, SettingsContainer settings ) throws Exception {
+
 		
-		state=Parser.parse(serverMessages);
+		state=Parser.parse(serverMessages, settings);
 		for (int i = 0; i < state.agents.length; i++) {
 			if(state.agents[i]!=null){
 				agents.add(state.agents[i]);
@@ -185,14 +188,13 @@ public class SearchClient {
 
 	public static void main( String[] args ) throws Exception {
 		BufferedReader serverMessages = new BufferedReader( new InputStreamReader( System.in ) );
-
-		
+		SettingsContainer settings =ArgumentParser.parse(args);
 
 		// Use stderr to print to console
 		System.err.println( "SearchClient initializing. I am sending this using the error output stream." );
 
 		// Read level and create the initial state of the problem
-		SearchClient client = new SearchClient( serverMessages );
+		SearchClient client = new SearchClient( serverMessages, settings );
 		System.err.println("level loaded");
 		//online planning loop
 		while(!client.state.isGoalState()){
