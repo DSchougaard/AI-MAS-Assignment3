@@ -5,17 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import client.Command.dir;
-import client.Command.type;
-import client.Heuristic.AStar;
+import client.Heuristic.*;
 import client.Strategy.StrategyBestFirst;
-import client.node.Color;
 import client.node.Node;
-import client.node.map.Level;
 import client.node.map.Parser;
 import client.node.storage.Agent;
 
@@ -186,7 +181,6 @@ public class SearchClient {
 		BufferedReader serverMessages = new BufferedReader( new InputStreamReader( System.in ) );
 		SettingsContainer settings = ArgumentPaser.parse(args);
 
-
 		// Use stderr to print to console
 		System.err.println( "SearchClient initializing. I am sending this using the error output stream." );
 
@@ -202,8 +196,10 @@ public class SearchClient {
 			for (Agent agent : client.agents) {
 				System.err.println("agent "+agent.id+" planing");
 				SearchClient agentClient = new SearchClient( client.state, agent );
-//				strategy = new StrategyBestFirst( new Greedy( agentClient.state ) );
-				strategy = new StrategyBestFirst( new AStar( agentClient.state ) );
+				strategy = new StrategyBestFirst( new Greedy( agentClient.state ) );
+//				strategy = new StrategyBestFirst( new AStar( agentClient.state ) );
+//				strategy = new StrategyBestFirst( new WeightedAStar( agentClient.state ) );
+				
 //				System.err.println(agentClient.state);
 				LinkedList< Node > sol=agentClient.Search( strategy );
 				
@@ -266,6 +262,7 @@ public class SearchClient {
 			}
 
 		}
+
 		System.err.println("done");
 	}
 

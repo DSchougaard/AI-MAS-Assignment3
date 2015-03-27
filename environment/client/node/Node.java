@@ -3,7 +3,6 @@ package client.node;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -12,14 +11,17 @@ import java.util.Random;
 import client.Command;
 import client.Command.dir;
 import client.Command.type;
-import client.node.map.*;
-import client.node.storage.*;
-import client.node.Color;
+import client.node.map.Level;
+import client.node.map.LevelInterface;
+import client.node.storage.Agent;
+import client.node.storage.Base;
+import client.node.storage.Box;
+import client.node.storage.Goal;
 
 
 public class Node implements NodeInterface, LevelInterface{
-
-	private static Random rnd = new Random( System.currentTimeMillis() );
+//	private static Random rnd = new Random( System.currentTimeMillis() );
+	private static Random rnd = new Random( 1 );
 	private Level level;
 	// Box DS
 	HashMap<Character, ArrayList<Box>> boxesByType;
@@ -66,6 +68,7 @@ public class Node implements NodeInterface, LevelInterface{
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
 		agents 			= new Agent[10];
+		g=0;
 
 	}
 	
@@ -74,21 +77,9 @@ public class Node implements NodeInterface, LevelInterface{
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
 		agents 			= new Agent[10];
+		g=0;
 	}
 
-//	public Node(Node parent){
-//		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
-//		boxesByPoint 	= new HashMap<Point, Box>();
-//		agents 			= new Agent[10];
-//		
-//		this.parent = parent;
-//		if ( parent == null ) {
-//			g = 0;
-//		} else {
-//
-//			g = parent.g() + 1;
-//		}
-//	}
 
 	// Add'ers for the setup
 	public void addAgent(char name, Color color, int row, int col){
@@ -117,23 +108,20 @@ public class Node implements NodeInterface, LevelInterface{
 
 	// Methods from NodeInterface
 	public ArrayList<Box> getBoxes(char color){
+
 		return boxesByType.get(new Character(color));
 	}
 
-	public ArrayList<Box> getBoxes(){
-		Collection<Box> col = boxesByPoint.values();
-		ArrayList<Box> result = new ArrayList<>();
-		for (Object box : col) {
-			result.add((Box) box);
-		}
-		
-		return result;
+
+	
+	public Box[] getBoxes(){
+		return boxesByPoint.values().toArray(new Box[0]);
 	}
 
 	public boolean cellIsFree(int row, int col){
 		// Sanity check on coords
-		if( !(row >= 0 && col >= 0 && row <= this.level.getRow() && col <= this.level.getCol()) )
-			return false;
+//		if( !(row >= 0 && col >= 0 && row <= this.level.getRow() && col <= this.level.getCol()) )
+//			return false;
 
 		if( this.level.isWall(row, col) )
 			return false;
@@ -391,7 +379,7 @@ public class Node implements NodeInterface, LevelInterface{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + this.boxesByType.hashCode();
-		result = prime * result + this.boxesByPoint.hashCode();
+//		result = prime * result + this.boxesByPoint.hashCode();
 		result = prime * result + Arrays.deepHashCode(agents);
 		return result;
 	}
@@ -408,8 +396,8 @@ public class Node implements NodeInterface, LevelInterface{
 		
 		Node other = (Node) obj;
 	
-		if( !Arrays.equals(this.agents, other.agents) )
-			return false;
+//		if( !Arrays.equals(this.agents, other.agents) )
+//			return false;
 
 		if( !this.boxesByPoint.keySet().equals( other.boxesByPoint.keySet() ) )
 			return false;
@@ -418,15 +406,15 @@ public class Node implements NodeInterface, LevelInterface{
 			if( !boxesByPoint.get(p).equals( other.boxesByPoint.get(p) ) )
 				return false;
 		}
-		if( !this.boxesByType.keySet().equals( other.boxesByType.keySet() ) ){
-			return false;
-		}
-
-		for( Character c : boxesByType.keySet() ){
-			if( !this.boxesByType.get(c).equals( other.boxesByType.get(c) ) ){	
-				return false;
-			}
-		}
+//		if( !this.boxesByType.keySet().equals( other.boxesByType.keySet() ) ){
+//			return false;
+//		}
+//
+//		for( Character c : boxesByType.keySet() ){
+//			if( !this.boxesByType.get(c).equals( other.boxesByType.get(c) ) ){	
+//				return false;
+//			}
+//		}
 
 
 		return true;
@@ -537,8 +525,11 @@ public class Node implements NodeInterface, LevelInterface{
 			}
 		}
 		
-		getBoxes().forEach(box-> map[box.row][box.col]=Character.toUpperCase(box.getType()));
+//		getBoxes().forEach(box-> map[box.row][box.col]=Character.toUpperCase(box.getType()));
 		
+		for (Box box : getBoxes()) {
+			map[box.row][box.col]=Character.toUpperCase(box.getType());
+		}
 //		getBoxes().forEach(box-> System.err.println("box "+box.row+" "+box.col));
 		StringBuilder s = new StringBuilder();
 		s.append("\n");

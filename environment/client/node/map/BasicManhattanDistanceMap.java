@@ -1,8 +1,5 @@
 package client.node.map;
 
-import client.node.map.DistanceMap;
-import client.node.map.Level;
-
 import java.awt.Point;
 
 

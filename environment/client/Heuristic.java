@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import client.node.Node;
-import client.node.storage.Agent;
 import client.node.storage.Box;
 import client.node.storage.Goal;
 
@@ -13,7 +12,6 @@ public abstract class Heuristic implements Comparator< Node > {
 
 	public Node initialState;
 	
-	public HashMap<Character, Point> goals =new HashMap<>();
 	public HashMap<Node, Integer> hs =new HashMap<>();
 	
 	public Heuristic(Node initialState) {
@@ -32,9 +30,9 @@ public abstract class Heuristic implements Comparator< Node > {
 		if(tmpH==null){
 
 			int h=0;
-			ArrayList<Box> boxs= n.getBoxes();
+//			ArrayList<Box> boxs= n.getBoxes();
 			
-			
+			Box[] boxs=n.getBoxes();
 			for (Box box : boxs) {
 				Goal goal=n.getGoals(box.getType()).get(0);
 				if(goal.type == box.getType()){
@@ -101,23 +99,5 @@ public abstract class Heuristic implements Comparator< Node > {
 	}
 	
 
-	
-	public static class Point{
-		
-		public int y;
-		public int x;
 
-		public Point(int x, int y){
-			this.x=x;
-			this.y=y;
-		}
-		public static int dist(int x, int y, int x2, int y2){
-
-			return (int) Math.sqrt(Math.pow(Math.abs(x-x2),2)+Math.pow(Math.abs(y-y2),2));
-		}
-		public int dist(int x, int y){
-			return (int) Math.sqrt(Math.pow(Math.abs(this.x-x),2)+Math.pow(Math.abs(this.y-y),2));
-		}
-
-	}
 }

@@ -1,17 +1,15 @@
 package client.node.map;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-
-import java.awt.Point;
-
-
-
-import client.node.Node;
 import client.node.Color;
 import client.ArgumentParser;
 import client.SettingsContainer;
+import client.node.Node;
 
 
 
