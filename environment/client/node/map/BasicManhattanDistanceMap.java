@@ -29,5 +29,8 @@ public class BasicManhattanDistanceMap extends DistanceMap{
 		return (int)(new Point(rowFrom, colFrom)).distance( new Point(rowTo, colTo));
 	}
 	
+	public String name(){
+		return "BasicManhattanDistanceMap";
+	}
 
 }
