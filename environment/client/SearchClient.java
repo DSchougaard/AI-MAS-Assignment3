@@ -189,7 +189,7 @@ public class SearchClient {
 					}
 				}
 			}
-			System.err.println(commands);
+			
 			client.state=client.state.excecuteCommands(commands);
 			
 			
@@ -237,7 +237,7 @@ public class SearchClient {
 					strategy = new StrategyBestFirst( new AStar( agentClient.state, agent.id ) );
 	//				strategy = new StrategyBestFirst( new WeightedAStar( agentClient.state, agent.id ) );
 					SearchResult result=agentClient.Search( strategy );
-
+					
 					
 					if(result.reason==Result.STUCK){
 						System.err.println("agent "+agent.id+" is stuck");
@@ -245,6 +245,10 @@ public class SearchClient {
 
 					}
 					solutions.get(agent.id).addAll(result.solution);
+					
+					System.err.println( "\nSummary for " + strategy );
+					System.err.println( "Found solution of length " + result.solution.size() );
+					System.err.println( strategy.searchStatus() );
 
 				}else{
 					System.err.println("agent "+agent.id+" using old plan");
