@@ -67,10 +67,15 @@ public class Command {
 	}
 
 	public String toString() {
-		if ( actType == type.Move )
+		switch (actType) {
+		case Move:
 			return actType.toString() + "(" + dir1 + ")";
-
-		return actType.toString() + "(" + dir1 + "," + dir2 + ")";
+		case NoOp:
+			return actType.toString();
+		default:
+			return actType.toString() + "(" + dir1 + "," + dir2 + ")";
+		}
+	
 	}
 	
 

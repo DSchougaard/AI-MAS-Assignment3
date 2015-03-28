@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,7 +18,7 @@ import client.ArgumentParser;
 public class SearchClient {
 
 
-	
+	static BufferedReader serverMessages = new BufferedReader( new InputStreamReader( System.in ) );
 
 	// Auxiliary static classes
 	public static void error( String msg ) throws Exception {
@@ -96,7 +95,7 @@ public class SearchClient {
 	}
 
 	public LinkedList< Node > Search( Strategy strategy ) throws IOException {
-		System.err.format( "Search starting with strategy %s\n", strategy );
+//		System.err.format( "Search starting with strategy %s\n", strategy );
 		strategy.addToFrontier( this.state );
 
 		int iterations = 0;
@@ -120,7 +119,7 @@ public class SearchClient {
 					System.err.println("done");
 					return new LinkedList<>();
 				}else{
-					System.err.println("conflict");
+//					System.err.println("agent "+agent.id+" is stuck");
 					return null;
 				}
 
@@ -146,62 +145,74 @@ public class SearchClient {
 		}
 	}
 
-
-
-	/**
-	 * Merges plans to an executable list of commands
-	 * @param solutions
-	 * @return
-	 */
-	public static String[] mergePlans(ArrayList< LinkedList< Node > > solutions){
-		String[] solution;
+	public static void executePlans(ArrayList< LinkedList< Node > > solutions, SearchClient client) throws IOException{
+		StringBuilder builder= new StringBuilder();
 		
-		int size=0;
-		for (int i = 0; i < solutions.size(); i++) {
-
-			if(size<solutions.get(i).size()){
-				size=solutions.get(i).size();
-			}
-
-		}
-		solution = new String[size];
-		for (int i = 0; i < solution.length; i++) {
-			solution[i]="[";
-		}
-
-		for (int i = 0; i < solutions.size(); i++) {
-
-			for (int k = 0; k < size; k++) {
-				if(k<solutions.get(i).size()){
-					if(solutions.get(i).get(k).action.actType==Command.type.NoOp){
-						solution[k]+="NoOp";
-
-					}else{
-						solution[k]+=solutions.get(i).get(k).action.toString();
-					}
-					
+		boolean done=false;
+		while(!done){
+			//creates the string
+			builder.append('[');
+			for (int i = 0; i < solutions.size(); i++) {
+				if(solutions.get(i).isEmpty()){
+					builder.append("NoOp");
 				}else{
-					solution[k]+="NoOp";
+					builder.append(solutions.get(i).peek().action);
 				}
 				if(i!=solutions.size()-1){
-					solution[k]+=",";
+					builder.append(',');
 				}
-
+			}
+			builder.append(']');
+			
+			//communicate with server
+			System.out.println(builder.toString());
+			builder.setLength(0);
+			
+			String response;
+			do{
+				response = serverMessages.readLine();
+			}while(response.equals(""));
+			
+			
+			//updates state
+			String[] strings=response.split(",");
+			ArrayList<Command> commands= new ArrayList<>();
+			for (int i = 0; i < strings.length; i++) {
+				if(strings[i].contains("false")){
+					//Illegal move (conflict)
+					
+					commands.add(new Command());
+					solutions.get(i).clear();
+				}else{
+					if(!solutions.get(i).isEmpty()){
+						commands.add(solutions.get(i).pop().action);
+					}else{
+						commands.add(new Command());
+					}
+				}
+			}
+			System.err.println(commands);
+			client.state=client.state.excecuteCommands(commands);
+			
+			
+			// evaluate if it should continue
+			for (int i = 0; i < solutions.size(); i++) {
+				if(solutions.get(i).isEmpty()){
+					//should it be empty
+					if(!client.state.isGoalState(client.state.agents[i].color)){
+						done=true;
+					}
+				}
 			}
 		}
-
-		for (int i = 0; i < solution.length; i++) {
-			solution[i]+="]";
-		}
-
-		System.err.println(Arrays.toString(solution));
-		return solution;
+		
 	}
 
 
 
+
 	public static void main( String[] args ) throws Exception {
-		BufferedReader serverMessages = new BufferedReader( new InputStreamReader( System.in ) );
+		
 		SettingsContainer settings =ArgumentParser.parse(args);
 
 		// Use stderr to print to console
@@ -211,128 +222,51 @@ public class SearchClient {
 		SearchClient client = new SearchClient( serverMessages, settings );
 		System.err.println("level loaded");
 		//online planning loop
+		ArrayList< LinkedList< Node > > solutions = new ArrayList<LinkedList<Node>>();
+		for (Agent agent : client.agents) {
+			solutions.add(new LinkedList< Node >());
+		}
 		while(!client.state.isGoalState()){
 			
-			ArrayList< LinkedList< Node > > solutions = new ArrayList<LinkedList<Node>>();
-			boolean conflict=false;
+			
+			boolean stuck=false;
 			Strategy strategy = null;
 			for (Agent agent : client.agents) {
-				System.err.println("agent "+agent.id+" planing");
-				SearchClient agentClient = new SearchClient( client.state, agent);
-//				strategy = new StrategyBestFirst( new Greedy( agentClient.state, agent.id ) );
-				strategy = new StrategyBestFirst( new AStar( agentClient.state, agent.id ) );
-//				strategy = new StrategyBestFirst( new WeightedAStar( agentClient.state, agent.id ) );
-				
-//				System.err.println(agentClient.state);
-				LinkedList< Node > sol=agentClient.Search( strategy );
-				
-				if(sol==null){
-					System.err.println("conflict!!!");
-					conflict=true;
-					agent.conflict=true;
-					//what is the problem
-//						agent / agent with box
-//						box
-					sol = new LinkedList<Node>();
-					agentClient.state.action=new Command();
-					sol.add(agentClient.state);
-//					System.exit(0);
-				}
-//				System.err.println(sol);
-				solutions.add(sol);
+				if(solutions.get(agent.id).isEmpty()){
+					System.err.println("agent "+agent.id+" planing");
+					SearchClient agentClient = new SearchClient( client.state, agent);
+	//				strategy = new StrategyBestFirst( new Greedy( agentClient.state, agent.id ) );
+					strategy = new StrategyBestFirst( new AStar( agentClient.state, agent.id ) );
+	//				strategy = new StrategyBestFirst( new WeightedAStar( agentClient.state, agent.id ) );
 
-			}
-			
-			if( conflict){
-				
-				solutions=Conflict.solve(solutions, client.agents);
-				System.err.println("!!!!!!!!!!!"+solutions.size());
-			}
-			
-			
-			String[] solution = mergePlans(solutions);
-	
-
-			if ( solution.length == 0 ) {
-				System.err.println( "Unable to solve level" );
-				System.exit( 0 );
-			} else {
-				System.err.println( "\nSummary for " + strategy );
-				System.err.println( "Found solution of length " + solution.length );
-				System.err.println( strategy.searchStatus() );
-
-				int k=0;
-				for ( String n : solution ) {
-					System.out.println( n );
-					//					System.err.println("execute "+n);
-					String response;
-					do{
-						response = serverMessages.readLine();
-					}while(response.equals(""));
-
-					if ( response.contains( "false" ) ) {
-						System.err.format( "Server responsed with %s to the inapplicable action: %s\n", response, n );
-						System.err.format( "%s was attempted in \n%s\n", n, client.state );
-						client.state=updateFailedState(client.state,solutions,k,response);
-						break;
-					}else{
-
-						client.state=updateState(client.state,solutions,k);
-
+					LinkedList< Node > sol=agentClient.Search( strategy );
+					
+					if(sol==null){
+						System.err.println("agent "+agent.id+" is stuck");
+						stuck=true;
+						sol = new LinkedList<Node>();
 					}
-					k++;
+					solutions.get(agent.id).addAll(sol);
+
+				}else{
+					System.err.println("agent "+agent.id+" using old plan");
 				}
 			}
+			
+			if( stuck){
+				// solv stuck agents
+//				solutions=Conflict.solve(solutions, client.agents);
+//				System.err.println("!!!!!!!!!!!"+solutions.size());
+			}
+			
+			
+			executePlans(solutions, client);
 
 		}
 
 		System.err.println("done");
 	}
 
-
-
-	private static Node updateFailedState(Node n, ArrayList<LinkedList<Node>> solutions, int k, String response) {
-
-		String[] strings=response.split(",");
-		int size=0;
-		for (int i = 0; i < solutions.size(); i++) {
-
-			if(size<solutions.get(i).size()){
-				size=solutions.get(i).size();
-			}
-
-		}
-		ArrayList<Command> commands= new ArrayList<>();
-		for (int i = 0; i < solutions.size(); i++) {
-			if(k<solutions.get(i).size() && !strings[i].contains("false")){
-				commands.add(solutions.get(i).get(k).action);
-			}else{
-				commands.add(null);
-			}
-
-		}
-		return n.excecuteCommands(commands);
-	}
-
-	private static Node updateState(Node n, ArrayList<LinkedList<Node>> solutions, int k) {
-		int size=0;
-		for (int i = 0; i < solutions.size(); i++) {
-			if(size<solutions.get(i).size()){
-				size=solutions.get(i).size();
-			}
-
-		}
-		ArrayList<Command> commands= new ArrayList<>();
-		for (int i = 0; i < solutions.size(); i++) {
-			if(k<solutions.get(i).size()){
-				commands.add(solutions.get(i).get(k).action);
-			}else{
-				commands.add(null);
-			}
-
-		}
-		return n.excecuteCommands(commands);
-	}
-
+	
 
 }
