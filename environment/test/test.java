@@ -451,12 +451,12 @@ public class test {
 		
 		SearchClient agentClient = new SearchClient( client.state, client.state.agents[0] );
 		Strategy strategy1 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[0].id ) );
-		LinkedList<Node> sol1=agentClient.Search(strategy1);
+		LinkedList<Node> sol1=agentClient.Search(strategy1).solution;
 		assertEquals(9, sol1.size());
 //		System.err.println(client.state.agents[0].color);
 		SearchClient agentClient2 = new SearchClient( client.state, client.state.agents[1] );
 		Strategy strategy2 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[1].id ) );
-		LinkedList<Node> sol2=agentClient2.Search(strategy2);
+		LinkedList<Node> sol2=agentClient2.Search(strategy2).solution;
 		assertEquals(17, sol2.size());
 
 

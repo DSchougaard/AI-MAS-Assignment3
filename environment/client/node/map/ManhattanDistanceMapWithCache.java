@@ -17,8 +17,6 @@ public class ManhattanDistanceMapWithCache extends DistanceMap{
 
 
 	public int distance(Point p1, Point p2){
-//		if( cache != null )
-//			return Integer.MAX_VALUE;
 
 		if( !cache.containsKey( p1 ) )
 			cache.put(p1, new HashMap<Point, Integer>());
@@ -33,10 +31,7 @@ public class ManhattanDistanceMapWithCache extends DistanceMap{
 
 
 	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
-
-		Point p1 = new Point(rowFrom, colFrom);
-		Point p2 = new Point(rowTo, colTo);
-
+		
 		return this.distance( new Point(rowFrom, colFrom), new Point(rowTo, colTo));
 	}	
 

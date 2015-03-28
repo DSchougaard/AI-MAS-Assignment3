@@ -13,6 +13,8 @@ import client.node.Node;
 import client.node.map.BasicManhattanDistanceMap;
 import client.node.map.Parser;
 import client.node.storage.Agent;
+import client.node.storage.SearchResult;
+import client.node.storage.SearchResult.Result;
 import client.ArgumentParser;
 
 public class SearchClient {
@@ -94,8 +96,10 @@ public class SearchClient {
 		this.state=n;
 	}
 
-	public LinkedList< Node > Search( Strategy strategy ) throws IOException {
-//		System.err.format( "Search starting with strategy %s\n", strategy );
+
+	
+	public SearchResult Search( Strategy strategy ) throws IOException {
+		System.err.format( "Search starting with strategy %s\n", strategy );
 		strategy.addToFrontier( this.state );
 
 		int iterations = 0;
@@ -106,31 +110,26 @@ public class SearchClient {
 			}
 			if ( Memory.shouldEnd() ) {
 				System.err.format( "Memory limit almost reached, terminating search %s\n", Memory.stringRep() );
-				return new LinkedList<>();
+				return new SearchResult(SearchResult.Result.MEMMORY, new LinkedList<>());
 			}
 			if ( strategy.timeSpent() > 300 ) { // Minutes timeout
 				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep() );
-				return new LinkedList<>();
+				return new SearchResult(SearchResult.Result.TIME, new LinkedList<>());
 			}
 
 			if ( strategy.frontierIsEmpty() ) {
-				System.err.println("empty");
 				if(state.isGoalState(agent.color)){
-					System.err.println("done");
-					return new LinkedList<>();
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
 				}else{
-//					System.err.println("agent "+agent.id+" is stuck");
-					return null;
+					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
 				}
 
 			}
 
 			Node leafNode = strategy.getAndRemoveLeaf();
 
-//			System.err.println(leafNode.action);
 			if ( leafNode.isGoalState(agent.color)) {
-//				System.err.println("Found a plan");
-				return leafNode.extractPlan();
+				return new SearchResult(SearchResult.Result.PLAN,leafNode.extractPlan());
 			}
 
 			strategy.addToExplored( leafNode );
@@ -144,7 +143,6 @@ public class SearchClient {
 			iterations++;
 		}
 	}
-
 	public static void executePlans(ArrayList< LinkedList< Node > > solutions, SearchClient client) throws IOException{
 		StringBuilder builder= new StringBuilder();
 		
@@ -238,15 +236,15 @@ public class SearchClient {
 	//				strategy = new StrategyBestFirst( new Greedy( agentClient.state, agent.id ) );
 					strategy = new StrategyBestFirst( new AStar( agentClient.state, agent.id ) );
 	//				strategy = new StrategyBestFirst( new WeightedAStar( agentClient.state, agent.id ) );
+					SearchResult result=agentClient.Search( strategy );
 
-					LinkedList< Node > sol=agentClient.Search( strategy );
 					
-					if(sol==null){
+					if(result.reason==Result.STUCK){
 						System.err.println("agent "+agent.id+" is stuck");
 						stuck=true;
-						sol = new LinkedList<Node>();
+
 					}
-					solutions.get(agent.id).addAll(sol);
+					solutions.get(agent.id).addAll(result.solution);
 
 				}else{
 					System.err.println("agent "+agent.id+" using old plan");

@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import client.node.Color;
-import client.ArgumentParser;
 import client.SettingsContainer;
 import client.node.Node;
 
