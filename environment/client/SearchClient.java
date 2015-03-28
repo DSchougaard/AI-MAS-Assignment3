@@ -11,6 +11,7 @@ import java.util.List;
 import client.Heuristic.*;
 import client.Strategy.StrategyBestFirst;
 import client.node.Node;
+import client.node.map.BasicManhattanDistanceMap;
 import client.node.map.Parser;
 import client.node.storage.Agent;
 import client.ArgumentParser;
@@ -73,6 +74,19 @@ public class SearchClient {
 			}
 		}
 	}
+	
+	public SearchClient( BufferedReader serverMessages ) throws Exception {
+		
+		 SettingsContainer settings =new SettingsContainer();
+		 settings.dm= new BasicManhattanDistanceMap();
+		state=Parser.parse(serverMessages, settings);
+		for (int i = 0; i < state.agents.length; i++) {
+			if(state.agents[i]!=null){
+				agents.add(state.agents[i]);
+			}
+		}
+	}
+
 
 	public SearchClient(Node initialState, Agent agent) {
 		Node n=initialState.CopyNode();

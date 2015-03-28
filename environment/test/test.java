@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -403,10 +402,10 @@ public class test {
 		ArrayList<Node>expanded =agentClient.state.getExpandedNodes(0);
 		assertEquals(3, expanded.size());
 		for (Node node : expanded) {
-			System.err.println(node);
-			System.err.println(node.hashCode());
+//			System.err.println(node);
+//			System.err.println(node.hashCode());
 			if(!strategy1.inFrontier(node)){
-				System.err.println("damm");
+//				System.err.println("damm");
 				strategy1.addToFrontier(node);
 			}
 		}
@@ -454,7 +453,7 @@ public class test {
 		Strategy strategy1 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[0].id ) );
 		LinkedList<Node> sol1=agentClient.Search(strategy1);
 		assertEquals(9, sol1.size());
-		System.err.println(client.state.agents[0].color);
+//		System.err.println(client.state.agents[0].color);
 		SearchClient agentClient2 = new SearchClient( client.state, client.state.agents[1] );
 		Strategy strategy2 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[1].id ) );
 		LinkedList<Node> sol2=agentClient2.Search(strategy2);

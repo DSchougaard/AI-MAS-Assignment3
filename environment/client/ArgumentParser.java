@@ -31,6 +31,9 @@ public class ArgumentParser{
 			}
 			i+=2;
 		}
+		if(settings.dm==null){
+			settings.dm = new BasicManhattanDistanceMap();
+		}
 		return settings;
 	}
 }
