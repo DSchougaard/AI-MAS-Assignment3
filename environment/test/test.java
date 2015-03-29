@@ -28,23 +28,19 @@ public class test {
 	@Test
 	public void addBoxes(){
 		Node n = new Node();
-		assertEquals(0,n.getAllBoxes().size());
 		assertEquals(0,n.getBoxes().length);
 		n.addBox('k', Color.blue, 2, 4);
-		assertEquals(1,n.getAllBoxes().size());
 		assertEquals(1,n.getBoxes().length);
 		assertEquals(Color.blue,n.getBoxes()[0].color);
 		assertEquals('k',n.getBoxes()[0].getType());
 		
 		n.addBox('g', Color.blue, 2, 6);
-		assertEquals(2,n.getAllBoxes().size());
 		assertEquals(2,n.getBoxes().length);
 		n.addBox('k', Color.red, 2, 8);
 		assertEquals(3,n.getBoxes().length);
-		assertEquals(2,n.getAllBoxes().size());
-		ArrayList<Box>bs=n.getAllBoxes().get('k');
+		ArrayList<Box>bs=n.getBoxes('k');
 		assertEquals(2, bs.size());
-		bs=n.getAllBoxes().get('g');
+		bs=n.getBoxes('g');
 		assertEquals(1, bs.size());
 	}
 	
@@ -66,9 +62,9 @@ public class test {
 		
 		SearchClient client = new SearchClient( serverMessages );
 		
-		assertEquals(1, client.state.getAllGoals().size());
-		assertNull( client.state.getGoalsByColor(Color.cyan));
-		assertEquals(1, client.state.getGoalsByColor(Color.noColor).size());
+		assertEquals(1, client.state.getGoals().size());
+		assertNull( client.state.getGoals(Color.cyan));
+		assertEquals(1, client.state.getGoals(Color.noColor).size());
 	}
 
 	
@@ -117,7 +113,7 @@ public class test {
 		assertFalse(client.state.isGoalState());
 		assertFalse(client.state.isGoalState(Color.noColor));
 		
-		assertEquals(4, client.state.getGoalsByColor(Color.noColor).size());
+		assertEquals(4, client.state.getGoals(Color.noColor).size());
 
 	}
 	@Test
@@ -293,10 +289,10 @@ public class test {
 
 		assertFalse(client.state.isGoalState());
 		
-		assertEquals(1, client.state.getGoalsByColor(Color.red).size());
+		assertEquals(1, client.state.getGoals(Color.red).size());
 		assertEquals(Color.red, client.state.boxAt(1, 23).color);
 		
-		assertEquals(1, client.state.getGoalsByColor(Color.green).size());
+		assertEquals(1, client.state.getGoals(Color.green).size());
 		assertEquals(Color.green, client.state.boxAt(2, 23).color);
 	}
 	
@@ -469,10 +465,10 @@ public class test {
 		
 		SearchClient client = new SearchClient( serverMessages );
 		
-		assertEquals(2, client.state.getAllGoals().size());
-		assertNull( client.state.getGoalsByColor(Color.cyan));
-		assertEquals(1, client.state.getGoalsByColor(Color.green).size());
-		assertEquals(1, client.state.getGoalsByColor(Color.red).size());
+		assertEquals(2, client.state.getGoals().size());
+		assertNull( client.state.getGoals(Color.cyan));
+		assertEquals(1, client.state.getGoals(Color.green).size());
+		assertEquals(1, client.state.getGoals(Color.red).size());
 		ArrayList<Command> cms= new ArrayList<>();
 		for (int i = 0; i < 16; i++) {
 			cms.add(new Command(dir.E));
