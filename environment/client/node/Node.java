@@ -27,6 +27,7 @@ public class Node implements NodeInterface, LevelInterface{
 	HashMap<Character, ArrayList<Box>> boxesByType;
 	HashMap<Point, Box> boxesByPoint;
 
+	@SuppressWarnings("unused")
 	private void boxRemove(Box box){
 		this.boxesByPoint.remove(new Point(box.row, box.col));
 		ArrayList<Box> boxList = boxesByType.get(box.getType());

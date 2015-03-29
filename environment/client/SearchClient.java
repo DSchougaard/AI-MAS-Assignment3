@@ -60,6 +60,7 @@ public class SearchClient {
 
 	public Node state = null;
 	
+	//all agents in sorted order
 	public List< Agent > agents = new ArrayList< Agent >();
 
 	private Agent agent;
@@ -210,7 +211,7 @@ public class SearchClient {
 
 
 	public static void main( String[] args ) throws Exception {
-		
+
 		SettingsContainer settings =ArgumentParser.parse(args);
 
 		// Use stderr to print to console
@@ -219,9 +220,11 @@ public class SearchClient {
 		// Read level and create the initial state of the problem
 		SearchClient client = new SearchClient( serverMessages, settings );
 		System.err.println("level loaded");
+		
+		
 		//online planning loop
 		ArrayList< LinkedList< Node > > solutions = new ArrayList<LinkedList<Node>>();
-		for (Agent agent : client.agents) {
+		for (@SuppressWarnings("unused") Agent agent : client.agents) {
 			solutions.add(new LinkedList< Node >());
 		}
 		while(!client.state.isGoalState()){

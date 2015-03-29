@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import org.junit.Test;
@@ -420,17 +421,16 @@ public class test {
 		assertTrue(cmds.contains(new Command(dir.W)));
 		assertTrue(cmds.contains(new Command(dir.S)));
 		
-		
-		
-		expanded =expanded.get(0).getExpandedNodes(0);
+
+		Node ex=Arrays.stream(expanded.toArray(new Node[0])).filter(n-> n.agents[0].row == 1).findAny().get();
+		expanded =ex.getExpandedNodes(0);
 		
 		assertEquals(3, expanded.size());
 		cmds.clear();
 		expanded.forEach(n->cmds.add(n.action));
 		assertTrue(cmds.contains(new Command(dir.E)));
 		assertTrue(cmds.contains(new Command(dir.W)));
-		assertTrue(cmds.contains(new Command(dir.S)));
-		
+		assertTrue(cmds.toString(),cmds.contains(new Command(dir.S)));
 		
 		
 		
