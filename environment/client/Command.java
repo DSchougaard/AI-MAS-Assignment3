@@ -65,7 +65,8 @@ public class Command {
 		dir2 = d2;
 		
 	}
-
+	
+	@Override
 	public String toString() {
 		switch (actType) {
 		case Move:
@@ -76,11 +77,6 @@ public class Command {
 			return actType.toString() + "(" + dir1 + "," + dir2 + ")";
 		}
 	
-	}
-	
-
-	public String toActionString() {
-		return "[" + this.toString() + "]";
 	}
 	
 	@Override

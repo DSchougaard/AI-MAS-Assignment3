@@ -339,12 +339,9 @@ public class Node implements NodeInterface, LevelInterface{
 						expandedNodes.add( n );
 						
 					}
-					
 
 				}
 				
-
-
 
 			} else if ( c.actType == type.Pull ) {
 				// Cell is free where agent is going
@@ -384,10 +381,7 @@ public class Node implements NodeInterface, LevelInterface{
 		return ( d == dir.E ? 1 : ( d == dir.W ? -1 : 0 ) ); // East is left one column (1), west is right one column (-1)
 	}
 
-
-
-
-	
+	@Override	
 	public int g() {
 		return g;
 	}
@@ -413,11 +407,11 @@ public class Node implements NodeInterface, LevelInterface{
 				child.excecuteCommand( cs.get(i), i);
 			}
 		}
-
+	
 		return child;
 		
 	}
-	
+
 	public Node excecuteCommands(ArrayList<Command> cs, int agent){
 		Node child = ChildNode();
 		for (int i = 0; i < cs.size(); i++) {
@@ -429,7 +423,6 @@ public class Node implements NodeInterface, LevelInterface{
 		return child;
 		
 	}
-
 
 	private void excecuteCommand(Command c, int agentID){
 		actions.add(c);

@@ -155,7 +155,7 @@ public class Level implements LevelInterface{
 		return this.goals;
 	}
 
-	public ArrayList<Goal> getAllGoals(){
+	public ArrayList<Goal> getGoals(){
 		ArrayList<Goal> returnGoals = new ArrayList<Goal>();
 		for( Character c  : goals.keySet() ){
 			returnGoals.addAll(this.goals.get(c));
@@ -163,7 +163,7 @@ public class Level implements LevelInterface{
 		return returnGoals;
 	}
 
-	public ArrayList<Goal> getGoalsByColor(Color color){
+	public ArrayList<Goal> getGoals(Color color){
 		return this.goalTypeByColor.get(color);
 	}
 

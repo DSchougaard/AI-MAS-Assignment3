@@ -102,7 +102,7 @@ public class SearchClient {
 	 * @throws IOException
 	 */
 	public SearchResult Search( Strategy strategy, int agentID) throws IOException {
-		return Search(strategy, agentID, this.state.getGoalsByColor(state.agents[agentID].color));
+		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color));
 	}
 	
 	public SearchResult Search( Strategy strategy, int agentID, ArrayList<Goal> goals) throws IOException {
