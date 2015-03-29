@@ -128,7 +128,7 @@ public class test {
 		
 		
 		
-		SearchClient agentClient = new SearchClient( client.state, client.agents.get(0) );
+		SearchClient agentClient = new SearchClient( client.state);
 
 		assertEquals(client.state, agentClient.state);
 		
@@ -212,7 +212,7 @@ public class test {
 		SearchClient client = new SearchClient( serverMessages );
 
 
-		SearchClient agentClient = new SearchClient( client.state, client.state.agents[0] );
+		SearchClient agentClient = new SearchClient( client.state);
 
 		
 
@@ -308,7 +308,7 @@ public class test {
 		
 		
 		
-		SearchClient agentClient = new SearchClient( client.state, client.agents.get(0) );
+		SearchClient agentClient = new SearchClient( client.state );
 
 		assertEquals(client.state, agentClient.state);
 		assertEquals(Color.red, agentClient.state.boxAt(1, 2).color);
@@ -393,7 +393,7 @@ public class test {
 		
 		
 		
-		SearchClient agentClient = new SearchClient( client.state, client.agents.get(0) );
+		SearchClient agentClient = new SearchClient( client.state );
 
 		Strategy strategy1 = new StrategyBestFirst( new AStar( agentClient.state, client.agents.get(0).id ) );
 		assertTrue( strategy1.frontierIsEmpty());
@@ -449,14 +449,14 @@ public class test {
 		
 		
 		
-		SearchClient agentClient = new SearchClient( client.state, client.state.agents[0] );
+		SearchClient agentClient = new SearchClient( client.state );
 		Strategy strategy1 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[0].id ) );
-		LinkedList<Node> sol1=agentClient.Search(strategy1).solution;
+		LinkedList<Node> sol1=agentClient.Search(strategy1, client.state.agents[0].id).solution;
 		assertEquals(9, sol1.size());
 //		System.err.println(client.state.agents[0].color);
-		SearchClient agentClient2 = new SearchClient( client.state, client.state.agents[1] );
+		SearchClient agentClient2 = new SearchClient( client.state );
 		Strategy strategy2 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[1].id ) );
-		LinkedList<Node> sol2=agentClient2.Search(strategy2).solution;
+		LinkedList<Node> sol2=agentClient2.Search(strategy2, client.state.agents[1].id).solution;
 		assertEquals(17, sol2.size());
 
 

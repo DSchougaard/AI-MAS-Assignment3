@@ -13,6 +13,7 @@ import client.node.Node;
 import client.node.map.BasicManhattanDistanceMap;
 import client.node.map.Parser;
 import client.node.storage.Agent;
+import client.node.storage.Goal;
 import client.node.storage.SearchResult;
 import client.node.storage.SearchResult.Result;
 import client.ArgumentParser;
@@ -60,15 +61,12 @@ public class SearchClient {
 
 	public Node state = null;
 	
-	//all agents in sorted order
+	//all the active agents in sorted order
 	public List< Agent > agents = new ArrayList< Agent >();
-
-	private Agent agent;
 
 
 	public SearchClient( BufferedReader serverMessages, SettingsContainer settings ) throws Exception {
 
-		
 		state=Parser.parse(serverMessages, settings);
 		for (int i = 0; i < state.agents.length; i++) {
 			if(state.agents[i]!=null){
@@ -90,16 +88,24 @@ public class SearchClient {
 	}
 
 
-	public SearchClient(Node initialState, Agent agent) {
+	public SearchClient(Node initialState) {
 		Node n=initialState.CopyNode();
-		this.agent=agent;
 		n.parent=null;
 		this.state=n;
 	}
 
-
+	/**
+	 * 
+	 * @param strategy
+	 * @param agentID
+	 * @return SearchResult
+	 * @throws IOException
+	 */
+	public SearchResult Search( Strategy strategy, int agentID) throws IOException {
+		return Search(strategy, agentID, this.state.getGoalsByColor(state.agents[agentID].color));
+	}
 	
-	public SearchResult Search( Strategy strategy ) throws IOException {
+	public SearchResult Search( Strategy strategy, int agentID, ArrayList<Goal> goals) throws IOException {
 		System.err.format( "Search starting with strategy %s\n", strategy );
 		strategy.addToFrontier( this.state );
 
@@ -119,7 +125,7 @@ public class SearchClient {
 			}
 
 			if ( strategy.frontierIsEmpty() ) {
-				if(state.isGoalState(agent.color)){
+				if(state.isGoalState(goals)){
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
 				}else{
 					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
@@ -129,13 +135,13 @@ public class SearchClient {
 
 			Node leafNode = strategy.getAndRemoveLeaf();
 
-			if ( leafNode.isGoalState(agent.color)) {
+			if ( leafNode.isGoalState(goals)) {
 				return new SearchResult(SearchResult.Result.PLAN,leafNode.extractPlan());
 			}
 
 			strategy.addToExplored( leafNode );
 
-			for ( Node n : leafNode.getExpandedNodes(agent.id) ) {
+			for ( Node n : leafNode.getExpandedNodes(agentID) ) {
 				if ( !strategy.isExplored( n ) && !strategy.inFrontier( n ) ) {
 					
 					strategy.addToFrontier( n );
@@ -144,6 +150,14 @@ public class SearchClient {
 			iterations++;
 		}
 	}
+	
+	/**
+	 * Executes the plans until done or some things goes wrong
+	 * 
+	 * @param solutions
+	 * @param client
+	 * @throws IOException
+	 */
 	public static void executePlans(ArrayList< LinkedList< Node > > solutions, SearchClient client) throws IOException{
 		StringBuilder builder= new StringBuilder();
 		
@@ -229,17 +243,21 @@ public class SearchClient {
 		}
 		while(!client.state.isGoalState()){
 			
-			
 			boolean stuck=false;
 			Strategy strategy = null;
 			for (Agent agent : client.agents) {
+				//only plan if there is not already a plan
 				if(solutions.get(agent.id).isEmpty()){
+					//find a subgoal(s) which should be solved
+					//TODO: find subgoals
+					
+					//find solution for subgoal(s)
 					System.err.println("agent "+agent.id+" planing");
-					SearchClient agentClient = new SearchClient( client.state, agent);
+					SearchClient agentClient = new SearchClient( client.state);
 	//				strategy = new StrategyBestFirst( new Greedy( agentClient.state, agent.id ) );
 					strategy = new StrategyBestFirst( new AStar( agentClient.state, agent.id ) );
 	//				strategy = new StrategyBestFirst( new WeightedAStar( agentClient.state, agent.id ) );
-					SearchResult result=agentClient.Search( strategy );
+					SearchResult result=agentClient.Search( strategy, agent.id );
 					
 					
 					if(result.reason==Result.STUCK){

@@ -171,20 +171,20 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	public boolean isGoalState(){
-		return internalGoalEval(this.level.getAllGoals());
+		return isGoalState(this.level.getAllGoals());
 	
 	}
 
 	public boolean isGoalState(Color color){
 		// GoalEval on the reduced subset of goals
-		return internalGoalEval( this.getGoalsByColor(color) );
+		return isGoalState( this.getGoalsByColor(color) );
 	}
 
 	public boolean isGoalState(Goal goal){
 		return ( this.boxesByPoint.containsKey( goal.getPoint() ) && this.boxesByPoint.get( goal.getPoint() ).getType() == goal.type );
 	}
 
-	public boolean internalGoalEval(ArrayList<Goal> goals){
+	public boolean isGoalState(ArrayList<Goal> goals){
 		for( int i = 0 ; i < goals.size() ; i++ ){
 			Point p = goals.get(i).getPoint();
 			Box b = this.boxesByPoint.get(p);
