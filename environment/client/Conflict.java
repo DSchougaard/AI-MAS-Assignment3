@@ -6,6 +6,7 @@ import java.util.List;
 
 import client.node.Node;
 import client.node.storage.Agent;
+import client.node.storage.Agent.Status;
 
 
 
@@ -18,9 +19,16 @@ public class Conflict{
 		
 		int conflicts=0;
 		for (Agent agent : agents) {
-			if(agent.conflict){
+			if(agent.status== Agent.Status.STUCK){
 				conflicts++;
-				agent.conflict=false;
+				//TODO: find reason
+				
+				//TODO: find some one to solve the problem
+				for (Agent OtherAgent : agents) {
+					if(!agent.equals(OtherAgent) && OtherAgent.status!=Status.HELPING){
+						//TODO: find solution
+					}
+				}
 			}
 		}
 

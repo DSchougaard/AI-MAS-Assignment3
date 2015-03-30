@@ -7,7 +7,8 @@ import client.node.Color;
 public class Agent extends Base{
 	public int id;
 	public Color color;
-	public Boolean conflict =false;
+	public enum Status{STUCK, PLAN, DONE, IDLE, HELPING}
+	public Status status =Status.IDLE;
 	
 	public Agent(int name, Color color, int row, int col){
 		super(row, col);

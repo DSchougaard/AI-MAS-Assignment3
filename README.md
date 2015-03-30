@@ -3,17 +3,18 @@
 offline/online planning?
 
 
-independent agents (multi threding?)
+independent agents (multi threading)
 
 hericical approach
 
-assume subgoal independence
+assume sub-goal independence
 
-best first search
-
+forward search
+	best first search
+	heuristic
 
 negotiation
-	highst workload = higst priority
+	highest workload = highest priority
 	bidding for who solves the job
 	
 	

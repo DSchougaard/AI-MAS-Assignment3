@@ -13,6 +13,7 @@ import client.node.Node;
 import client.node.map.BasicManhattanDistanceMap;
 import client.node.map.Parser;
 import client.node.storage.Agent;
+import client.node.storage.Agent.Status;
 import client.node.storage.Goal;
 import client.node.storage.SearchResult;
 import client.node.storage.SearchResult.Result;
@@ -261,6 +262,7 @@ public class SearchClient {
 					
 					
 					if(result.reason==Result.STUCK){
+						agent.status=Status.STUCK;
 						System.err.println("agent "+agent.id+" is stuck");
 						stuck=true;
 
