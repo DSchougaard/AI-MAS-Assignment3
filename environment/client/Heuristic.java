@@ -99,8 +99,16 @@ public abstract class Heuristic implements Comparator< Node > {
 	}
 	
 
-	public selectGoal(ArrayList<Goal> goals){
-		return null;
+	public Goal selectGoal(){
+		Agent a = this.initialState.agents[this.agentID];
+		ArrayList<Goal> goals = this.initialState.getClusters(a);
+		Goal selectedGoal = goals.get(0);
+		for( Goal g : goals ){
+			if( this.level.distance(agent, selectedGoal) < this.level.distance(agent, g) )
+				selectedGoal = g;
+		}
+
+		return selectedGoal;
 	}
 
 
