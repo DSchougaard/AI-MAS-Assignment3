@@ -272,7 +272,7 @@ public class SearchClient {
 					strategy = new StrategyBestFirst( heuristic );	
 					
 					Heuristic relaxedHeuristic;
-					relaxedHeuristic =new AStar( agentClient.state, agent.id );
+					relaxedHeuristic =new AStar( relaxed, agent.id );
 //					relaxedHeuristic =new WeightedAStar( agentClient.state, agent.id );
 //					relaxedHeuristic =new Greedy( agentClient.state, agent.id );
 					
@@ -294,15 +294,23 @@ public class SearchClient {
 					
 					if(result.reason==Result.STUCK){
 						agent.status=Status.STUCK;
+						
 						System.err.println("agent "+agent.id+" is stuck");
+						System.err.println( "\nSummary for " + relaxedStrategy );
+						System.err.println( "Found solution of length " + relaxedResult.solution.size() );
+						System.err.println( relaxedStrategy.searchStatus() );
 						stuck=true;
-
+						solutions.get(agent.id).addAll(relaxedResult.solution);
+					}else{
+						
+						System.err.println( "\nSummary for " + strategy );
+						System.err.println( "Found solution of length " + result.solution.size() );
+						System.err.println( strategy.searchStatus() );
+						solutions.get(agent.id).addAll(result.solution);
 					}
-					solutions.get(agent.id).addAll(result.solution);
 					
-					System.err.println( "\nSummary for " + strategy );
-					System.err.println( "Found solution of length " + result.solution.size() );
-					System.err.println( strategy.searchStatus() );
+					
+
 
 				}else{
 					System.err.println("agent "+agent.id+" using old plan");
@@ -310,8 +318,8 @@ public class SearchClient {
 			}
 			
 			if(stuck){
-				// solv stuck agents
-//				solutions=Conflict.solve(solutions, client.agents);
+				// solve stuck agents
+				solutions=Conflict.solve(solutions, client.agents);
 //				System.err.println("!!!!!!!!!!!"+solutions.size());
 			}
 			
