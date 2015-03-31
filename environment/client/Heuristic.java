@@ -2,10 +2,12 @@ package client;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 import client.node.Node;
 import client.node.storage.Box;
 import client.node.storage.Goal;
+import client.node.storage.Agent;
 
 public abstract class Heuristic implements Comparator< Node > {
 
@@ -101,10 +103,10 @@ public abstract class Heuristic implements Comparator< Node > {
 
 	public Goal selectGoal(){
 		Agent a = this.initialState.agents[this.agentID];
-		ArrayList<Goal> goals = this.initialState.getClusters(a);
+		ArrayList<Goal> goals = this.initialState.getCluster(a);
 		Goal selectedGoal = goals.get(0);
 		for( Goal g : goals ){
-			if( this.level.distance(agent, selectedGoal) < this.level.distance(agent, g) )
+			if( this.initialState.distance(a, selectedGoal) < this.initialState.distance(a, g) )
 				selectedGoal = g;
 		}
 
