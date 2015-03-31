@@ -1,7 +1,6 @@
 package client.node;
 
 import java.awt.Point;
-import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -122,7 +121,7 @@ public class Node implements NodeInterface, LevelInterface{
 //		if( !(row >= 0 && col >= 0 && row <= this.level.getRow() && col <= this.level.getCol()) )
 //			return false;
 
-		if( this.level.isWall(row, col) )
+		if( Node.level.isWall(row, col) )
 			return false;
 
 		if( this.boxesByPoint.containsKey( new Point(row, col) ) )
@@ -174,7 +173,7 @@ public class Node implements NodeInterface, LevelInterface{
 
 	@Override
 	public boolean isGoalState(){
-		return isGoalState(this.level.getGoals());
+		return isGoalState(Node.level.getGoals());
 	
 	}
 
@@ -208,7 +207,7 @@ public class Node implements NodeInterface, LevelInterface{
 
 	@Override
 	public Node subdomain(Color color){
-		Node subdomainNode = new Node(this.level);
+		Node subdomainNode = new Node();
 		// Determine which agents falls within the color
 		for( int i = 0 ; i < this.agents.length ; i++ ){
 			if( this.agents[i].color == color )
@@ -223,7 +222,7 @@ public class Node implements NodeInterface, LevelInterface{
 
 	@Override
 	public Node subdomain(ArrayList<Agent> agents){
-		Node subdomainNode = new Node(this.level);
+		Node subdomainNode = new Node(Node.level);
 		for( Agent a : agents ){
 			subdomainNode.agents[a.id] = new Agent(a);
 		}
@@ -268,43 +267,43 @@ public class Node implements NodeInterface, LevelInterface{
 	// Methods from LevelInterface. Parsed directly to LevelInterface.
 	@Override
 	public ArrayList<Goal> getGoals(){
-		return this.level.getGoals();
+		return Node.level.getGoals();
 	}
 
 	@Override
 	public ArrayList<Goal> getGoals(char chr){
-		return this.level.getGoals(chr);
+		return Node.level.getGoals(chr);
 	}
 	
 	@Override
 	public ArrayList<Goal> getGoals(Color color){
-		return this.level.getGoals(color);
+		return Node.level.getGoals(color);
 	}
 
 	@Override
 	public boolean isWall(int row, int col){
-		return this.level.isWall(row, col);
+		return Node.level.isWall(row, col);
 	}
 
 	@Override
 	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
-		return this.level.distance(rowFrom, colFrom, rowTo, colTo);
+		return Node.level.distance(rowFrom, colFrom, rowTo, colTo);
 	}
 	
 	@Override
 	public int distance(Base from, Base to) {
-		return this.level.distance(from, to);
+		return Node.level.distance(from, to);
 
 	}
 
 	public void calculateCluster(Agent[] agents){
-		this.level.calculateCluster(agents);
+		Node.level.calculateCluster(agents);
 	}
 	public HashMap<Integer, ArrayList<Goal>> getClusters(){
-		return this.level.getClusters();
+		return Node.level.getClusters();
 	}
 	public ArrayList<Goal> getCluster(Agent agent){
-		ArrayList<Goal> t 			= this.level.getCluster(agent);
+		ArrayList<Goal> t 			= Node.level.getCluster(agent);
 		ArrayList<Goal> filtered 	= new ArrayList<Goal>();
 
 		// Bypass filtering
@@ -497,7 +496,6 @@ public class Node implements NodeInterface, LevelInterface{
 	
 	public Node CopyNode() {
 		Node copy= new Node();
-		copy.level=this.level;
 		for (int i = 0; i < agents.length; i++) {
 			if(this.agents[i]!=null){
 				copy.agents[i]=new Agent(this.agents[i]);
