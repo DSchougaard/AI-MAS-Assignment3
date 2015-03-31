@@ -17,10 +17,8 @@ public class Conflict{
 	
 	public static ArrayList< LinkedList< Node > > solve(ArrayList< LinkedList< Node > > solutions, List< Agent > agents){
 		
-		int conflicts=0;
 		for (Agent agent : agents) {
 			if(agent.status== Agent.Status.STUCK){
-				conflicts++;
 				//TODO: find reason
 				
 				//TODO: find some one to solve the problem
@@ -32,9 +30,9 @@ public class Conflict{
 			}
 		}
 
-		if(conflicts==1){
-			return cut(solutions);
-		}
+//		if(conflicts==1){
+//			return cut(solutions);
+//		}
 		
 		System.err.println("conflict error");
 		return solutions;

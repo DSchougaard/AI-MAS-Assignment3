@@ -28,6 +28,8 @@ public class SearchClient {
 	public static void error( String msg ) throws Exception {
 		throw new Exception( "GSCError: " + msg );
 	}
+	
+	public static int searchMaxOffset = 2;
 
 	public static class Memory {
 		public static Runtime runtime = Runtime.getRuntime();
@@ -110,11 +112,12 @@ public class SearchClient {
 		return Search(strategy, agentID, goals , null);
 	}
 	
-	public SearchResult Search( Strategy strategy, int agentID, SearchResult result  ) throws IOException {
-		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color), result );
+	
+	public SearchResult Search( Strategy strategy, int agentID, SearchResult preResult  ) throws IOException {
+		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color), preResult );
 	}
 	
-	public SearchResult Search( Strategy strategy, int agentID, ArrayList<Goal> goals , SearchResult result ) throws IOException {
+	public SearchResult Search( Strategy strategy, int agentID, ArrayList<Goal> goals , SearchResult preResult ) throws IOException {
 		System.err.format( "Search starting with strategy %s\n", strategy );
 		strategy.addToFrontier( this.state );
 
@@ -132,17 +135,26 @@ public class SearchClient {
 				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep() );
 				return new SearchResult(SearchResult.Result.TIME, new LinkedList<>());
 			}
+			
 
 			if ( strategy.frontierIsEmpty() ) {
 				if(state.isGoalState(goals)){
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
-				}else{
+				}
+				else if (preResult != null){
+					return new SearchResult(SearchResult.Result.IMPOSIBLE, new LinkedList<>());
+				}
+				else{
 					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
 				}
 
 			}
 
 			Node leafNode = strategy.getAndRemoveLeaf();
+			
+			if ( preResult != null && leafNode.g() > ( preResult.solution.size() * searchMaxOffset ) ){
+				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+			}
 
 			if ( leafNode.isGoalState(goals)) {
 				return new SearchResult(SearchResult.Result.PLAN,leafNode.extractPlan());
@@ -272,7 +284,7 @@ public class SearchClient {
 					strategy = new StrategyBestFirst( heuristic );	
 					
 					Heuristic relaxedHeuristic;
-					relaxedHeuristic =new AStar( agentClient.state, agent.id );
+					relaxedHeuristic =new AStar( relaxed, agent.id );
 //					relaxedHeuristic =new WeightedAStar( agentClient.state, agent.id );
 //					relaxedHeuristic =new Greedy( agentClient.state, agent.id );
 					
@@ -294,15 +306,23 @@ public class SearchClient {
 					
 					if(result.reason==Result.STUCK){
 						agent.status=Status.STUCK;
+						
 						System.err.println("agent "+agent.id+" is stuck");
+						System.err.println( "\nSummary for " + relaxedStrategy );
+						System.err.println( "Found solution of length " + relaxedResult.solution.size() );
+						System.err.println( relaxedStrategy.searchStatus() );
 						stuck=true;
-
+						solutions.get(agent.id).addAll(relaxedResult.solution);
+					}else{
+						
+						System.err.println( "\nSummary for " + strategy );
+						System.err.println( "Found solution of length " + result.solution.size() );
+						System.err.println( strategy.searchStatus() );
+						solutions.get(agent.id).addAll(result.solution);
 					}
-					solutions.get(agent.id).addAll(result.solution);
 					
-					System.err.println( "\nSummary for " + strategy );
-					System.err.println( "Found solution of length " + result.solution.size() );
-					System.err.println( strategy.searchStatus() );
+					
+
 
 				}else{
 					System.err.println("agent "+agent.id+" using old plan");
@@ -310,8 +330,8 @@ public class SearchClient {
 			}
 			
 			if(stuck){
-				// solv stuck agents
-//				solutions=Conflict.solve(solutions, client.agents);
+				// solve stuck agents
+				solutions=Conflict.solve(solutions, client.agents);
 //				System.err.println("!!!!!!!!!!!"+solutions.size());
 			}
 			
