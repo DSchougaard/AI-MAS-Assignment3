@@ -23,9 +23,32 @@ negotiation
 	bidding for who solves the job
 	
 	
+## Tasks
+Sub-goals
+	Adjustable Resolution
+	Goal state
+	H: variable goal state
+	K cluster
 
+Conflict Analysis
+	Identify a problem
+	Describe the problem
+		2 search
+			realistic
+			relaxed
+		DS: route
+	Predict a problem
+
+Conflict Resolution
+	Agent
+		msg : "Plz.move"
+		who moves least
+		
+	Box
+		who can move it
+
+Heuristic
+	Paring box to goal
+	Clustering of goals
 	
-TODO:
-	heuristic
-	integrate map
-	conflict resolution
+	
