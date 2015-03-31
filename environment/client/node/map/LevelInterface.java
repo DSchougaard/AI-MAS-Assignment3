@@ -17,4 +17,9 @@ public interface LevelInterface {
 
 	int distance(int rowFrom, int colFrom, int rowTo, int colTo);
 	int distance(Base from, Base to);
+
+	void calculateCluster();
+	HashMap<Agent, ArrayList<Goal>> getClusters();
+	ArrayList<Goal> getCluster(Agent agent);
+
 }
