@@ -311,8 +311,10 @@ public class Node implements NodeInterface, LevelInterface{
 
 		// Filter
 		for( Goal g : t ){
-			if( this.boxesByPoint.containsKey(g.getPoint()) && this.boxesByPoint.get(g.getPoint()).getType() == g.getType() )
+			if( !this.boxesByPoint.containsKey(g.getPoint())
+			  ||(this.boxesByPoint.containsKey(g.getPoint()) && this.boxesByPoint.get(g.getPoint()).getType() != g.getType() )){
 				filtered.add(g);
+			}
 		}
 
 		return this.level.getCluster(agent);
