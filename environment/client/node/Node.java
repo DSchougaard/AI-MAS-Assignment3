@@ -303,6 +303,18 @@ public class Node implements NodeInterface, LevelInterface{
 		return this.level.getClusters();
 	}
 	public ArrayList<Goal> getCluster(Agent agent){
+		ArrayList<Goal> t 			= this.level.getCluster(agent);
+		ArrayList<Goal> filtered 	= new ArrayList<Goal>();
+
+		// Bypass filtering
+		// return t;
+
+		// Filter
+		for( Goal g : t ){
+			if( this.boxesByPoint.containsKey(g.getPoint()) && this.boxesByPoint.get(g.getPoint()).getType() == g.getType() )
+				filtered.add(g);
+		}
+
 		return this.level.getCluster(agent);
 	}
 

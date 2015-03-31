@@ -11,6 +11,10 @@ public class Goal extends Base{
 		this.type = type;
 	}
 
+	public char getType(){
+		return type;
+	}
+
 	@Override
 	public boolean equals( Object obj ) {
 		if( getClass() != obj.getClass() )
