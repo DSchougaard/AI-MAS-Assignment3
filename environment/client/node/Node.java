@@ -265,8 +265,6 @@ public class Node implements NodeInterface, LevelInterface{
 
 
 	// Methods from LevelInterface. Parsed directly to LevelInterface.
-	
-
 	@Override
 	public ArrayList<Goal> getGoals(){
 		return this.level.getGoals();
@@ -296,6 +294,16 @@ public class Node implements NodeInterface, LevelInterface{
 	public int distance(Base from, Base to) {
 		return this.level.distance(from, to);
 
+	}
+
+	public void calculateCluster(Agent[] agents){
+		this.level.calculateCluster(agents);
+	}
+	public HashMap<Integer, ArrayList<Goal>> getClusters(){
+		return this.level.getClusters();
+	}
+	public ArrayList<Goal> getCluster(Agent agent){
+		return this.level.getCluster(agent);
 	}
 
 	@Override
