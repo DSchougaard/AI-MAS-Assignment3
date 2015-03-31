@@ -33,7 +33,7 @@ public class SearchClient {
 		public static Runtime runtime = Runtime.getRuntime();
 		public static final float mb = 1024 * 1024;
 		public static final float limitRatio = .9f;
-		public static final int timeLimit = 180;
+		public static final int timeLimit = 300;
 
 		public static float used() {
 			return ( runtime.totalMemory() - runtime.freeMemory() ) / mb;
@@ -103,10 +103,13 @@ public class SearchClient {
 	 * @throws IOException
 	 */
 	public SearchResult Search( Strategy strategy, int agentID) throws IOException {
-		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color));
+		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color), null);
+	}
+	public SearchResult Search( Strategy strategy, int agentID, SearchResult result  ) throws IOException {
+		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color), result );
 	}
 	
-	public SearchResult Search( Strategy strategy, int agentID, ArrayList<Goal> goals) throws IOException {
+	public SearchResult Search( Strategy strategy, int agentID, ArrayList<Goal> goals , SearchResult result ) throws IOException {
 		System.err.format( "Search starting with strategy %s\n", strategy );
 		strategy.addToFrontier( this.state );
 
@@ -120,7 +123,7 @@ public class SearchClient {
 				System.err.format( "Memory limit almost reached, terminating search %s\n", Memory.stringRep() );
 				return new SearchResult(SearchResult.Result.MEMMORY, new LinkedList<>());
 			}
-			if ( strategy.timeSpent() > 300 ) { // Minutes timeout
+			if ( strategy.timeSpent() > Memory.timeLimit ) { // Minutes timeout
 				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep() );
 				return new SearchResult(SearchResult.Result.TIME, new LinkedList<>());
 			}
@@ -253,6 +256,7 @@ public class SearchClient {
 					System.err.println("agent "+agent.id+" planing");	
 					
 					SearchClient agentClient = new SearchClient( client.state);
+
 					Node relaxed =agentClient.state.subdomain(agent.color, agent);
 						
 					Heuristic heuristic;
@@ -281,7 +285,7 @@ public class SearchClient {
 					SearchResult relaxedResult=agentClient.Search( relaxedStrategy, agent.id, subgoals );
 					
 					SearchResult result=agentClient.Search( strategy, agent.id, subgoals, relaxedResult );
-					
+
 					
 					if(result.reason==Result.STUCK){
 						agent.status=Status.STUCK;
@@ -300,7 +304,7 @@ public class SearchClient {
 				}
 			}
 			
-			if( stuck){
+			if(stuck){
 				// solv stuck agents
 //				solutions=Conflict.solve(solutions, client.agents);
 //				System.err.println("!!!!!!!!!!!"+solutions.size());
