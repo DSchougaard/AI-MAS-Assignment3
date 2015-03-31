@@ -1,25 +1,30 @@
 package client.node.map;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import client.node.Color;
 import client.node.storage.Base;
 import client.node.storage.Goal;
+import client.node.storage.Agent;
 
 
 public interface LevelInterface {
+	// General Level interaction
+	public boolean isWall(int row, int col);
 
 	// Goals
-	ArrayList<Goal> getGoals();
-	ArrayList<Goal> getGoals(char chr);
-	ArrayList<Goal> getGoals(Color color);
-	boolean isWall(int row, int col);
+	public ArrayList<Goal> getGoals();
+	public ArrayList<Goal> getGoals(char chr);
+	public ArrayList<Goal> getGoals(Color color);
 
-	int distance(int rowFrom, int colFrom, int rowTo, int colTo);
-	int distance(Base from, Base to);
+	// Distance Methods
+	public int distance(int rowFrom, int colFrom, int rowTo, int colTo);
+	public int distance(Base from, Base to);
 
-	void calculateCluster();
-	HashMap<Agent, ArrayList<Goal>> getClusters();
-	ArrayList<Goal> getCluster(Agent agent);
+	// Clusters
+	public void calculateCluster(Agent[] agents);
+	public HashMap<Integer, ArrayList<Goal>> getClusters();
+	public ArrayList<Goal> getCluster(Agent agent);
 
 }

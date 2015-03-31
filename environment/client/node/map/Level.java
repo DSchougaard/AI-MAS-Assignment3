@@ -7,6 +7,7 @@ import java.util.HashMap;
 import client.node.Color;
 import client.node.storage.Base;
 import client.node.storage.Goal;
+import client.node.storage.Agent;
 
 /*
 	@author: Daniel Schougaard
@@ -31,7 +32,6 @@ public class Level implements LevelInterface{
 	/*
 		Private variables for Level
 	*/
-
 	private int maxRow;
 	private int maxCol;
 	private DistanceMap dm;
@@ -51,18 +51,16 @@ public class Level implements LevelInterface{
 			this.type = type;
 		}
 	}
-
 	private static Cell[][] map;
-
 	public enum Type { SPACE, WALL, GOAL, BOX, AGENT }
 
+
+	// Acessing Goals.
 	private HashMap<Character, ArrayList<Goal> > goals;
 	private HashMap<Color, ArrayList<Goal>> goalTypeByColor;
 
-
-
-
-
+	// Clusters
+	private HashMap<Integer, ArrayList<Goal>> clusters;
 
 	// Constructor
 	public Level(int maxRow, int maxCol, DistanceMap dm){
@@ -77,6 +75,7 @@ public class Level implements LevelInterface{
 		this.goals 				= new HashMap<Character, ArrayList<Goal>>();
 		this.goalTypeByColor 	= new HashMap<Color, ArrayList<Goal>>();
 		this.dm 				= dm;
+		this.clusters 			= new HashMap<Integer, ArrayList<Goal>>();
 	}	
 
 
@@ -139,8 +138,8 @@ public class Level implements LevelInterface{
 	}
 
 	public boolean isWall(int row, int col){
-//		if(Level.map[row][col] == null)
-//			System.err.println("------------"+row +" "+ col);
+		//if(Level.map[row][col] == null)
+			//System.err.println("------------"+row +" "+ col);
 			
 		return ( Level.map[row][col].type == Type.WALL );
 	}
@@ -181,6 +180,31 @@ public class Level implements LevelInterface{
 	public int distance(Base from, Base to) {
 		return distance(from.row, from.col, to.row, to.col);
 	}
+
+
+	public void calculateCluster(Agent[] agents){
+		for( int i = 0 ; i < agents.length ; i++ ){
+			if( agents[i] != null )
+				this.clusters.put( new Integer(agents[i].id), this.goalTypeByColor.get(agents[i].color) );
+		}
+	}
+	public HashMap<Integer, ArrayList<Goal>> getClusters(){
+		return this.clusters;
+	}
+	public ArrayList<Goal> getCluster(Agent agent){
+		return clusters.get( new Integer(agent.id) );
+	}
+
+	/*
+		Cluster 1: Color
+	*/
+
+
+
+
+
+
+
 	
 	public Character[][] toArray(){
 		Character[][] result= new Character[maxRow][maxCol];
