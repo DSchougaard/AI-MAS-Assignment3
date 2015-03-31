@@ -105,6 +105,11 @@ public class SearchClient {
 	public SearchResult Search( Strategy strategy, int agentID) throws IOException {
 		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color), null);
 	}
+	
+	public SearchResult Search( Strategy strategy, int agentID, ArrayList<Goal> goals) throws IOException {
+		return Search(strategy, agentID, goals , null);
+	}
+	
 	public SearchResult Search( Strategy strategy, int agentID, SearchResult result  ) throws IOException {
 		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color), result );
 	}
