@@ -1,9 +1,11 @@
 package client.node;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 import client.node.storage.Agent;
+import client.node.storage.Base;
 import client.node.storage.Box;
 import client.node.storage.Goal;
 
@@ -41,4 +43,6 @@ public interface NodeInterface {
 	public ArrayList< Node > getExpandedNodes(int agentID);
 	public LinkedList<Node> extractPlan();
 	public int g();
+	
+	public ArrayList<Base> getRoute(); 
 }

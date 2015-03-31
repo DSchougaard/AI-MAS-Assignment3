@@ -1,6 +1,7 @@
 package client.node;
 
 import java.awt.Point;
+import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,7 +47,7 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 	
 	public Node(Level level){
-		this.level = level;
+		Node.level = level;
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
 		agents 			= new Agent[10];
@@ -592,6 +593,12 @@ public class Node implements NodeInterface, LevelInterface{
 
 
 		return true;
+	}
+
+	@Override
+	public ArrayList<Base> getRoute() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 	}
 
 
