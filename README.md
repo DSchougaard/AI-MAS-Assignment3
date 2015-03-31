@@ -24,31 +24,31 @@ negotiation
 	
 	
 ## Tasks
-Sub-goals
-	Adjustable Resolution
-	Goal state
-	H: variable goal state
-	K cluster
 
-Conflict Analysis
-	Identify a problem
-	Describe the problem
-		2 search
-			realistic
-			relaxed
-		DS: route
-	Predict a problem
+### Sub-Goals
+Markup : *Adjustable Resolution
+         *Goal state
+         *H: variable goal state
+         *K cluster
 
-Conflict Resolution
-	Agent
-		msg : "Plz.move"
-		who moves least
-		
-	Box
-		who can move it
+### Conflict Analysis
+Markup : *Identify a problem
+         *Describe the problem
+          *2 search
+           *realistic
+           *relaxed        
+          *DS: route
+         *Predict a problem
 
-Heuristic
-	Paring box to goal
-	Clustering of goals
+### Conflict Resolution
+Markup : *Agent
+          *msg : "Plz.move"
+	      *who moves least	
+         *Box
+	      *who can move it
+
+### Heuristic
+Markup : *Paring box to goal
+         *Clustering of goals
 	
 	
