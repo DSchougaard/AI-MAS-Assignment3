@@ -135,9 +135,7 @@ public class SearchClient {
 				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep() );
 				return new SearchResult(SearchResult.Result.TIME, new LinkedList<>());
 			}
-			if ( preResult != null && strategy.getAndRemoveLeaf().g() > ( preResult.solution.size() * searchMaxOffset ) ){
-				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
-			}
+			
 
 			if ( strategy.frontierIsEmpty() ) {
 				if(state.isGoalState(goals)){
@@ -153,6 +151,10 @@ public class SearchClient {
 			}
 
 			Node leafNode = strategy.getAndRemoveLeaf();
+			
+			if ( preResult != null && leafNode.g() > ( preResult.solution.size() * searchMaxOffset ) ){
+				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+			}
 
 			if ( leafNode.isGoalState(goals)) {
 				return new SearchResult(SearchResult.Result.PLAN,leafNode.extractPlan());
