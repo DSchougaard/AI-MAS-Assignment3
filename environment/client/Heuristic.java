@@ -99,5 +99,43 @@ public abstract class Heuristic implements Comparator< Node > {
 	}
 	
 
+	public selectGoal(ArrayList<Goal> goals){
+		return null;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
