@@ -32,9 +32,9 @@ public class Conflict{
 			}
 		}
 
-		if(conflicts==1){
-			return cut(solutions);
-		}
+//		if(conflicts==1){
+//			return cut(solutions);
+//		}
 		
 		System.err.println("conflict error");
 		return solutions;
