@@ -28,6 +28,8 @@ public class SearchClient {
 	public static void error( String msg ) throws Exception {
 		throw new Exception( "GSCError: " + msg );
 	}
+	
+	public static int searchMaxOffset = 2;
 
 	public static class Memory {
 		public static Runtime runtime = Runtime.getRuntime();
@@ -112,9 +114,12 @@ public class SearchClient {
 	
 	public SearchResult Search( Strategy strategy, int agentID, SearchResult result  ) throws IOException {
 		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color), result );
+	public SearchResult Search( Strategy strategy, int agentID, SearchResult preResult  ) throws IOException {
+		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color), preResult );
 	}
 	
 	public SearchResult Search( Strategy strategy, int agentID, ArrayList<Goal> goals , SearchResult result ) throws IOException {
+	public SearchResult Search( Strategy strategy, int agentID, ArrayList<Goal> goals , SearchResult preResult ) throws IOException {
 		System.err.format( "Search starting with strategy %s\n", strategy );
 		strategy.addToFrontier( this.state );
 
@@ -132,11 +137,19 @@ public class SearchClient {
 				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep() );
 				return new SearchResult(SearchResult.Result.TIME, new LinkedList<>());
 			}
+			if ( preResult != null && strategy.getAndRemoveLeaf().g() > ( preResult.solution.size() * searchMaxOffset ) ){
+				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+			}
 
 			if ( strategy.frontierIsEmpty() ) {
 				if(state.isGoalState(goals)){
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
 				}else{
+				}
+				else if (preResult != null){
+					return new SearchResult(SearchResult.Result.IMPOSIBLE, new LinkedList<>());
+				}
+				else{
 					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
 				}
 

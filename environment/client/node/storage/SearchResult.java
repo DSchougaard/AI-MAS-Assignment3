@@ -8,6 +8,7 @@ import client.node.Node;
 
 public class SearchResult{
 	public enum Result{PLAN, STUCK, DONE, MEMMORY, TIME}
+	public enum Result{PLAN, STUCK, DONE, MEMMORY, TIME, IMPOSIBLE}
 	public Result reason;
 	public LinkedList<Node> solution;
 	
