@@ -246,19 +246,41 @@ public class SearchClient {
 			
 			boolean stuck=false;
 			Strategy strategy = null;
+			Strategy relaxedStrategy = null;
 			for (Agent agent : client.agents) {
 				//only plan if there is not already a plan
 				if(solutions.get(agent.id).isEmpty()){
-					//find a subgoal(s) which should be solved
-					//TODO: find subgoals
+					System.err.println("agent "+agent.id+" planing");	
 					
-					//find solution for subgoal(s)
-					System.err.println("agent "+agent.id+" planing");
 					SearchClient agentClient = new SearchClient( client.state);
-	//				strategy = new StrategyBestFirst( new Greedy( agentClient.state, agent.id ) );
-					strategy = new StrategyBestFirst( new AStar( agentClient.state, agent.id ) );
-	//				strategy = new StrategyBestFirst( new WeightedAStar( agentClient.state, agent.id ) );
-					SearchResult result=agentClient.Search( strategy, agent.id );
+					Node relaxed =agentClient.state.subdomain(agent.color, agent);
+						
+					Heuristic heuristic;
+					heuristic =new AStar( agentClient.state, agent.id );
+//					heuristic =new WeightedAStar( agentClient.state, agent.id );
+//					heuristic =new Greedy( agentClient.state, agent.id );
+					
+					strategy = new StrategyBestFirst( heuristic );	
+					
+					Heuristic relaxedHeuristic;
+					relaxedHeuristic =new AStar( agentClient.state, agent.id );
+//					relaxedHeuristic =new WeightedAStar( agentClient.state, agent.id );
+//					relaxedHeuristic =new Greedy( agentClient.state, agent.id );
+					
+					relaxedStrategy = new StrategyBestFirst( relaxedHeuristic );	
+					
+					
+					//find a subgoal(s) which should be solved
+					Goal subgoal=heuristic.selectGoal();
+					ArrayList<Goal> subgoals= new ArrayList<>();
+					subgoals.add(subgoal);
+
+					
+					
+					
+					SearchResult relaxedResult=agentClient.Search( relaxedStrategy, agent.id, subgoals );
+					
+					SearchResult result=agentClient.Search( strategy, agent.id, subgoals, relaxedResult );
 					
 					
 					if(result.reason==Result.STUCK){
