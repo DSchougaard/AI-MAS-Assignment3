@@ -317,7 +317,7 @@ public class Node implements NodeInterface, LevelInterface{
 			}
 		}
 
-		return this.level.getCluster(agent);
+		return filtered;
 	}
 
 	@Override

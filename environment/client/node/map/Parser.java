@@ -79,7 +79,7 @@ public class Parser{
 				}
 			}
 		}
-
+		level.calculateCluster(node.agents);
 		return node;
 	}
 }
