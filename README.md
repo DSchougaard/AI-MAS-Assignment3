@@ -26,10 +26,10 @@ negotiation
 ## Tasks
 
 ### Sub-Goals
-Markup : *Adjustable Resolution
-         *Goal state
-         *H: variable goal state
-         *K cluster
+*Adjustable Resolution
+*Goal state
+*H: variable goal state
+*K cluster
 
 ### Conflict Analysis
 Markup : *Identify a problem
