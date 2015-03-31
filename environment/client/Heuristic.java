@@ -32,13 +32,16 @@ public abstract class Heuristic implements Comparator< Node > {
 		if(tmpH==null){
 
 			int h=0;
-//			ArrayList<Box> boxs= n.getBoxes();
+//			ArrayList<Box> boxes = n.getBoxes();
 			
-			Box[] boxs=n.getBoxes();
-			for (Box box : boxs) {
+			Box[] boxes=n.getBoxes();
+			for (Box box : boxes) {
 				Goal goal=n.getGoals(box.getType()).get(0);
 				if(goal.type == box.getType()){
-					h+=n.distance(box, goal)+n.distance(n.agents[agentID], goal);
+					if (n.distance(box, goal) > 0){						
+						h+=n.distance(box, goal) +1 ;
+					}
+					h+=n.distance(n.agents[agentID], goal);
 				}
 				
 				
