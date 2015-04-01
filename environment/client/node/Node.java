@@ -222,7 +222,7 @@ public class Node implements NodeInterface, LevelInterface{
 
 	@Override
 	public Node subdomain(ArrayList<Agent> agents){
-		Node subdomainNode = new Node(Node.level);
+		Node subdomainNode = new Node();
 		for( Agent a : agents ){
 			subdomainNode.agents[a.id] = new Agent(a);
 		}
