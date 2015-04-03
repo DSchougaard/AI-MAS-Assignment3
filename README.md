@@ -24,12 +24,21 @@ negotiation
 	
 	
 ## Tasks
+*  Test
+*  Test2
+*  Test3
+* Test4
+*Test5
+
+
 
 ### Sub-Goals
 *Adjustable Resolution
 *Goal state
 *H: variable goal state
 *K cluster
+
+
 
 ### Conflict Analysis
 Markup : *Identify a problem
