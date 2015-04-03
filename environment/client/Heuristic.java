@@ -104,14 +104,50 @@ public abstract class Heuristic implements Comparator< Node > {
 	}
 	
 
+
 	public Goal selectGoal(){
+		return selectGoal_boxGoalDist();
+
+	}
+
+	private Goal selectGoal_goalDist(){
 		Agent a = this.initialState.agents[this.agentID];
 		ArrayList<Goal> goals = this.initialState.getCluster(a);
 		Goal selectedGoal = goals.get(0);
+		
 		for( Goal g : goals ){
 			if( this.initialState.distance(a, selectedGoal) < this.initialState.distance(a, g) )
 				selectedGoal = g;
 		}
+		return selectedGoal;
+	}
+
+	private Goal selectGoal_boxGoalDist(){
+		Agent a = this.initialState.agents[this.agentID];
+		ArrayList<Goal> goals = this.initialState.getCluster(a);
+		ArrayList<Box> boxes = null;
+
+		// Selected Values
+		Goal selectedGoal = null;
+		Box selectedBox = null;
+		int dist = Integer.MAX_VALUE;
+
+		for( Goal g : goals ){
+			boxes = initialState.getBoxes(g.getType());
+			for( Box b : boxes ){
+				if( b.getType() == g.getType() && ( this.initialState.distance(a, b) + this.initialState.distance(b, g) ) < dist ){
+					dist = this.initialState.distance(a, b) + this.initialState.distance(b, g);
+					// Set the selects
+					selectedGoal = g;
+					selectedBox = b;
+				}
+			}
+		}
+
+		if( selectedGoal == null )
+			throw new NullPointerException("No more goals.");
+		if( selectedBox == null )
+			throw new NullPointerException("No available boxes for selected goal.");
 
 		return selectedGoal;
 	}
