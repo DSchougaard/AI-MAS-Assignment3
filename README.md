@@ -33,31 +33,31 @@ negotiation
 
 
 ### Sub-Goals
-*Adjustable Resolution
-*Goal state
-*H: variable goal state
-*K cluster
+*  Adjustable Resolution
+*  Goal state
+*  H: variable goal state
+*  K cluster
 
 
 
 ### Conflict Analysis
-Markup : *Identify a problem
-         *Describe the problem
-          *2 search
-           *realistic
-           *relaxed        
-          *DS: route
-         *Predict a problem
+*  Identify a problem
+*  Describe the problem
+  * 2  search
+    *  Realistic
+    *  Relaxed        
+  *  DS: route
+*  Predict a problem
 
 ### Conflict Resolution
-Markup : *Agent
-          *msg : "Plz.move"
-	      *who moves least	
-         *Box
-	      *who can move it
+*  Agent
+  *  Msg: "Please move"
+  *  Who moves least
+*  Box
+  *  Who can move it?
 
 ### Heuristic
-Markup : *Paring box to goal
-         *Clustering of goals
+*  Parting box to goal?
+*  Clustering of goals.
 	
 	
