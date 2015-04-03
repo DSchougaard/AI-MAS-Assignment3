@@ -1,6 +1,5 @@
 package client;
 
-
 import client.SettingsContainer;
 
 import client.node.map.DistanceMap;

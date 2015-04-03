@@ -30,6 +30,7 @@ public class BruteForceDistanceMap extends DistanceMap{
 
 	public void initialize(Level level){
 		HashSet<Point> reachable = this.explore(level);
+		System.out.println("Initializing BruteForceDistanceMap.");
 		for(Point p : reachable ){
 			values.put(p, calculateDistances(p, 0, new HashMap<Point, Integer>(), level));
 		}
@@ -78,14 +79,12 @@ public class BruteForceDistanceMap extends DistanceMap{
 
 	public void printMap(){
 		for( Point p : values.keySet() ){
-			if( p.x == 1 && p.y == 1){
-				System.out.println("[ " + p.x + ", " + p.y + " ]: ");
-				HashMap<Point, Integer> distances = values.get(p);
-				for( Point p2 : distances.keySet() ){
-					System.out.println("    " + p2.x + ", " + p2.y + " -> " +  distances.get(p2).intValue());
-				}
-				System.out.println("");
+			System.out.println("[ " + p.x + ", " + p.y + " ]: ");
+			HashMap<Point, Integer> distances = values.get(p);
+			for( Point p2 : distances.keySet() ){
+				System.out.println("    " + p2.x + ", " + p2.y + " -> " +  distances.get(p2).intValue());
 			}
+			System.out.println("");
 		}
 	}
 }
