@@ -10,18 +10,13 @@ import client.node.Color;
 import client.SettingsContainer;
 import client.node.Node;
 
-
-
 public class Parser{
-
-
 	public static Node parse(BufferedReader in, SettingsContainer settings) throws IOException{
-		
 		Map< Character, Color > colors = new HashMap< Character, Color >();
 		String line, color;
 		ArrayList<String> tempMapContainer = new ArrayList<String>();
 		/*
-		Skeleton code borrowed from example
+			Skeleton code borrowed from example
 		*/
 		// Read lines specifying colors
 		while ( ( line = in.readLine() ).matches( "^[a-z]+:\\s*[0-9A-Z](,\\s*[0-9A-Z])*\\s*$" ) ) {
@@ -39,7 +34,6 @@ public class Parser{
 			if( line.length() > maxCol ){
 				maxCol = line.length();
 			}
-//			System.err.println(line);
 			tempMapContainer.add(line);
 			line=in.readLine();
 		}
@@ -49,14 +43,9 @@ public class Parser{
 		Level level = new Level(maxRow, maxCol, settings.dm);
 		Node node = new Node(level);
 
-
 		// Parse the preloaded array
 		for( int row = 0 ; row < maxRow ; row++ ){
-//			int n 		= maxCol - tempMapContainer.get(row).length();
-//			// Space padd the strings, if they're not of max length
-//			//String line = String.format(tempMapContainer.get(row) + "$-" + n + "s");
-//			line = String.format("%-" + n + "s", tempMapContainer.get(row)); 
-			line= tempMapContainer.get(row);
+			line = tempMapContainer.get(row);
 			for( int col = 0 ; col < line.length() ; col++ ){
 				if( line.charAt( col ) == ' ' ){
 					// Space
@@ -80,6 +69,11 @@ public class Parser{
 			}
 		}
 		level.calculateCluster(node.agents);
+		// I really don't know how to achieve this better? Any suggestions?
+		settings.dm.initialize(level);
+
+		// WARNING ERROR FAULT DANGER!!!!!!
+		
 		return node;
 	}
 }
