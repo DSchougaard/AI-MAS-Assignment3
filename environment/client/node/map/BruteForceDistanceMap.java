@@ -30,7 +30,7 @@ public class BruteForceDistanceMap extends DistanceMap{
 
 	public void initialize(Level level){
 		HashSet<Point> reachable = this.explore(level);
-		System.out.println("Initializing BruteForceDistanceMap.");
+		System.err.println("Initializing BruteForceDistanceMap.");
 		for(Point p : reachable ){
 			values.put(p, calculateDistances(p, 0, new HashMap<Point, Integer>(), level));
 		}
