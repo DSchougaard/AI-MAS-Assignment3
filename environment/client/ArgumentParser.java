@@ -19,6 +19,7 @@ public class ArgumentParser{
 					try{
 						Object _dm = Class.forName(DISTANCEMAP_CLASS_PREFIX + args[i+1]).newInstance();
 						settings.dm = (DistanceMap) _dm;
+						System.err.println("Initialized using " + settings.dm.name() + ".");
 				    }catch( Exception e ){
 				    	System.err.println("Unrecognized DistanceMap class. Using default map.");
 				    	settings.dm = new BasicManhattanDistanceMap();

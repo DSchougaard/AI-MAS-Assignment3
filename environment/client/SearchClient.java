@@ -247,7 +247,7 @@ public class SearchClient {
 
 	public static void main( String[] args ) throws Exception {
 
-		SettingsContainer settings =ArgumentParser.parse(args);
+		SettingsContainer settings = ArgumentParser.parse(args);
 
 		// Use stderr to print to console
 		System.err.println( "SearchClient initializing. I am sending this using the error output stream." );

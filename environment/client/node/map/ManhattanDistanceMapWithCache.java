@@ -1,8 +1,9 @@
 package client.node.map;
 
-
 import java.util.*;
 import java.awt.Point;
+
+import client.node.map.Level;
 
 public class ManhattanDistanceMapWithCache extends DistanceMap{
 
@@ -38,4 +39,6 @@ public class ManhattanDistanceMapWithCache extends DistanceMap{
 	public String name(){
 		return "ManhattanDistanceMapWithCache";
 	}
+
+	public void initialize(Level level){}
 }
