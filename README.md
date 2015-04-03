@@ -24,40 +24,34 @@ negotiation
 	
 	
 ## Tasks
-*  Test
-*  Test2
-*  Test3
-* Test4
-*Test5
-
-
 
 ### Sub-Goals
-*  Adjustable Resolution
-*  Goal state
-*  H: variable goal state
-*  K cluster
+*  [&#10003] Adjustable Resolution
+*  [ ] Goal state
+*  [ ] H: variable goal state
+*  [ ] K cluster
 
 
 
 ### Conflict Analysis
-*  Identify a problem
-*  Describe the problem
-  * 2  search
-    *  Realistic
-    *  Relaxed        
-  *  DS: route
-*  Predict a problem
+*  [ ] Identify a problem
+*  [ ] Describe the problem
+  * [ ] 2  search
+    *  [ ] Realistic
+    *  [ ] Relaxed        
+  *  [ ] DS: route
+*  [ ] Predict a problem
 
 ### Conflict Resolution
-*  Agent
-  *  Msg: "Please move"
-  *  Who moves least
-*  Box
-  *  Who can move it?
+*  [ ] Agent
+  *  [ ] Msg: "Please move"
+  *  [ ] Who moves least
+*  [ ] Box
+  *  [ ] Who can move it?
 
 ### Heuristic
-*  Parting box to goal?
-*  Clustering of goals.
+*  [ ] Parting box to goal?
+*  [ ] Clustering of goals.
+  *  [&#10003] Clustering on color
 	
 	
