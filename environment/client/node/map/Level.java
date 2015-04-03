@@ -34,7 +34,7 @@ public class Level implements LevelInterface{
 	*/
 	private int maxRow;
 	private int maxCol;
-	private DistanceMap dm;
+	private static DistanceMap dm;
 
 
 	public class Cell{
