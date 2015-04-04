@@ -26,7 +26,7 @@ negotiation
 ## Tasks
 
 ### Sub-Goals
-*  [&#10003] Adjustable Resolution
+*  [x] Adjustable Resolution
 *  [ ] Goal state
 *  [ ] H: variable goal state
 *  [ ] K cluster
@@ -52,6 +52,6 @@ negotiation
 ### Heuristic
 *  [ ] Parting box to goal?
 *  [ ] Clustering of goals.
-  *  [&#10003] Clustering on color
+  *  [x] Clustering on color
 	
 	

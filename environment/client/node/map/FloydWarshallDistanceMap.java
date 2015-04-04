@@ -9,6 +9,10 @@ import java.awt.Point;
 import client.node.map.DistanceMap;
 import client.node.map.Level;
 
+/*
+	DistanceMap based on the Floyd Warshall algorithm.
+	http://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+*/
 public class FloydWarshallDistanceMap extends DistanceMap{
 
 	private HashMap<Point, Integer> index;
@@ -30,6 +34,8 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 	}
 
 	public void initialize(Level level){
+		long start_time = System.currentTimeMillis();
+
 		HashMap<Point, ArrayList<Point>> map = explore(level);
 		int size = map.size();
 
@@ -53,6 +59,11 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 				}
 			}
 		}
+
+		long end_time = System.currentTimeMillis();
+		long difference = end_time-start_time;
+		System.err.println("Initialization time for " + name() + " took " + difference + " ms."); 
+
 	}
 
 
@@ -88,19 +99,6 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 		}
 		return visited;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	public int distance(Point p1, Point p2){
 		return distance[getIndex(p1)][getIndex(p1)];	

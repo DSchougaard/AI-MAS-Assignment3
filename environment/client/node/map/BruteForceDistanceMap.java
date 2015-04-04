@@ -29,11 +29,17 @@ public class BruteForceDistanceMap extends DistanceMap{
 	}
 
 	public void initialize(Level level){
+		long start_time = System.currentTimeMillis();
+
 		HashSet<Point> reachable = this.explore(level);
 		System.err.println("Initializing BruteForceDistanceMap.");
 		for(Point p : reachable ){
 			values.put(p, calculateDistances(p, 0, new HashMap<Point, Integer>(), level));
 		}
+
+		long end_time = System.currentTimeMillis();
+		long difference = end_time-start_time;
+		System.err.println("Initialization time for " + name() + " took " + difference + " ms."); 
 	}
 
 	private HashSet<Point> explore(Level level){
