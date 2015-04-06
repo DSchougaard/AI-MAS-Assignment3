@@ -1,5 +1,6 @@
 package client.node.map;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -42,6 +43,13 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 		System.err.println("Initialized FloydWarshall matrix to size " + size + "x" + size + ".");
 
 		distance = new int[size][size];
+		for (int i = 0; i < distance.length; i++) {
+			for (int j = 0; j < distance.length; j++) {
+				distance[i][j]=999;
+			}
+		}
+		
+		
 		for( int i = 0 ; i < size ; i++ )
 			distance[i][i] = 0;
 
@@ -89,8 +97,9 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 			move[2]			= new Point(p.x, p.y-1);
 			move[3]			= new Point(p.x, p.y+1);
 			for( int i = 0 ; i < move.length ; i++ ){
-				if( !level.isWall(move[i].x, move[i].y) )
+				if( !level.isWall(move[i].x, move[i].y) ){
 					neighbours.add(move[i]);
+				}
 
 				if( !level.isWall(move[i].x, move[i].y) && !visited.containsKey(move[i]) )
 					frontier.push(move[i]);

@@ -28,7 +28,7 @@ public class Node implements NodeInterface, LevelInterface{
 	HashMap<Point, Box> boxesByPoint;
 
 	// Agents
-	public Agent[] agents;
+	public Agent[] agents = new Agent[10];
 	
 	// History
 	public Node parent;
@@ -40,7 +40,6 @@ public class Node implements NodeInterface, LevelInterface{
 	public Node(){
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
-		agents 			= new Agent[10];
 		g=0;
 
 	}
@@ -49,7 +48,7 @@ public class Node implements NodeInterface, LevelInterface{
 		Node.level = level;
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
-		agents 			= new Agent[10];
+		
 		g=0;
 	}
 
@@ -163,7 +162,7 @@ public class Node implements NodeInterface, LevelInterface{
 
 		// Check for agents
 		for( int i = 0; i < 10 ; i++ ){
-			if( agents[i].isAt(row, col) )
+			if(agents[i]!=null && agents[i].isAt(row, col) )
 				return agents[i];
 		}
 
