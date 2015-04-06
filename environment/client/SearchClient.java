@@ -332,7 +332,8 @@ public class SearchClient {
 
 				SearchResult result = agentClient.Search(strategy, agent.id, agent.subgoals, relaxedResult);
 
-				if (result.reason == Result.STUCK) {
+				switch (result.reason) {
+				case STUCK:
 					agent.status = Status.STUCK;
 
 					System.err.println("agent " + agent.id + " is stuck");
@@ -341,14 +342,20 @@ public class SearchClient {
 					System.err.println(relaxedStrategy.searchStatus());
 					stuck = true;
 					solutions.get(agent.id).addAll(relaxedResult.solution);
-				} else {
-
+					break;
+				case DONE:
+					agent.status=Status.DONE;
+					break;
+				default:
+					agent.status=Status.PLAN;
 					System.err.println("\nSummary for " + strategy);
 					System.err.println("Found solution of length "
 							+ result.solution.size());
 					System.err.println(strategy.searchStatus());
 					solutions.get(agent.id).addAll(result.solution);
+					break;
 				}
+
 
 			} else {
 				System.err.println("agent " + agent.id + " using old plan");
