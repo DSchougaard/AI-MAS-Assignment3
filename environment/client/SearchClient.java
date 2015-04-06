@@ -58,8 +58,7 @@ public class SearchClient {
 		}
 
 		public static String stringRep() {
-			return String
-					.format("[Used: %.2f MB, Free: %.2f MB, Alloc: %.2f MB, MaxAlloc: %.2f MB]",
+			return String.format("[Used: %.2f MB, Free: %.2f MB, Alloc: %.2f MB, MaxAlloc: %.2f MB]",
 							used(), free(), total(), max());
 		}
 	}
@@ -69,8 +68,7 @@ public class SearchClient {
 	// all the active agents in sorted order
 	public List<Agent> agents = new ArrayList<Agent>();
 
-	public SearchClient(BufferedReader serverMessages,
-			SettingsContainer settings) throws Exception {
+	public SearchClient(BufferedReader serverMessages, SettingsContainer settings) throws Exception {
 
 		state = Parser.parse(serverMessages, settings);
 		for (int i = 0; i < state.agents.length; i++) {
@@ -98,25 +96,20 @@ public class SearchClient {
 		this.state = n;
 	}
 
-	public SearchResult Search(Strategy strategy, int agentID)
-			throws IOException {
-		return Search(strategy, agentID,
-				this.state.getGoals(state.agents[agentID].color), null);
+	public SearchResult Search(Strategy strategy, int agentID) throws IOException {
+		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color), null);
 	}
 
-	public SearchResult Search(Strategy strategy, int agentID,
-			ArrayList<Goal> goals) throws IOException {
+	public SearchResult Search(Strategy strategy, int agentID, ArrayList<Goal> goals) throws IOException {
 		return Search(strategy, agentID, goals, null);
 	}
 
-	public SearchResult Search(Strategy strategy, int agentID,
-			SearchResult preResult) throws IOException {
+	public SearchResult Search(Strategy strategy, int agentID, SearchResult preResult) throws IOException {
 		return Search(strategy, agentID,
 				this.state.getGoals(state.agents[agentID].color), preResult);
 	}
 
-	public SearchResult Search(Strategy strategy, int agentID,
-			ArrayList<Goal> goals, SearchResult preResult) throws IOException {
+	public SearchResult Search(Strategy strategy, int agentID, ArrayList<Goal> goals, SearchResult preResult) throws IOException {
 		System.err.format("Search starting with strategy %s\n", strategy);
 		strategy.addToFrontier(this.state);
 
@@ -127,45 +120,34 @@ public class SearchClient {
 				System.err.println(strategy.searchStatus());
 			}
 			if (Memory.shouldEnd()) {
-				System.err.format(
-						"Memory limit almost reached, terminating search %s\n",
-						Memory.stringRep());
-				return new SearchResult(SearchResult.Result.MEMMORY,
-						new LinkedList<>());
+				System.err.format("Memory limit almost reached, terminating search %s\n", Memory.stringRep());
+				return new SearchResult(SearchResult.Result.MEMMORY, new LinkedList<>());
 			}
 			if (strategy.timeSpent() > Memory.timeLimit) { // Minutes timeout
-				System.err.format(
-						"Time limit reached, terminating search %s\n",
-						Memory.stringRep());
+				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep());
 				return new SearchResult(SearchResult.Result.TIME,
 						new LinkedList<>());
 			}
 
 			if (strategy.frontierIsEmpty()) {
 				if (state.isGoalState(goals)) {
-					return new SearchResult(SearchResult.Result.DONE,
-							new LinkedList<>());
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
 				} else if (preResult != null) {
-					return new SearchResult(SearchResult.Result.IMPOSIBLE,
-							new LinkedList<>());
+					return new SearchResult(SearchResult.Result.IMPOSIBLE, new LinkedList<>());
 				} else {
-					return new SearchResult(SearchResult.Result.STUCK,
-							new LinkedList<>());
+					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
 				}
 
 			}
 
 			Node leafNode = strategy.getAndRemoveLeaf();
 
-			if (preResult != null
-					&& leafNode.g() > (preResult.solution.size() * searchMaxOffset)) {
-				return new SearchResult(SearchResult.Result.STUCK,
-						new LinkedList<>());
+			if (preResult != null && leafNode.g() > (preResult.solution.size() * searchMaxOffset)) {
+				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
 			}
 
 			if (leafNode.isGoalState(goals)) {
-				return new SearchResult(SearchResult.Result.PLAN,
-						leafNode.extractPlan());
+				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
 			}
 
 			strategy.addToExplored(leafNode);
@@ -187,8 +169,7 @@ public class SearchClient {
 	 * @param client
 	 * @throws IOException
 	 */
-	public static void executePlans(ArrayList<LinkedList<Node>> solutions,
-			SearchClient client) throws IOException {
+	public static void executePlans(ArrayList<LinkedList<Node>> solutions, SearchClient client) throws IOException {
 		StringBuilder builder = new StringBuilder();
 
 		boolean done = false;
@@ -283,8 +264,7 @@ public class SearchClient {
 		System.err.println("done");
 	}
 
-	private static void SingleAgentPlaning(SearchClient client,
-			ArrayList<LinkedList<Node>> solution) throws IOException {
+	private static void SingleAgentPlaning(SearchClient client, ArrayList<LinkedList<Node>> solution) throws IOException {
 		Agent agent = client.agents.get(0);
 		System.err.println("\nAgent " + agent.id + " planing");
 
@@ -307,15 +287,13 @@ public class SearchClient {
 			agent.subgoalsList.add(subgoal);
 		}
 
-		SearchResult result = agentClient.Search(strategy, agent.id,
-				agent.subgoals);
+		SearchResult result = agentClient.Search(strategy, agent.id, agent.subgoals);
 
 		solution.get(agent.id).addAll(result.solution);
 
 	}
 
-	private static void MultiAgentPlaning(SearchClient client,
-			ArrayList<LinkedList<Node>> solutions) throws IOException {
+	private static void MultiAgentPlaning(SearchClient client, ArrayList<LinkedList<Node>> solutions) throws IOException {
 		boolean stuck = false;
 		Strategy strategy = null;
 		Strategy relaxedStrategy = null;
@@ -346,19 +324,16 @@ public class SearchClient {
 					agent.subgoalsList.add(subgoal);
 				}
 
-				SearchResult relaxedResult = agentClient.Search(
-						relaxedStrategy, agent.id, agent.subgoals);
+				SearchResult relaxedResult = agentClient.Search(relaxedStrategy, agent.id, agent.subgoals);
 
-				SearchResult result = agentClient.Search(strategy, agent.id,
-						agent.subgoals, relaxedResult);
+				SearchResult result = agentClient.Search(strategy, agent.id, agent.subgoals, relaxedResult);
 
 				if (result.reason == Result.STUCK) {
 					agent.status = Status.STUCK;
 
 					System.err.println("agent " + agent.id + " is stuck");
 					System.err.println("\nSummary for " + relaxedStrategy);
-					System.err.println("Found solution of length "
-							+ relaxedResult.solution.size());
+					System.err.println("Found solution of length " + relaxedResult.solution.size());
 					System.err.println(relaxedStrategy.searchStatus());
 					stuck = true;
 					solutions.get(agent.id).addAll(relaxedResult.solution);

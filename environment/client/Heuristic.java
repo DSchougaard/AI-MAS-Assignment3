@@ -1,16 +1,13 @@
 package client;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
 
 import client.node.Node;
+import client.node.storage.Agent;
 import client.node.storage.Box;
 import client.node.storage.Goal;
-import client.node.storage.Agent;
 
 public abstract class Heuristic implements Comparator< Node > {
 
@@ -140,6 +137,7 @@ public abstract class Heuristic implements Comparator< Node > {
 		return ( Heuristic.agent_goal_bookkeeping.get(g) != null /*|| Heuristic.agent_goal_bookkeeping.get(g).intValue != this.agentID */);
 	}
 
+	//FIXME: unused
 	private Goal selectGoal_goalDist(){
 		Agent a = this.initialState.agents[this.agent.id];
 		ArrayList<Goal> goals = this.initialState.getCluster(a);

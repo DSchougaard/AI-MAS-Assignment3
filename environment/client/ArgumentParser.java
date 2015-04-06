@@ -2,7 +2,6 @@ package client;
 
 import client.SettingsContainer;
 import client.node.map.DistanceMap;
-import client.node.map.BasicManhattanDistanceMap;
 import client.node.map.FloydWarshallDistanceMap;
 
 public class ArgumentParser{
@@ -21,7 +20,6 @@ public class ArgumentParser{
 						System.err.println("Initialized using " + settings.dm.name() + ".");
 				    }catch( Exception e ){
 				    	System.err.println("Unrecognized DistanceMap class. Using default map.");
-//				    	settings.dm = new BasicManhattanDistanceMap();
 				    	settings.dm= new FloydWarshallDistanceMap();
 				    }
 					break;
@@ -32,7 +30,6 @@ public class ArgumentParser{
 			i+=2;
 		}
 		if(settings.dm==null){
-//			settings.dm = new BasicManhattanDistanceMap();
 			settings.dm= new FloydWarshallDistanceMap();
 		}
 		return settings;
