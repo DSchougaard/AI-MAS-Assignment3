@@ -2,6 +2,14 @@ package client.node.storage;
 import java.util.ArrayList;
 
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Set;
+
+
+
+
 // Goals have a type
 // Agents have a color
 // Boxes have a color AND a type
@@ -11,8 +19,10 @@ public class Agent extends Base{
 	public int id;
 	public Color color;
 	public enum Status{STUCK, PLAN, DONE, IDLE, HELPING}
-	public Status status =Status.IDLE;
-	public ArrayList<Goal> subgoals= new ArrayList<>();
+	public Status status = Status.IDLE;
+	public ArrayList<Goal> subgoals = new ArrayList<>();
+	public LinkedList<Goal> subgoalsList = new LinkedList(); 
+
 	
 	public Agent(int name, Color color, int row, int col){
 		super(row, col);
