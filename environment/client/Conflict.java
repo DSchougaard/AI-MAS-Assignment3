@@ -19,6 +19,7 @@ public class Conflict{
 		
 		for (Agent agent : agents) {
 			if(agent.status== Agent.Status.STUCK){
+				
 				//TODO: find reason
 				
 				//TODO: find some one to solve the problem

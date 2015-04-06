@@ -301,7 +301,6 @@ public class SearchClient {
 		}
 		Goal subgoal = heuristic.selectGoal();
 
-		System.err.println("\nSubgoal: " + subgoal);
 		agent.subgoals.add(subgoal);
 		if (!agent.subgoalsList.contains(subgoal)) {
 			agent.subgoalsList.add(subgoal);
@@ -311,6 +310,11 @@ public class SearchClient {
 				agent.subgoals);
 
 		solution.get(agent.id).addAll(result.solution);
+		String rute = "length:"+solution.get(0).size()+" ";
+		for (int i = 0 ; i < solution.get(0).size() ; i++){
+			rute += "[" + solution.get(0).get(i).getAgents()[0].col +","+solution.get(0).get(i).getAgents()[0].row+"] ";
+		}
+		System.err.println("Rute: "+rute);
 
 	}
 

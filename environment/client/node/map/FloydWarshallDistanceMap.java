@@ -1,13 +1,9 @@
 package client.node.map;
 
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.ArrayDeque;
 import java.awt.Point;
-
-import client.node.map.DistanceMap;
-import client.node.map.Level;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /*
 	DistanceMap based on the Floyd Warshall algorithm.
