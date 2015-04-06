@@ -19,7 +19,10 @@ public class Goal extends Base{
 	public boolean equals( Object obj ) {
 		if( getClass() != obj.getClass() )
 			return false;
-		super.equals( obj );
+		
+		if(!super.equals( obj )){
+			return false;
+		}
 
 		Goal b = (Goal)obj;
 		return ( this.type == b.type );
