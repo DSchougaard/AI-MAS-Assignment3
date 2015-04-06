@@ -285,12 +285,15 @@ public class SearchClient {
 
 
 		//find a subgoal(s) which should be solved
+		if(!agent.subgoals.isEmpty()){
+			heuristic.finishedWithGoal(agent.subgoals.get(0));
+			agent.subgoals.clear();
+		}
 		Goal subgoal=heuristic.selectGoal();
-		ArrayList<Goal> subgoals= new ArrayList<>();
-		subgoals.add(subgoal);
+		agent.subgoals.add(subgoal);
 
 
-		SearchResult result=agentClient.Search( strategy, agent.id, subgoals );
+		SearchResult result=agentClient.Search( strategy, agent.id, agent.subgoals );
 
 
 		solution.get(agent.id).addAll(result.solution);
@@ -320,16 +323,19 @@ public class SearchClient {
 
 
 				//find a subgoal(s) which should be solved
+				if(!agent.subgoals.isEmpty()){
+					heuristic.finishedWithGoal(agent.subgoals.get(0));
+					agent.subgoals.clear();
+				}
 				Goal subgoal=heuristic.selectGoal();
-				ArrayList<Goal> subgoals= new ArrayList<>();
-				subgoals.add(subgoal);
+				agent.subgoals.add(subgoal);
 
 
 
 
-				SearchResult relaxedResult=agentClient.Search( relaxedStrategy, agent.id, subgoals );
+				SearchResult relaxedResult=agentClient.Search( relaxedStrategy, agent.id, agent.subgoals );
 
-				SearchResult result=agentClient.Search( strategy, agent.id, subgoals, relaxedResult );
+				SearchResult result=agentClient.Search( strategy, agent.id, agent.subgoals, relaxedResult );
 
 
 				if(result.reason==Result.STUCK){

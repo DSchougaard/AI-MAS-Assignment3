@@ -18,13 +18,12 @@ public abstract class Heuristic implements Comparator< Node > {
 
 	//private static Goal[] agent_goal_bookkeeping;
 	//private static HashMap<Agent, Goal> agent_goal_bookkeeping;
-	private static HashMap<Goal, Integer> agent_goal_bookkeeping;
+	private static HashMap<Goal, Integer> agent_goal_bookkeeping = new HashMap<>();
 	
 	public Heuristic(Node initialState, int agentID) {
 		this.initialState = initialState;
 		this.agentID=agentID;
 
-		this.agent_goal_bookkeeping = new HashMap<Goal, Integer>();
 	}
 
 	public int compare( Node n1, Node n2 ) {
@@ -117,7 +116,7 @@ public abstract class Heuristic implements Comparator< Node > {
 	public Goal selectGoal(){
 		Goal g = selectGoal_boxGoalDist();
 		//Heuristic.agent_goal_bookkeeping.put( new Integer(this.agentID), g);
-		Heuristic.agent_goal_bookkeeping.put(g, new Integer(this.agentID));
+		Heuristic.agent_goal_bookkeeping.put(g, this.agentID);
 		return g;
 	}
 

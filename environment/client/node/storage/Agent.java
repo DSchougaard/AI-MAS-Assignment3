@@ -1,4 +1,7 @@
 package client.node.storage;
+import java.util.ArrayList;
+
+
 // Goals have a type
 // Agents have a color
 // Boxes have a color AND a type
@@ -9,6 +12,7 @@ public class Agent extends Base{
 	public Color color;
 	public enum Status{STUCK, PLAN, DONE, IDLE, HELPING}
 	public Status status =Status.IDLE;
+	public ArrayList<Goal> subgoals= new ArrayList<>();
 	
 	public Agent(int name, Color color, int row, int col){
 		super(row, col);
