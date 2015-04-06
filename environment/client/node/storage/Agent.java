@@ -14,7 +14,6 @@ public class Agent extends Base{
 	public Status status = Status.IDLE;
 	public ArrayList<Goal> subgoals = new ArrayList<>();
 	public LinkedList<Goal> subgoalsList = new LinkedList<Goal>(); 
-
 	
 	public Agent(int name, Color color, int row, int col){
 		super(row, col);
