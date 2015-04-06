@@ -15,11 +15,16 @@ public abstract class Heuristic implements Comparator< Node > {
 	public int agentID;
 	
 	public HashMap<Node, Integer> hs =new HashMap<>();
+
+	//private static Goal[] agent_goal_bookkeeping;
+	//private static HashMap<Agent, Goal> agent_goal_bookkeeping;
+	private static HashMap<Goal, Integer> agent_goal_bookkeeping;
 	
 	public Heuristic(Node initialState, int agentID) {
 		this.initialState = initialState;
 		this.agentID=agentID;
-		
+
+		this.agent_goal_bookkeeping = new HashMap<Goal, Integer>();
 	}
 
 	public int compare( Node n1, Node n2 ) {
@@ -104,10 +109,20 @@ public abstract class Heuristic implements Comparator< Node > {
 	}
 	
 
+	public void finishedWithGoal(Goal g){
+		Heuristic.agent_goal_bookkeeping.remove(g);
+	}
+
 
 	public Goal selectGoal(){
-		return selectGoal_boxGoalDist();
+		Goal g = selectGoal_boxGoalDist();
+		//Heuristic.agent_goal_bookkeeping.put( new Integer(this.agentID), g);
+		Heuristic.agent_goal_bookkeeping.put(g, new Integer(this.agentID));
+		return g;
+	}
 
+	private boolean goalInUse(Goal g){
+		return ( Heuristic.agent_goal_bookkeeping.get(g) != null /*|| Heuristic.agent_goal_bookkeeping.get(g).intValue != this.agentID */);
 	}
 
 	private Goal selectGoal_goalDist(){
@@ -116,6 +131,10 @@ public abstract class Heuristic implements Comparator< Node > {
 		Goal selectedGoal = goals.get(0);
 		
 		for( Goal g : goals ){
+			//if( Heuristic.agent_goal_bookkeeping.containsValue(g) && Heuristic.get(new Integer(this.agentID)) != g )
+			if( goalInUse(g) )
+				continue;
+
 			if( this.initialState.distance(a, selectedGoal) < this.initialState.distance(a, g) )
 				selectedGoal = g;
 		}
@@ -133,6 +152,9 @@ public abstract class Heuristic implements Comparator< Node > {
 		int dist = Integer.MAX_VALUE;
 
 		for( Goal g : goals ){
+			if( goalInUse(g) )
+				continue;
+
 			boxes = initialState.getBoxes(g.getType());
 			for( Box b : boxes ){
 				if( b.getType() == g.getType() && ( this.initialState.distance(a, b) + this.initialState.distance(b, g) ) < dist ){
