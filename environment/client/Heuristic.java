@@ -1,8 +1,11 @@
 package client;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 
 import client.node.Node;
 import client.node.storage.Box;
@@ -12,7 +15,7 @@ import client.node.storage.Agent;
 public abstract class Heuristic implements Comparator< Node > {
 
 	public Node initialState;
-	public int agentID;
+	public Agent agent;
 	
 	public HashMap<Node, Integer> hs =new HashMap<>();
 
@@ -20,9 +23,9 @@ public abstract class Heuristic implements Comparator< Node > {
 	//private static HashMap<Agent, Goal> agent_goal_bookkeeping;
 	private static HashMap<Goal, Integer> agent_goal_bookkeeping = new HashMap<>();
 	
-	public Heuristic(Node initialState, int agentID) {
+	public Heuristic(Node initialState, Agent agent) {
 		this.initialState = initialState;
-		this.agentID=agentID;
+		this.agent = agent;
 
 	}
 
@@ -30,25 +33,37 @@ public abstract class Heuristic implements Comparator< Node > {
 		return f( n1 ) - f( n2 );
 	}
 
-	public int h( Node n ) {
+	public int h ( Node n ) {
 		//euclid distance from mover to box and from box to goal
 		Integer tmpH=hs.get(n);
 		if(tmpH==null){
 
 			int h=0;
 //			ArrayList<Box> boxes = n.getBoxes();
-			
-			Box[] boxes=n.getBoxes();
-			for (Box box : boxes) {
-				Goal goal=n.getGoals(box.getType()).get(0);
-				if(goal.type == box.getType()){
-					if (n.distance(box, goal) > 0){						
-						h+=n.distance(box, goal) +1 ;
+						
+			Box[] boxes = n.getBoxes();
+			for (Box box : boxes) {				
+				if(agent.subgoalsList.size() > 0){
+					for (int i = 0 ; agent.subgoalsList.size() > i ; i++){
+						Goal goal = agent.subgoalsList.get(i);
+						//Goal goal = n.getGoals(box.getType()).get(0);
+						if(goal.type == box.getType()){
+							if (n.distance(box, goal) > 0){						
+								h+=n.distance(box, goal) +1 ;
+							}
+							h+=n.distance(n.agents[agent.id], goal);
+						}					
 					}
-					h+=n.distance(n.agents[agentID], goal);
+				}else{
+					Goal goal = n.getGoals(box.getType()).get(0);
+					if(goal.type == box.getType()){
+						if (n.distance(box, goal) > 0){						
+							h+=n.distance(box, goal) +1 ;
+						}
+						h+=n.distance(n.agents[agent.id], goal);
+					}
 				}
-				
-				
+								
 			}
 			hs.put(n, h);
 			return h;
@@ -61,8 +76,9 @@ public abstract class Heuristic implements Comparator< Node > {
 	public abstract int f( Node n);
 
 	public static class AStar extends Heuristic {
-		public AStar(Node initialState, int agentID) {
-			super( initialState, agentID);
+		public AStar(Node initialState, Agent agent) {
+			super( initialState, agent);
+			System.err.println( "\nSubgoal count: " + agent.subgoalsList.size() );
 		}
 
 		public int f( Node n) {
@@ -77,8 +93,8 @@ public abstract class Heuristic implements Comparator< Node > {
 	public static class WeightedAStar extends Heuristic {
 		private int W;
 
-		public WeightedAStar(Node initialState, int agentID) {
-			super( initialState, agentID);
+		public WeightedAStar(Node initialState, Agent agent) {
+			super( initialState, agent);
 			W = 5; // You're welcome to test this out with different values, but for the reporting part you must at least indicate benchmarks for W = 5
 		}
 
@@ -93,8 +109,8 @@ public abstract class Heuristic implements Comparator< Node > {
 
 	public static class Greedy extends Heuristic {
 
-		public Greedy(Node initialState, int agentID) {
-			super( initialState, agentID);
+		public Greedy(Node initialState, Agent agent) {
+			super( initialState, agent);
 		}
 		
 
@@ -116,7 +132,7 @@ public abstract class Heuristic implements Comparator< Node > {
 	public Goal selectGoal(){
 		Goal g = selectGoal_boxGoalDist();
 		//Heuristic.agent_goal_bookkeeping.put( new Integer(this.agentID), g);
-		Heuristic.agent_goal_bookkeeping.put(g, this.agentID);
+		Heuristic.agent_goal_bookkeeping.put(g, this.agent.id);
 		return g;
 	}
 
@@ -125,7 +141,7 @@ public abstract class Heuristic implements Comparator< Node > {
 	}
 
 	private Goal selectGoal_goalDist(){
-		Agent a = this.initialState.agents[this.agentID];
+		Agent a = this.initialState.agents[this.agent.id];
 		ArrayList<Goal> goals = this.initialState.getCluster(a);
 		Goal selectedGoal = goals.get(0);
 		
@@ -141,7 +157,7 @@ public abstract class Heuristic implements Comparator< Node > {
 	}
 
 	private Goal selectGoal_boxGoalDist(){
-		Agent a = this.initialState.agents[this.agentID];
+		Agent a = this.initialState.agents[this.agent.id];
 		ArrayList<Goal> goals = this.initialState.getCluster(a);
 		ArrayList<Box> boxes = null;
 
@@ -172,40 +188,4 @@ public abstract class Heuristic implements Comparator< Node > {
 
 		return selectedGoal;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
