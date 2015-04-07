@@ -34,11 +34,11 @@ negotiation
 
 
 ### Conflict Analysis
-*  [ ] Identify a problem
-*  [ ] Describe the problem
-  * [ ] 2  search
-    *  [ ] Realistic
-    *  [ ] Relaxed        
+*  [x] Identify a problem
+*  [x] Describe the problem
+  * [x] 2  search
+    *  [x] Realistic
+    *  [x] Relaxed        
   *  [ ] DS: route
 *  [ ] Predict a problem
 
@@ -50,7 +50,7 @@ negotiation
   *  [ ] Who can move it?
 
 ### Heuristic
-*  [ ] Parting box to goal?
+*  [ ] Parring box to goal?
 *  [ ] Clustering of goals.
   *  [x] Clustering on color
 	
@@ -60,7 +60,7 @@ negotiation
 *  [ ] refactor map - Daniel
 *  [ ] route - Martin
 *  [ ] heuristic - Martin
-*  [ ] speed
+*  [ ] speed, profiler- martin
 *  [ ] Conflict - Kasper og Daniel
 *  [ ] optimize node hashcode - daniel
 *  [ ] optimize node equals - daniel
