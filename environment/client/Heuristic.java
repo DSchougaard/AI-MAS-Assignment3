@@ -39,10 +39,11 @@ public abstract class Heuristic implements Comparator< Node > {
 //			ArrayList<Box> boxes = n.getBoxes();
 						
 			Box[] boxes = n.getBoxes();
+			Goal[] goals = agent.subgoalsList.toArray(new Goal[0]);
 			for (Box box : boxes) {				
 				if(agent.subgoalsList.size() > 0){
-					for (int i = 0 ; agent.subgoalsList.size() > i ; i++){
-						Goal goal = agent.subgoalsList.get(i);
+					for (Goal goal : goals){
+						//Goal goal = agent.subgoalsList.get(i);
 						//Goal goal = n.getGoals(box.getType()).get(0);
 						if(goal.getType() == box.getType()){
 							if (n.distance(box, goal) > 0){						
