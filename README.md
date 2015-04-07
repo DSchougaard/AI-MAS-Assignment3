@@ -54,4 +54,13 @@ negotiation
 *  [ ] Clustering of goals.
   *  [x] Clustering on color
 	
-	
+### Work list
+*  [ ] refactor agent - Kasper
+*  [ ] relaxed by number of colours - Kasper
+*  [ ] refactor map - Daniel
+*  [ ] route - Martin
+*  [ ] heuristic - Martin
+*  [ ] speed
+*  [ ] Conflict - Kasper og Daniel
+*  [ ] optimize node hashcode - daniel
+*  [ ] optimize node equals - daniel
