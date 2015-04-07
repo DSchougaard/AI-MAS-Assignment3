@@ -171,6 +171,10 @@ public class Node implements NodeInterface, LevelInterface{
 		return null;
 	}
 
+	public char isGoal(int row, int col){
+		return level.isGoal(row, col);
+	}
+	
 	@Override
 	public boolean isGoalState(){
 		return isGoalState(Node.level.getGoals());
@@ -186,7 +190,7 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 	@Override
 	public boolean isGoalState(Goal goal){
-		return ( this.boxesByPoint.containsKey( goal.getPoint() ) && this.boxesByPoint.get( goal.getPoint() ).getType() == goal.type );
+		return ( this.boxesByPoint.containsKey( goal.getPoint() ) && this.boxesByPoint.get( goal.getPoint() ).getType() == goal.getType() );
 	}
 
 	@Override
@@ -198,7 +202,7 @@ public class Node implements NodeInterface, LevelInterface{
 				return false;
 			}
 
-			if( b.getType() != goals.get(i).type ){
+			if( b.getType() != goals.get(i).getType() ){
 				return false;
 			}
 		}

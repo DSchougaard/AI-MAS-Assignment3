@@ -6,25 +6,38 @@ import static org.junit.Assert.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import client.Command;
 import client.Command.dir;
 import client.Command.type;
 import client.Heuristic.AStar;
+import client.SearchClient;
+import client.SettingsContainer;
 import client.Strategy;
 import client.Strategy.StrategyBestFirst;
-import client.SearchClient;
 import client.node.Color;
 import client.node.Node;
+import client.node.map.FloydWarshallDistanceMap;
 import client.node.storage.Box;
 
 public class test {
 
+	@Before
+	public void setup(){
+		System.setErr(new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		    }
+		}));
+	}
+	
 	@Test
 	public void addBoxes(){
 		Node n = new Node();
@@ -391,7 +404,7 @@ public class test {
 		
 		SearchClient agentClient = new SearchClient( client.state );
 
-		Strategy strategy1 = new StrategyBestFirst( new AStar( agentClient.state, client.agents.get(0).id ) );
+		Strategy strategy1 = new StrategyBestFirst( new AStar( agentClient.state, client.agents.get(0)) );
 		assertTrue( strategy1.frontierIsEmpty());
 		strategy1.addToFrontier(agentClient.state);
 		assertEquals(client.state, agentClient.state);
@@ -446,12 +459,12 @@ public class test {
 		
 		
 		SearchClient agentClient = new SearchClient( client.state );
-		Strategy strategy1 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[0].id ) );
+		Strategy strategy1 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[0] ) );
 		LinkedList<Node> sol1=agentClient.Search(strategy1, client.state.agents[0].id).solution;
 		assertEquals(9, sol1.size());
 //		System.err.println(client.state.agents[0].color);
 		SearchClient agentClient2 = new SearchClient( client.state );
-		Strategy strategy2 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[1].id ) );
+		Strategy strategy2 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[1]) );
 		LinkedList<Node> sol2=agentClient2.Search(strategy2, client.state.agents[1].id).solution;
 		assertEquals(17, sol2.size());
 
@@ -495,5 +508,40 @@ public class test {
 		assertTrue(total.isGoalState(Color.green));
 		assertTrue(total.isGoalState(Color.red));
 		assertTrue(total.isGoalState());
+	}
+
+	@Test
+	public void DistanceMap() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/SACrunch.lvl")) );
+		
+		SettingsContainer con = new SettingsContainer();
+		con.dm=new FloydWarshallDistanceMap();
+		SearchClient client = new SearchClient( serverMessages, con );
+		
+		Node n=client.state;
+		StringBuilder builder= new StringBuilder();
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				
+				if(n.cellIsFree(i, j) || n.WTF(i, j) != null){
+
+					builder.append(n.distance(2, 1, i, j));
+//					System.out.print(n.distance(2, 1, i, j));
+				}else{
+					builder.append("x");
+//					System.out.print("x");
+				}
+			}
+//			System.out.println();
+			builder.append("\n");
+		}
+		assertEquals("xxxxxxxx\n"+
+				"x1x17161514x\n"+
+				"x01x151413x\n"+
+				"x1x5x1312x\n"+
+				"x2345x11x\n"+
+				"x3xxxx10x\n"+
+				"x456789x\n"+
+				"xxxxxxxx\n", builder.toString());
 	}
 }

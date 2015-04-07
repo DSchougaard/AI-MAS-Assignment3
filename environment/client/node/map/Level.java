@@ -74,7 +74,7 @@ public class Level implements LevelInterface{
 		}
 		this.goals 				= new HashMap<Character, ArrayList<Goal>>();
 		this.goalTypeByColor 	= new HashMap<Color, ArrayList<Goal>>();
-		this.dm 				= dm;
+		Level.dm 				= dm;
 		this.clusters 			= new HashMap<Integer, ArrayList<Goal>>();
 	}	
 
@@ -173,7 +173,7 @@ public class Level implements LevelInterface{
 			return 0;
 		}
 		
-		return this.dm.distance(rowFrom, colFrom, rowTo, colTo);
+		return Level.dm.distance(rowFrom, colFrom, rowTo, colTo);
 	}
 
 	@Override

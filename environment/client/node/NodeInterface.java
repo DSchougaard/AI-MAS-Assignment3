@@ -26,6 +26,7 @@ public interface NodeInterface {
 	public boolean cellIsFree(int row, int col);
 
 	// Goals
+	public char isGoal(int row, int col);
 	public boolean isGoalState();
 	public boolean isGoalState(Color color);
 	public boolean isGoalState(Goal goal);

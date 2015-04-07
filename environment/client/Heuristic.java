@@ -44,7 +44,7 @@ public abstract class Heuristic implements Comparator< Node > {
 					for (int i = 0 ; agent.subgoalsList.size() > i ; i++){
 						Goal goal = agent.subgoalsList.get(i);
 						//Goal goal = n.getGoals(box.getType()).get(0);
-						if(goal.type == box.getType()){
+						if(goal.getType() == box.getType()){
 							if (n.distance(box, goal) > 0){						
 								h+=n.distance(box, goal) +1 ;
 							}
@@ -53,7 +53,7 @@ public abstract class Heuristic implements Comparator< Node > {
 					}
 				}else{
 					Goal goal = n.getGoals(box.getType()).get(0);
-					if(goal.type == box.getType()){
+					if(goal.getType() == box.getType()){
 						if (n.distance(box, goal) > 0){						
 							h+=n.distance(box, goal) +1 ;
 						}
@@ -69,6 +69,33 @@ public abstract class Heuristic implements Comparator< Node > {
 		}
 		
 	}
+	
+//	public int h ( Node n ) {
+//		//euclid distance from mover to box and from box to goal
+//		Integer tmpH=hs.get(n);
+//		if(tmpH==null){
+//
+//			int h=0;
+//			for (Goal subgoal : agent.subgoals) {
+//				int tmp=Integer.MAX_VALUE;
+//				ArrayList<Box> boxs= n.getBoxes(subgoal.getType());
+//				for (Box box : boxs) {
+//					if(n.isGoal(box.row, box.col) != box.getType() || n.isGoalState(subgoal)){
+//						tmp=Math.min(tmp, n.distance(n.agents[agent.id], box)+n.distance(box, subgoal));
+//					}
+//				}
+//				h+=tmp;
+//			}
+//			
+//						
+//
+//			hs.put(n, h);
+//			return h;
+//		}else{
+//			return tmpH;
+//		}
+//		
+//	}
 
 	public abstract int f( Node n);
 
