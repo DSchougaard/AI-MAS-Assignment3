@@ -37,7 +37,16 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 
 		System.err.println("Initialized FloydWarshall matrix to size " + size + "x" + size + ".");
 
+
 		distance = new int[size][size];
+		
+		for (int i = 0; i < distance.length; i++) {
+			for (int j = 0; j < distance.length; j++) {
+				distance[i][j]=999;
+			}
+		}
+		
+		
 		for( int i = 0 ; i < size ; i++ )
 			distance[i][i] = 0;
 

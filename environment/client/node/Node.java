@@ -163,7 +163,7 @@ public class Node implements NodeInterface, LevelInterface{
 
 		// Check for agents
 		for( int i = 0; i < 10 ; i++ ){
-			if( agents[i].isAt(row, col) )
+			if(agents[i]!=null && agents[i].isAt(row, col) )
 				return agents[i];
 		}
 
