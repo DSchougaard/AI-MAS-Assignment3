@@ -471,7 +471,29 @@ public class test {
 
 	}
 	
-	
+	@Test
+	public void multiAgent2() throws Exception {
+		
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAsimple1.lvl")) );
+
+		SearchClient client = new SearchClient( serverMessages );
+
+
+		
+		
+		
+		SearchClient agentClient = new SearchClient( client.state );
+		Strategy strategy1 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[0] ) );
+		LinkedList<Node> sol1=agentClient.Search(strategy1, client.state.agents[0].id).solution;
+		assertEquals(9, sol1.size());
+//		System.err.println(client.state.agents[0].color);
+		SearchClient agentClient2 = new SearchClient( client.state );
+		Strategy strategy2 = new StrategyBestFirst( new AStar( agentClient.state, client.state.agents[1]) );
+		LinkedList<Node> sol2=agentClient2.Search(strategy2, client.state.agents[1].id).solution;
+		assertEquals(17, sol2.size());
+
+
+	} 
 	@Test
 	public void multiGoals() throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAsimple1.lvl")) );

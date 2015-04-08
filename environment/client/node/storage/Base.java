@@ -28,8 +28,8 @@ public class Base{
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
+		final int prime = 41;
+		int result = 7;
 		result = prime * result + this.row;
 		result = prime * result + this.col;
 		return result;
