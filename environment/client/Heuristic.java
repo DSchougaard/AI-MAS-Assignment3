@@ -159,17 +159,17 @@ public abstract class Heuristic implements Comparator< Node > {
 
 	@SuppressWarnings("unused")
 	private Goal selectGoal_goalDist(){
-		Agent a = this.initialState.agents[this.agent.id];
-		ArrayList<Goal> goals = this.initialState.getCluster(a);
+		Agent agent = this.initialState.agents[this.agent.id];
+		ArrayList<Goal> goals = this.initialState.getCluster(agent);
 		Goal selectedGoal = goals.get(0);
 		
-		for( Goal g : goals ){
+		for( Goal goal : goals ){
 			//if( Heuristic.agent_goal_bookkeeping.containsValue(g) && Heuristic.get(new Integer(this.agentID)) != g )
-			if( goalInUse(g) )
+			if( goalInUse(goal) )
 				continue;
 
-			if( this.initialState.distance(a, g) < this.initialState.distance(a, selectedGoal) )
-				selectedGoal = g;
+			if( this.initialState.distance(agent, goal) < this.initialState.distance(agent, selectedGoal) )
+				selectedGoal = goal;
 		}
 		return selectedGoal;
 	}
@@ -177,24 +177,22 @@ public abstract class Heuristic implements Comparator< Node > {
 	private Goal selectGoal_boxGoalDist(){
 		Agent a = this.initialState.agents[this.agent.id];
 		ArrayList<Goal> goals = this.initialState.getCluster(a);
-		ArrayList<Box> boxes = null;
 
 		// Selected Values
 		Goal selectedGoal = null;
 		Box selectedBox = null;
 		int dist = Integer.MAX_VALUE;
 
-		for( Goal g : goals ){
-			if( goalInUse(g) )
+		for( Goal goal : goals ){
+			if( goalInUse(goal) )
 				continue;
 
-			boxes = initialState.getBoxes(g.getType());
-			for( Box b : boxes ){
-				if( b.getType() == g.getType() && ( this.initialState.distance(a, b) + this.initialState.distance(b, g) ) < dist ){
-					dist = this.initialState.distance(a, b) + this.initialState.distance(b, g);
+			for( Box box : initialState.getBoxes(goal.getType()) ){
+				if( ( this.initialState.distance(a, box) + this.initialState.distance(box, goal) ) < dist ){
+					dist = this.initialState.distance(a, box) + this.initialState.distance(box, goal);
 					// Set the selects
-					selectedGoal = g;
-					selectedBox = b;
+					selectedGoal = goal;
+					selectedBox = box;
 				}
 			}
 		}

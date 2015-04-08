@@ -312,17 +312,17 @@ public class Node implements NodeInterface, LevelInterface{
 		return Node.level.getClusters();
 	}
 	public ArrayList<Goal> getCluster(Agent agent){
-		ArrayList<Goal> t 			= Node.level.getCluster(agent);
+		ArrayList<Goal> cluster 			= Node.level.getCluster(agent);
 		ArrayList<Goal> filtered 	= new ArrayList<Goal>();
 
 		// Bypass filtering
 		// return t;
 
 		// Filter
-		for( Goal g : t ){
-			if( !this.boxesByPoint.containsKey(g.getPoint())
-			  ||(this.boxesByPoint.containsKey(g.getPoint()) && this.boxesByPoint.get(g.getPoint()).getType() != g.getType() )){
-				filtered.add(g);
+		for( Goal goal : cluster ){
+			Box box=this.boxesByPoint.get(goal.getPoint());
+			if(box == null || (box.getType() != goal.getType())){
+				filtered.add(goal);
 			}
 		}
 
