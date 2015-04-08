@@ -548,7 +548,8 @@ public class Node implements NodeInterface, LevelInterface{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Arrays.deepHashCode(this.getBoxes());
+		//result = prime * result + Arrays.deepHashCode(this.getBoxes());
+		result = prime * result + this.boxesByPoint.hashCode();
 //		result = prime * result + this.boxesByType.hashCode();
 //		result = prime * result + this.boxesByPoint.hashCode();
 		result = prime * result + Arrays.deepHashCode(agents);
