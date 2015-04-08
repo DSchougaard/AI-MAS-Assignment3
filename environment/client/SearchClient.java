@@ -104,8 +104,7 @@ public class SearchClient {
 	}
 
 	public SearchResult Search(Strategy strategy, int agentID, SearchResult preResult) throws IOException {
-		return Search(strategy, agentID,
-				this.state.getGoals(state.agents[agentID].color), preResult);
+		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color), preResult);
 	}
 
 	public SearchResult Search(Strategy strategy, int agentID, ArrayList<Goal> goals, SearchResult preResult) throws IOException {
@@ -301,7 +300,7 @@ public class SearchClient {
 				SearchClient agentClient = new SearchClient(client.state);
 
 				// relaxed search setup
-				Node relaxed = agentClient.state.subdomain(agent.color, agent);
+				Node relaxed = agentClient.state.subdomain(agent);
 				Heuristic relaxedHeuristic = new AStar(relaxed, agent);
 				relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
 

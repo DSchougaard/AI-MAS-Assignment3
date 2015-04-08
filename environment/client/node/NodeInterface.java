@@ -35,7 +35,7 @@ public interface NodeInterface {
 	// Relaxation
 	public Node subdomain(Color color);
 	public Node subdomain(ArrayList<Agent> agents);
-	public Node subdomain(Color color, Agent agent);
+	public Node subdomain(Agent agent);
 
 
 	

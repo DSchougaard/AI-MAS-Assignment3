@@ -106,8 +106,13 @@ public class Node implements NodeInterface, LevelInterface{
 
 	@Override
 	public ArrayList<Box> getBoxes(Color color){
-
-		throw new UnsupportedOperationException("not implemented yet");
+		ArrayList<Box> results = new ArrayList<>();
+		for(Box box:boxesByPoint.values()){
+			if(box.color==color){
+				results.add(box);
+			}
+		}
+		return results;
 	}
 
 	@Override
@@ -227,8 +232,8 @@ public class Node implements NodeInterface, LevelInterface{
 	@Override
 	public Node subdomain(ArrayList<Agent> agents){
 		Node subdomainNode = new Node();
-		for( Agent a : agents ){
-			subdomainNode.agents[a.id] = new Agent(a);
+		for( Agent agent : agents ){
+			subdomainNode.agents[agent.id] = new Agent(agent);
 		}
 		for( Box b  : this.boxesByPoint.values() ){
 			for( Agent a : agents ){
@@ -240,16 +245,16 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	@Override
-	public Node subdomain(Color color, Agent agent){
-		if( agent.color != color )
-			return null;
+	public Node subdomain(Agent agent){
+		Node subdomainNode = new Node();
 
-		ArrayList<Agent> a = new ArrayList<Agent>();
-		a.add(agent);
-		return subdomain(a);
+		subdomainNode.agents[agent.id]=new Agent(this.agents[agent.id]);
+		for(Box box: this.getBoxes(agent.color)){
+			subdomainNode.addBox(box);
+		}
+		
+		return subdomainNode;
 	}
-
-
 
 
 
