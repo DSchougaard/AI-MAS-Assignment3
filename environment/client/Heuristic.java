@@ -149,7 +149,9 @@ public abstract class Heuristic implements Comparator< Node > {
 	public Goal selectGoal(){
 		Goal g = selectGoal_boxGoalDist();
 		//Heuristic.agent_goal_bookkeeping.put( new Integer(this.agentID), g);
-		Heuristic.agent_goal_bookkeeping.put(g, this.agent.id);
+		if(g!=null){
+			Heuristic.agent_goal_bookkeeping.put(g, this.agent.id);
+		}
 		return g;
 	}
 
@@ -180,6 +182,7 @@ public abstract class Heuristic implements Comparator< Node > {
 
 		// Selected Values
 		Goal selectedGoal = null;
+		@SuppressWarnings("unused")
 		Box selectedBox = null;
 		int dist = Integer.MAX_VALUE;
 
@@ -197,10 +200,10 @@ public abstract class Heuristic implements Comparator< Node > {
 			}
 		}
 
-		if( selectedGoal == null )
-			throw new NullPointerException("No more goals.");
-		if( selectedBox == null )
-			throw new NullPointerException("No available boxes for selected goal.");
+//		if( selectedGoal == null )
+//			throw new NullPointerException("No more goals.");
+//		if( selectedBox == null )
+//			throw new NullPointerException("No available boxes for selected goal.");
 
 		return selectedGoal;
 	}

@@ -114,7 +114,7 @@ public class SearchClient {
 		int iterations = 0;
 		while (true) {
 
-			if (iterations % 200 == 0) {
+			if (iterations % 2000 == 0) {
 				System.err.println(strategy.searchStatus());
 			}
 			if (Memory.shouldEnd()) {
@@ -254,7 +254,7 @@ public class SearchClient {
 			} else {
 				MultiAgentPlaning(client, solutions);
 			}
-
+			System.gc();
 			executePlans(solutions, client);
 
 		}
@@ -274,9 +274,9 @@ public class SearchClient {
 
 		// find a subgoal(s) which should be solved
 		Goal subgoal = heuristic.selectGoal();
-
-		agent.subgoals.add(subgoal);
-
+		if(subgoal!=null){
+			agent.subgoals.add(subgoal);
+		}
 		SearchResult result = agentClient.Search(strategy, agent.id, agent.subgoals);
 
 		solution.get(agent.id).addAll(result.solution);
@@ -310,8 +310,11 @@ public class SearchClient {
 
 				// find a subgoal(s) which should be solved
 				Goal subgoal = heuristic.selectGoal();
-				agent.subgoals.add(subgoal);
-				System.err.println("new subgoal "+subgoal.getType());
+				if(subgoal!=null){
+					agent.subgoals.add(subgoal);
+					System.err.println("new subgoal "+subgoal.getType());
+				}
+				
 				
 				System.err.println("relaxed search");
 				SearchResult relaxedResult = agentClient.Search(relaxedStrategy, agent.id, agent.subgoals);
