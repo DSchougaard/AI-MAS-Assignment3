@@ -51,17 +51,24 @@ public abstract class Strategy {
 	public static class StrategyBestFirst extends Strategy {
 		public Heuristic heuristic;
 		private PriorityQueue< Node > queue; 
+		private HashSet< Node > contains;
+		
+		
 		public StrategyBestFirst( Heuristic heuristic ) {
 			super();
 			this.heuristic = heuristic;
 			queue = new PriorityQueue<>(heuristic);
+			contains = new HashSet< Node >();
 		}
 		public Node getAndRemoveLeaf() {
-			return queue.poll();
+			Node n =queue.poll();
+			contains.remove(n);
+			return n;
 		}
 
 		public void addToFrontier( Node n ) {
 			queue.add(n);
+			contains.add(n);
 		}
 
 		public int countFrontier() {
@@ -73,7 +80,8 @@ public abstract class Strategy {
 		}
 
 		public boolean inFrontier( Node n ) {
-			return queue.contains(n);
+//			return queue.contains(n);
+			return contains.contains(n);
 		}
 
 		public String toString() {

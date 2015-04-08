@@ -301,11 +301,11 @@ public class SearchClient {
 
 				// relaxed search setup
 				Node relaxed = agentClient.state.subdomain(agent);
-				Heuristic relaxedHeuristic = new AStar(relaxed, agent);
+				Heuristic relaxedHeuristic = new Greedy(relaxed, agent);
 				relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
 
 				// normal search setup
-				Heuristic heuristic = new AStar(agentClient.state, agent);
+				Heuristic heuristic = new Greedy(agentClient.state, agent);
 				strategy = new StrategyBestFirst(heuristic);
 
 				// find a subgoal(s) which should be solved
