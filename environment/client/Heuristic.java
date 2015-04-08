@@ -73,17 +73,16 @@ public abstract class Heuristic implements Comparator< Node > {
 //			int h=0;
 //			for (Goal subgoal : agent.subgoals) {
 //				int tmp=Integer.MAX_VALUE;
-//				ArrayList<Box> boxs= n.getBoxes(subgoal.getType());
-//				for (Box box : boxs) {
-//					if(n.isGoal(box.row, box.col) != box.getType() || n.isGoalState(subgoal)){
+//				for (Box box : n.getBoxes(subgoal.getType())) {
+//					if(!box.isAt(subgoal.row, subgoal.col)){
 //						tmp=Math.min(tmp, n.distance(n.agents[agent.id], box)+n.distance(box, subgoal));
+//					}else{
+//						tmp=0;
+//						break;
 //					}
 //				}
 //				h+=tmp;
 //			}
-//			
-//						
-//
 //			hs.put(n, h);
 //			return h;
 //		}else{
