@@ -175,8 +175,8 @@ public abstract class Heuristic implements Comparator< Node > {
 	}
 
 	private Goal selectGoal_boxGoalDist(){
-		Agent a = this.initialState.agents[this.agent.id];
-		ArrayList<Goal> goals = this.initialState.getCluster(a);
+		Agent agent = this.initialState.agents[this.agent.id];
+		ArrayList<Goal> goals = this.initialState.getCluster(agent);
 
 		// Selected Values
 		Goal selectedGoal = null;
@@ -188,8 +188,8 @@ public abstract class Heuristic implements Comparator< Node > {
 				continue;
 
 			for( Box box : initialState.getBoxes(goal.getType()) ){
-				if( ( this.initialState.distance(a, box) + this.initialState.distance(box, goal) ) < dist ){
-					dist = this.initialState.distance(a, box) + this.initialState.distance(box, goal);
+				if( ( this.initialState.distance(agent, box) + this.initialState.distance(box, goal) ) < dist ){
+					dist = this.initialState.distance(agent, box) + this.initialState.distance(box, goal);
 					// Set the selects
 					selectedGoal = goal;
 					selectedBox = box;
