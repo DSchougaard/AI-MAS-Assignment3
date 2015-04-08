@@ -168,7 +168,7 @@ public abstract class Heuristic implements Comparator< Node > {
 			if( goalInUse(g) )
 				continue;
 
-			if( this.initialState.distance(a, selectedGoal) < this.initialState.distance(a, g) )
+			if( this.initialState.distance(a, g) < this.initialState.distance(a, selectedGoal) )
 				selectedGoal = g;
 		}
 		return selectedGoal;
