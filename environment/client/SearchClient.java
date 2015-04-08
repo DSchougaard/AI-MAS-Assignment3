@@ -312,9 +312,11 @@ public class SearchClient {
 				// find a subgoal(s) which should be solved
 				Goal subgoal = heuristic.selectGoal();
 				agent.subgoals.add(subgoal);
-
+				System.err.println("new subgoal "+subgoal.getType());
+				
+				System.err.println("relaxed search");
 				SearchResult relaxedResult = agentClient.Search(relaxedStrategy, agent.id, agent.subgoals);
-
+				System.err.println("normal search");
 				SearchResult result = agentClient.Search(strategy, agent.id, agent.subgoals, relaxedResult);
 
 				switch (result.reason) {
@@ -334,8 +336,7 @@ public class SearchClient {
 				default:
 					agent.status=Status.PLAN;
 					System.err.println("\nSummary for " + strategy);
-					System.err.println("Found solution of length "
-							+ result.solution.size());
+					System.err.println("Found solution of length " + result.solution.size());
 					System.err.println(strategy.searchStatus());
 					solutions.get(agent.id).addAll(result.solution);
 					break;
