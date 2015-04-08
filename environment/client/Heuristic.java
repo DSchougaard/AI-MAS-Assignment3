@@ -35,16 +35,10 @@ public abstract class Heuristic implements Comparator< Node > {
 		Integer tmpH=hs.get(n);
 		if(tmpH==null){
 
-			int h=0;
-//			ArrayList<Box> boxes = n.getBoxes();
-						
-			Box[] boxes = n.getBoxes();
-			ArrayList<Goal> goals = agent.subgoalsList;
-			for (Box box : boxes) {				
-				if(agent.subgoalsList.size() > 0){
-					for (Goal goal : goals){
-						//Goal goal = agent.subgoalsList.get(i);
-						//Goal goal = n.getGoals(box.getType()).get(0);
+			int h=0;			
+			for (Box box : n.getBoxes()) {				
+				if(agent.subgoals.size() > 0){
+					for (Goal goal : agent.subgoals){
 						if(goal.getType() == box.getType()){
 							if (n.distance(box, goal) > 0){						
 								h+=n.distance(box, goal) +1 ;
@@ -103,7 +97,6 @@ public abstract class Heuristic implements Comparator< Node > {
 	public static class AStar extends Heuristic {
 		public AStar(Node initialState, Agent agent) {
 			super( initialState, agent);
-			System.err.println( "\nSubgoal count: " + agent.subgoalsList.size() );
 		}
 
 		public int f( Node n) {
@@ -165,6 +158,7 @@ public abstract class Heuristic implements Comparator< Node > {
 		return ( Heuristic.agent_goal_bookkeeping.get(g) != null /*|| Heuristic.agent_goal_bookkeeping.get(g).intValue != this.agentID */);
 	}
 
+	@SuppressWarnings("unused")
 	private Goal selectGoal_goalDist(){
 		Agent a = this.initialState.agents[this.agent.id];
 		ArrayList<Goal> goals = this.initialState.getCluster(a);

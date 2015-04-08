@@ -16,7 +16,6 @@ import client.node.storage.Agent;
 import client.node.storage.Agent.Status;
 import client.node.storage.Goal;
 import client.node.storage.SearchResult;
-import client.node.storage.SearchResult.Result;
 import client.ArgumentParser;
 
 public class SearchClient {
@@ -275,16 +274,9 @@ public class SearchClient {
 		Strategy strategy = new StrategyBestFirst(heuristic);
 
 		// find a subgoal(s) which should be solved
-		if (!agent.subgoals.isEmpty()) {
-			heuristic.finishedWithGoal(agent.subgoals.get(0));
-			agent.subgoals.clear();
-		}
 		Goal subgoal = heuristic.selectGoal();
 
 		agent.subgoals.add(subgoal);
-		if (!agent.subgoalsList.contains(subgoal)) {
-			agent.subgoalsList.add(subgoal);
-		}
 
 		SearchResult result = agentClient.Search(strategy, agent.id, agent.subgoals);
 
@@ -318,15 +310,8 @@ public class SearchClient {
 				strategy = new StrategyBestFirst(heuristic);
 
 				// find a subgoal(s) which should be solved
-				if (!agent.subgoals.isEmpty()) {
-					heuristic.finishedWithGoal(agent.subgoals.get(0));
-					agent.subgoals.clear();
-				}
 				Goal subgoal = heuristic.selectGoal();
 				agent.subgoals.add(subgoal);
-				if (!agent.subgoalsList.contains(subgoal)) {
-					agent.subgoalsList.add(subgoal);
-				}
 
 				SearchResult relaxedResult = agentClient.Search(relaxedStrategy, agent.id, agent.subgoals);
 

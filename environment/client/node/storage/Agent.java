@@ -12,7 +12,6 @@ public class Agent extends Base{
 	public enum Status{STUCK, PLAN, DONE, IDLE, HELPING}
 	public Status status = Status.IDLE;
 	public ArrayList<Goal> subgoals = new ArrayList<>();
-	public ArrayList<Goal> subgoalsList = new ArrayList<Goal>(); 
 	
 	public Agent(int name, Color color, int row, int col){
 		super(row, col);
