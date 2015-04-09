@@ -6,7 +6,7 @@ import java.util.HashMap;
 import client.node.Color;
 import client.node.storage.Base;
 import client.node.storage.Goal;
-import client.node.storage.Agent;
+import client.node.storage.LogicalAgent;
 
 
 public interface LevelInterface {
@@ -23,8 +23,8 @@ public interface LevelInterface {
 	public int distance(Base from, Base to);
 
 	// Clusters
-	public void calculateCluster(Agent[] agents);
+	public void calculateCluster(LogicalAgent[] agents);
 	public HashMap<Integer, ArrayList<Goal>> getClusters();
-	public ArrayList<Goal> getCluster(Agent agent);
+	public ArrayList<Goal> getCluster(LogicalAgent agent);
 
 }

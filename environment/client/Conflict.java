@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import client.SearchAgent.Status;
 import client.node.Node;
-import client.node.storage.Agent;
-import client.node.storage.Agent.Status;
 
 
 
@@ -15,15 +14,15 @@ public class Conflict{
 	
 	
 	
-	public static ArrayList< LinkedList< Node > > solve(ArrayList< LinkedList< Node > > solutions, List< Agent > agents){
+	public static ArrayList< LinkedList< Node > > solve(ArrayList< LinkedList< Node > > solutions, List< SearchAgent > agents){
 		
-		for (Agent agent : agents) {
-			if(agent.status== Agent.Status.STUCK){
+		for (SearchAgent agent : agents) {
+			if(agent.status== SearchAgent.Status.STUCK){
 				
 				//TODO: find reason
 				
 				//TODO: find some one to solve the problem
-				for (Agent OtherAgent : agents) {
+				for (SearchAgent OtherAgent : agents) {
 					if(!agent.equals(OtherAgent) && OtherAgent.status!=Status.HELPING){
 						//TODO: find solution
 					}

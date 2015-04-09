@@ -13,7 +13,7 @@ import client.Command.dir;
 import client.Command.type;
 import client.node.map.Level;
 import client.node.map.LevelInterface;
-import client.node.storage.Agent;
+import client.node.storage.LogicalAgent;
 import client.node.storage.Base;
 import client.node.storage.Box;
 import client.node.storage.Goal;
@@ -28,7 +28,7 @@ public class Node implements NodeInterface, LevelInterface{
 	HashMap<Point, Box> boxesByPoint;
 
 	// Agents
-	public Agent[] agents;
+	public LogicalAgent[] agents;
 	
 	// History
 	public Node parent;
@@ -40,7 +40,7 @@ public class Node implements NodeInterface, LevelInterface{
 	public Node(){
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
-		agents 			= new Agent[10];
+		agents 			= new LogicalAgent[10];
 		g=0;
 
 	}
@@ -49,7 +49,7 @@ public class Node implements NodeInterface, LevelInterface{
 		Node.level = level;
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
-		agents 			= new Agent[10];
+		agents 			= new LogicalAgent[10];
 		g=0;
 	}
 
@@ -58,7 +58,7 @@ public class Node implements NodeInterface, LevelInterface{
 	public void addAgent(char name, Color color, int row, int col){
 		int i = (int)name - 48;
 		if( agents[i] != null ) return;
-		agents[i] = new Agent(i, color, row, col);
+		agents[i] = new LogicalAgent(i, color, row, col);
 	}
 
 
@@ -139,12 +139,12 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	@Override
-	public Agent[] getAgents(){
+	public LogicalAgent[] getAgents(){
 		return this.agents;
 	}
 
 	@Override
-	public Agent agentAt(int row, int col){
+	public LogicalAgent agentAt(int row, int col){
 		for( int i = 0 ; i < 10 ; i++ ){
 			if( this.agents[i]!=null && this.agents[i].isAt(row, col) )
 				return this.agents[i];
@@ -220,7 +220,7 @@ public class Node implements NodeInterface, LevelInterface{
 		// Determine which agents falls within the color
 		for( int i = 0 ; i < this.agents.length ; i++ ){
 			if( this.agents[i].color == color )
-				subdomainNode.agents[i] = new Agent(this.agents[i]);
+				subdomainNode.agents[i] = new LogicalAgent(this.agents[i]);
 		}
 		for( Box b : this.boxesByPoint.values() ){
 			if( b.color == color )
@@ -230,13 +230,13 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	@Override
-	public Node subdomain(ArrayList<Agent> agents){
+	public Node subdomain(ArrayList<Integer> agentIDs){
 		Node subdomainNode = new Node();
-		for( Agent agent : agents ){
-			subdomainNode.agents[agent.id] = new Agent(this.agents[agent.id]);
+		for( int agentID : agentIDs ){
+			subdomainNode.agents[agentID] = new LogicalAgent(this.agents[agentID]);
 		}
 		for( Box b  : this.boxesByPoint.values() ){
-			for( Agent a : agents ){
+			for( LogicalAgent a : agents ){
 				if( a.color == b.color )
 					subdomainNode.addBox(b);
 			}
@@ -245,11 +245,11 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	@Override
-	public Node subdomain(Agent agent){
+	public Node subdomain(int agentID){
 		Node subdomainNode = new Node();
 
-		subdomainNode.agents[agent.id]=new Agent(this.agents[agent.id]);
-		for(Box box: this.getBoxes(agent.color)){
+		subdomainNode.agents[agentID]=new LogicalAgent(this.agents[agentID]);
+		for(Box box: this.getBoxes(agents[agentID].color)){
 			subdomainNode.addBox(box);
 		}
 		
@@ -305,13 +305,13 @@ public class Node implements NodeInterface, LevelInterface{
 
 	}
 
-	public void calculateCluster(Agent[] agents){
+	public void calculateCluster(LogicalAgent[] agents){
 		Node.level.calculateCluster(agents);
 	}
 	public HashMap<Integer, ArrayList<Goal>> getClusters(){
 		return Node.level.getClusters();
 	}
-	public ArrayList<Goal> getCluster(Agent agent){
+	public ArrayList<Goal> getCluster(LogicalAgent agent){
 		ArrayList<Goal> cluster 			= Node.level.getCluster(agent);
 		ArrayList<Goal> filtered 	= new ArrayList<Goal>();
 
@@ -507,7 +507,7 @@ public class Node implements NodeInterface, LevelInterface{
 		Node copy= new Node();
 		for (int i = 0; i < agents.length; i++) {
 			if(this.agents[i]!=null){
-				copy.agents[i]=new Agent(this.agents[i]);
+				copy.agents[i]=new LogicalAgent(this.agents[i]);
 			}
 		}
 

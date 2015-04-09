@@ -12,8 +12,7 @@ import client.Strategy.StrategyBestFirst;
 import client.node.Node;
 import client.node.map.BasicManhattanDistanceMap;
 import client.node.map.Parser;
-import client.node.storage.Agent;
-import client.node.storage.Agent.Status;
+import client.SearchAgent.Status;
 import client.node.storage.Goal;
 import client.node.storage.SearchResult;
 import client.ArgumentParser;
@@ -65,14 +64,14 @@ public class SearchClient {
 	public Node state = null;
 
 	// all the active agents in sorted order
-	public List<Agent> agents = new ArrayList<Agent>();
+	public List<SearchAgent> agents = new ArrayList<>();
 
 	public SearchClient(BufferedReader serverMessages, SettingsContainer settings) throws Exception {
 
 		state = Parser.parse(serverMessages, settings);
 		for (int i = 0; i < state.agents.length; i++) {
 			if (state.agents[i] != null) {
-				agents.add(state.agents[i]);
+				agents.add(new SearchAgent( state.agents[i]));
 			}
 		}
 	}
@@ -84,7 +83,7 @@ public class SearchClient {
 		state = Parser.parse(serverMessages, settings);
 		for (int i = 0; i < state.agents.length; i++) {
 			if (state.agents[i] != null) {
-				agents.add(state.agents[i]);
+				agents.add(new SearchAgent( state.agents[i]));
 			}
 		}
 	}
@@ -220,7 +219,7 @@ public class SearchClient {
 				if (solutions.get(i).isEmpty()) {
 					// should it be empty
 					if (!client.state.isGoalState(client.state.agents[i].color)) {
-						client.state.agents[i].status = Status.IDLE;
+						client.agents.get(i).status = Status.IDLE;
 						done = true;
 					}
 				}
@@ -244,7 +243,7 @@ public class SearchClient {
 		// online planning loop
 		ArrayList<LinkedList<Node>> solutions = new ArrayList<LinkedList<Node>>();
 		for (@SuppressWarnings("unused")
-		Agent agent : client.agents) {
+		SearchAgent agent : client.agents) {
 			solutions.add(new LinkedList<Node>());
 		}
 		while (!client.state.isGoalState()) {
@@ -263,7 +262,7 @@ public class SearchClient {
 	}
 
 	private static void SingleAgentPlaning(SearchClient client, ArrayList<LinkedList<Node>> solution) throws IOException {
-		Agent agent = client.agents.get(0);
+		SearchAgent agent = client.agents.get(0);
 		System.err.println("\nAgent " + agent.id + " planing");
 
 		SearchClient agentClient = new SearchClient(client.state);
@@ -292,7 +291,7 @@ public class SearchClient {
 		boolean stuck = false;
 		Strategy strategy = null;
 		Strategy relaxedStrategy = null;
-		for (Agent agent : client.agents) {
+		for (SearchAgent agent : client.agents) {
 			// only plan if there is not already a plan
 			if (solutions.get(agent.id).isEmpty()) {
 				System.err.println("agent " + agent.id + " planing");
@@ -300,7 +299,7 @@ public class SearchClient {
 				SearchClient agentClient = new SearchClient(client.state);
 
 				// relaxed search setup
-				Node relaxed = agentClient.state.subdomain(agent);
+				Node relaxed = agentClient.state.subdomain(agent.id);
 				Heuristic relaxedHeuristic = new Greedy(relaxed, agent);
 				relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
 

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import client.node.Color;
 import client.node.storage.Base;
 import client.node.storage.Goal;
-import client.node.storage.Agent;
+import client.node.storage.LogicalAgent;
 
 /*
 	@author: Daniel Schougaard
@@ -182,7 +182,7 @@ public class Level implements LevelInterface{
 	}
 
 
-	public void calculateCluster(Agent[] agents){
+	public void calculateCluster(LogicalAgent[] agents){
 		for( int i = 0 ; i < agents.length ; i++ ){
 			if( agents[i] != null )
 				this.clusters.put( new Integer(agents[i].id), this.goalTypeByColor.get(agents[i].color) );
@@ -191,7 +191,7 @@ public class Level implements LevelInterface{
 	public HashMap<Integer, ArrayList<Goal>> getClusters(){
 		return this.clusters;
 	}
-	public ArrayList<Goal> getCluster(Agent agent){
+	public ArrayList<Goal> getCluster(LogicalAgent agent){
 		return clusters.get( new Integer(agent.id) );
 	}
 

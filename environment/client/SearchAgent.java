@@ -1,16 +1,22 @@
-package client.node.storage;
+package client;
+import java.util.ArrayList;
+
+
 // Goals have a type
 // Agents have a color
 // Boxes have a color AND a type
 import client.node.Color;
+import client.node.storage.LogicalAgent;
+import client.node.storage.Goal;
 
-public class LogicalAgent extends Base{
+public class SearchAgent{
 	public int id;
 	public Color color;
-
+	public enum Status{STUCK, PLAN, DONE, IDLE, HELPING}
+	public Status status = Status.IDLE;
+	public ArrayList<Goal> subgoals = new ArrayList<>();
 	
-	public LogicalAgent(int name, Color color, int row, int col){
-		super(row, col);
+	public SearchAgent(int name, Color color, int row, int col){
 		this.id 	= name;
 		if(color==null){
 			this.color = Color.noColor;
@@ -19,15 +25,18 @@ public class LogicalAgent extends Base{
 		}
 	}
 
-	public LogicalAgent(char name, int row, int col){
-		super(row, col);
+	public SearchAgent(char name, int row, int col){
 		this.id 	= (int)name;
 		this.color 	= Color.noColor;
 	}
 
 	
-	public LogicalAgent(LogicalAgent agent) {
-		super(agent.row, agent.col);
+	public SearchAgent(SearchAgent agent) {
+		this.id=agent.id;
+		this.color=agent.color;
+	}
+
+	public SearchAgent(LogicalAgent agent) {
 		this.id=agent.id;
 		this.color=agent.color;
 	}
@@ -37,12 +46,9 @@ public class LogicalAgent extends Base{
 		if( getClass() != obj.getClass() ){
 			return false;
 		}
-			
-		if(!super.equals( obj )){
-			return false;
-		}
 
-		LogicalAgent b = (LogicalAgent)obj;
+
+		SearchAgent b = (SearchAgent)obj;
 		return ( this.id == b.id && this.color == b.color );
 	}
 	
@@ -50,7 +56,6 @@ public class LogicalAgent extends Base{
 	public int hashCode() {
 		final int prime = 37;
 		int result = 5;
-		result = prime * result + super.hashCode();
 		result = prime * result + this.id;
 		return result;
 	}

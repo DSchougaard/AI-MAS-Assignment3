@@ -3,7 +3,7 @@ package client.node;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import client.node.storage.Agent;
+import client.node.storage.LogicalAgent;
 import client.node.storage.Base;
 import client.node.storage.Box;
 import client.node.storage.Goal;
@@ -19,8 +19,8 @@ public interface NodeInterface {
 	public ArrayList<Box> getBoxes(char type);
 
 	// Agents
-	public Agent[] getAgents();
-	public Agent agentAt(int row, int col);
+	public LogicalAgent[] getAgents();
+	public LogicalAgent agentAt(int row, int col);
 
 	// Cells
 	public boolean cellIsFree(int row, int col);
@@ -34,8 +34,8 @@ public interface NodeInterface {
 	
 	// Relaxation
 	public Node subdomain(Color color);
-	public Node subdomain(ArrayList<Agent> agents);
-	public Node subdomain(Agent agent);
+	public Node subdomain(ArrayList<Integer> agents);
+	public Node subdomain(int agent);
 
 
 	
