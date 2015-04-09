@@ -233,7 +233,7 @@ public class Node implements NodeInterface, LevelInterface{
 	public Node subdomain(ArrayList<Agent> agents){
 		Node subdomainNode = new Node();
 		for( Agent agent : agents ){
-			subdomainNode.agents[agent.id] = new Agent(agent);
+			subdomainNode.agents[agent.id] = new Agent(this.agents[agent.id]);
 		}
 		for( Box b  : this.boxesByPoint.values() ){
 			for( Agent a : agents ){
