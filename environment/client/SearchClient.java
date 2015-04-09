@@ -309,12 +309,13 @@ public class SearchClient {
 				strategy = new StrategyBestFirst(heuristic);
 
 				// find a subgoal(s) which should be solved
-				Goal subgoal = heuristic.selectGoal();
-				if(subgoal!=null){
-					agent.subgoals.add(subgoal);
-					System.err.println("new subgoal "+subgoal.getType());
+				if(client.state.isGoalState(agent.subgoals)){
+					Goal subgoal = heuristic.selectGoal();
+					if(subgoal!=null){
+						agent.subgoals.add(subgoal);
+						System.err.println("new subgoal "+subgoal.getType());
+					}
 				}
-				
 				
 				System.err.println("relaxed search");
 				SearchResult relaxedResult = agentClient.Search(relaxedStrategy, agent.id, agent.subgoals);
