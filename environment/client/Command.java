@@ -23,7 +23,6 @@ public class Command {
 			cmds.add( new Command( d ) );
 		}
 
-
 		every = cmds.toArray( new Command[0] );
 	}
 
@@ -76,7 +75,6 @@ public class Command {
 		default:
 			return actType.toString() + "(" + dir1 + "," + dir2 + ")";
 		}
-	
 	}
 	
 	@Override
@@ -84,9 +82,6 @@ public class Command {
 		if( getClass() != obj.getClass() ){
 			return false;
 		}
-		
-		return this.toString().equals(obj.toString());
-		
+		return this.toString().equals(obj.toString());	
 	}
-
 }

@@ -80,7 +80,6 @@ public abstract class Strategy {
 		}
 
 		public boolean inFrontier( Node n ) {
-//			return queue.contains(n);
 			return contains.contains(n);
 		}
 

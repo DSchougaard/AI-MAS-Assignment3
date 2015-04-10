@@ -16,8 +16,6 @@ public abstract class Heuristic implements Comparator< Node > {
 	
 	public HashMap<Node, Integer> hs =new HashMap<>();
 
-	//private static Goal[] agent_goal_bookkeeping;
-	//private static HashMap<Agent, Goal> agent_goal_bookkeeping;
 	private static HashMap<Goal, Integer> agent_goal_bookkeeping = new HashMap<>();
 	
 	public Heuristic(Node initialState, SearchAgent agent) {
@@ -148,7 +146,6 @@ public abstract class Heuristic implements Comparator< Node > {
 
 	public Goal selectGoal(){
 		Goal g = selectGoal_boxGoalDist();
-		//Heuristic.agent_goal_bookkeeping.put( new Integer(this.agentID), g);
 		if(g!=null){
 			Heuristic.agent_goal_bookkeeping.put(g, this.agent.id);
 		}
@@ -166,7 +163,6 @@ public abstract class Heuristic implements Comparator< Node > {
 		Goal selectedGoal = goals.get(0);
 		
 		for( Goal goal : goals ){
-			//if( Heuristic.agent_goal_bookkeeping.containsValue(g) && Heuristic.get(new Integer(this.agentID)) != g )
 			if( goalInUse(goal) )
 				continue;
 
@@ -199,12 +195,12 @@ public abstract class Heuristic implements Comparator< Node > {
 				}
 			}
 		}
-
-//		if( selectedGoal == null )
-//			throw new NullPointerException("No more goals.");
-//		if( selectedBox == null )
-//			throw new NullPointerException("No available boxes for selected goal.");
-
+		/*
+		if( selectedGoal == null )
+			throw new NullPointerException("No more goals.");
+		if( selectedBox == null )
+			throw new NullPointerException("No available boxes for selected goal.");
+		*/
 		return selectedGoal;
 	}
 }
