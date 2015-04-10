@@ -1,4 +1,4 @@
-package client.node.map;
+package client.node.level;
 
 import java.util.ArrayList;
 import java.util.HashMap;
