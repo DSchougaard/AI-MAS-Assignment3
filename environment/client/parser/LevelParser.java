@@ -29,7 +29,6 @@ public class LevelParser{
 			for ( String id : line.split( ":" )[1].split( "," ) )
 				colors.put( Character.toLowerCase(id.charAt( 0 )), Color.valueOf(color) );
 		}
-
 		// Read lines specifying level layout
 		int maxCol = 0, maxRow = 0;
 		while (line!=null && !line.equals( "" ) ) {
@@ -63,8 +62,7 @@ public class LevelParser{
 					node.addBox(line.charAt(col), colors.get(Character.toLowerCase(line.charAt(col))), row, col);
 					level.addSpace(row, col);
 				}else if( line.charAt( col ) >= '0' && line.charAt( col ) <= '9' ){
-					// Agent
-					
+					// Agent	
 					node.addAgent(line.charAt(col), colors.get(line.charAt(col)), row, col);
 					level.addSpace(row, col);
 				}
@@ -73,9 +71,6 @@ public class LevelParser{
 		level.calculateCluster(node.agents);
 		// I really don't know how to achieve this better? Any suggestions?
 		settings.dm.initialize(level);
-
-		// WARNING ERROR FAULT DANGER!!!!!!
-		
 		return node;
 	}
 }
