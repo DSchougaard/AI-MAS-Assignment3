@@ -8,6 +8,8 @@ import client.node.Color;
 import client.node.storage.Base;
 import client.node.storage.Goal;
 import client.node.storage.LogicalAgent;
+import client.node.level.clustering.KClusteringGoals;
+
 
 import client.node.level.distancemap.DistanceMap;
 
@@ -22,7 +24,7 @@ public class Level implements LevelInterface{
 	private int maxRow;
 	private int maxCol;
 	private static DistanceMap dm;
-
+	private static KClusteringGoals kcg;
 
 	public class Cell{
 		private Type type;
@@ -162,6 +164,8 @@ public class Level implements LevelInterface{
 	}
 
 	public void calculateCluster(LogicalAgent[] agents){
+
+		//this.kcg = new KClusteringGoals(agents, this);
 		for( int i = 0 ; i < agents.length ; i++ ){
 			if( agents[i] != null )
 				this.clusters.put( new Integer(agents[i].id), this.goalTypeByColor.get(agents[i].color) );
@@ -170,10 +174,12 @@ public class Level implements LevelInterface{
 
 	public HashMap<Integer, ArrayList<Goal>> getClusters(){
 		return this.clusters;
+		//return this.kcg.getClusters();
 	}
 
 	public ArrayList<Goal> getCluster(LogicalAgent agent){
 		return clusters.get( new Integer(agent.id) );
+		//return this.kcg.getCluster(agent.id);
 	}
 
 	public Character[][] toArray(){

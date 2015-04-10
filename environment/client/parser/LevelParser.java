@@ -9,8 +9,9 @@ import java.util.Map;
 import client.node.Color;
 import client.parser.SettingsContainer;
 import client.node.Node;
-
 import client.node.level.Level;
+
+import client.node.level.clustering.KClusteringGoals;
 
 public class LevelParser{
 	public static Node parse(BufferedReader in, SettingsContainer settings) throws IOException{
@@ -68,9 +69,9 @@ public class LevelParser{
 				}
 			}
 		}
-		level.calculateCluster(node.agents);
 		// I really don't know how to achieve this better? Any suggestions?
 		settings.dm.initialize(level);
+		level.calculateCluster(node.agents);
 		return node;
 	}
 }
