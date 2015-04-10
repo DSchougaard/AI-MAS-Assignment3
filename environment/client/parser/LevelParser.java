@@ -10,7 +10,7 @@ import client.node.Color;
 import client.parser.SettingsContainer;
 import client.node.Node;
 
-public class Parser{
+public class LevelParser{
 	public static Node parse(BufferedReader in, SettingsContainer settings) throws IOException{
 		Map< Character, Color > colors = new HashMap< Character, Color >();
 		String line, color;
