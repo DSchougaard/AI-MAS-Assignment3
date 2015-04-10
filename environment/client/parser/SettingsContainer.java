@@ -1,6 +1,6 @@
-package client;
+package client.parser;
 
-import client.node.map.DistanceMap;
+import client.node.level.distancemap.DistanceMap;
 
 	public class SettingsContainer{
 		public DistanceMap dm;

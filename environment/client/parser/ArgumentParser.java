@@ -1,13 +1,13 @@
-package client;
+package client.parser;
 
 import client.SettingsContainer;
 
-import client.node.map.DistanceMap;
-import client.node.map.BasicManhattanDistanceMap;
+import client.node.level.distancemap.DistanceMap;
+import client.node.level.distancemap.BasicManhattanDistanceMap;
 
 public class ArgumentParser{
 
-	private final static String DISTANCEMAP_CLASS_PREFIX = "client.node.map.";
+	private final static String DISTANCEMAP_CLASS_PREFIX = "client.node.level.distancemap.";
 
 	public static SettingsContainer parse(String[] args){
 		SettingsContainer settings = new SettingsContainer();

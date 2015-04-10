@@ -1,4 +1,4 @@
-package client.node.map;
+package client.parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import client.node.Color;
-import client.SettingsContainer;
+import client.parser.SettingsContainer;
 import client.node.Node;
 
 public class Parser{
