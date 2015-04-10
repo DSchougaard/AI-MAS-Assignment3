@@ -10,8 +10,10 @@ import java.util.List;
 import client.Heuristic.*;
 import client.parser.LevelParser;
 import client.parser.ArgumentParser;
+import client.parser.RouteParser;
 import client.parser.SettingsContainer;
 import client.node.Node;
+import client.node.storage.Base;
 import client.node.storage.Goal;
 import client.node.storage.SearchResult;
 import client.node.level.distancemap.BasicManhattanDistanceMap;
@@ -277,14 +279,16 @@ public class SearchClient {
 		if(subgoal!=null){
 			agent.subgoals.add(subgoal);
 		}
-		SearchResult result = agentClient.Search(strategy, agent.id, agent.subgoals);
+		SearchResult result = agentClient.Search(strategy, agent.id, agent.subgoals);		
 
 		solution.get(agent.id).addAll(result.solution);
-		String rute = "length:"+solution.get(0).size()+" ";
-		for (int i = 0 ; i < solution.get(0).size() ; i++){
-			rute += "[" + solution.get(0).get(i).getAgents()[0].col +","+solution.get(0).get(i).getAgents()[0].row+"] ";
+		
+		ArrayList<Base> rute = RouteParser.parse(solution, agent.id);
+		String ruteString = "length:"+solution.get(0).size()+" ";
+		for (int i = 0 ; i < rute.size() ; i++){
+			ruteString += "[" + rute.get(i).row +","+ rute.get(i).col + "] ";
 		}
-		System.err.println("Rute: "+rute);
+		System.err.println("Rute: "+ruteString);
 
 	}
 
