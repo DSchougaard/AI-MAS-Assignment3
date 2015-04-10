@@ -21,7 +21,6 @@ import client.node.storage.Goal;
 
 public class Node implements NodeInterface, LevelInterface{
 	private static Random rnd = new Random( System.currentTimeMillis() );
-//	private static Random rnd = new Random( 1 );
 	private static Level level;
 	// Box DS
 	HashMap<Character, ArrayList<Box>> boxesByType;
@@ -35,7 +34,6 @@ public class Node implements NodeInterface, LevelInterface{
 	public ArrayList<Command> actions= new ArrayList<>();
 	public Command action;
 	private int g;
-	
 	
 	public Node(){
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
@@ -61,10 +59,6 @@ public class Node implements NodeInterface, LevelInterface{
 		agents[i] = new LogicalAgent(i, color, row, col);
 	}
 
-
-
-
-
 	@SuppressWarnings("unused")
 	private void removeBox(Box box){
 		this.boxesByPoint.remove(new Point(box.row, box.col));
@@ -79,9 +73,7 @@ public class Node implements NodeInterface, LevelInterface{
 			boxesByType.put(box.getType(), new ArrayList<>());
 			boxList= boxesByType.get(box.getType());
 		}
-		
 		boxList.add(box);
-		
 	}
 	
 	public void addBox(char type, Color color, int row, int col){
@@ -92,12 +84,12 @@ public class Node implements NodeInterface, LevelInterface{
 		boxesByPoint.remove(new Point(box.row, box.col));
 		box.row=row;
 		box.col=col;
-		
 		boxesByPoint.put(new Point(box.row, box.col),box);
 	}
 
-
-	// Methods from NodeInterface
+	/*
+			NodeInterface
+	*/
 	@Override
 	public ArrayList<Box> getBoxes(char type){
 
@@ -122,10 +114,6 @@ public class Node implements NodeInterface, LevelInterface{
 	
 	@Override
 	public boolean cellIsFree(int row, int col){
-		// Sanity check on coords
-//		if( !(row >= 0 && col >= 0 && row <= this.level.getRow() && col <= this.level.getCol()) )
-//			return false;
-
 		if( Node.level.isWall(row, col) )
 			return false;
 
@@ -257,23 +245,9 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// Methods from LevelInterface. Parsed directly to LevelInterface.
+	/*
+			LevelInterface
+	*/
 	@Override
 	public ArrayList<Goal> getGoals(){
 		return Node.level.getGoals();
@@ -302,7 +276,6 @@ public class Node implements NodeInterface, LevelInterface{
 	@Override
 	public int distance(Base from, Base to) {
 		return Node.level.distance(from, to);
-
 	}
 
 	public void calculateCluster(LogicalAgent[] agents){
@@ -341,7 +314,6 @@ public class Node implements NodeInterface, LevelInterface{
 			if ( c.actType == type.Move ) {
 				// Check if there's a wall or box on the cell to which the agent is moving
 				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
-					
 					Node child = ChildNode();
 					child.action = c;
 					child.agents[agentID].row = newAgentRow;
@@ -350,57 +322,44 @@ public class Node implements NodeInterface, LevelInterface{
 
 				}
 			} else if ( c.actType == type.Push ) {
-				
 				// Make sure that there's actually a box to move
 				box = boxAt(newAgentRow, newAgentCol);
 				if ( box!=null && agents[agentID].color.equals(box.color)) {
-					
 					int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
 					int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
 					// .. and that new cell of box is free
+
 					if ( cellIsFree( newBoxRow, newBoxCol ) ) {
-						
 						Node n = this.ChildNode();
 						n.action = c;
 						n.agents[agentID].row = newAgentRow;
 						n.agents[agentID].col = newAgentCol;
 
 						n.moveBox(n.boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
-
 						expandedNodes.add( n );
-						
 					}
-
 				}
-				
-
 			} else if ( c.actType == type.Pull ) {
 				// Cell is free where agent is going
 				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
-					
 					int boxRow = agents[agentID].row + dirToRowChange( c.dir2 );
 					int boxCol = agents[agentID].col + dirToColChange( c.dir2 );
-					// .. and there's a box in "dir2" of the agent	
+					// .. and there's a box in "dir2" of the agent			
 					box = boxAt( boxRow, boxCol );
-					if ( box!= null  && agents[agentID].color == box.color) {
 
+					if ( box!= null  && agents[agentID].color == box.color) {
 						Node n = this.ChildNode();
 						n.action = c;
 						n.agents[agentID].row = newAgentRow;
 						n.agents[agentID].col = newAgentCol;
 	
 						n.moveBox(n.boxAt(boxRow, boxCol), agents[agentID].row, agents[agentID].col);
-
 						expandedNodes.add( n );
 					}
 				}
-				
-				
-
 			}
 		}
 		Collections.shuffle( expandedNodes, rnd );
-		
 		return expandedNodes;
 	}
 
@@ -438,9 +397,7 @@ public class Node implements NodeInterface, LevelInterface{
 				child.excecuteCommand( cs.get(i), i);
 			}
 		}
-	
 		return child;
-		
 	}
 
 	public Node excecuteCommands(ArrayList<Command> cs, int agent){
@@ -449,10 +406,8 @@ public class Node implements NodeInterface, LevelInterface{
 			if(cs.get(i)!=null){
 				child.excecuteCommand(cs.get(i), agent);
 			}
-		}
-		
-		return child;
-		
+		}	
+		return child;	
 	}
 
 	private void excecuteCommand(Command c, int agentID){
@@ -487,10 +442,7 @@ public class Node implements NodeInterface, LevelInterface{
 			break;
 		default:
 			throw new UnsupportedOperationException(c.toString());
-
 		}
-
-		
 	}
 	
 	
@@ -530,12 +482,10 @@ public class Node implements NodeInterface, LevelInterface{
 			}
 		}
 		
-//		getBoxes().forEach(box-> map[box.row][box.col]=Character.toUpperCase(box.getType()));
-		
 		for (Box box : getBoxes()) {
 			map[box.row][box.col]=Character.toUpperCase(box.getType());
 		}
-//		getBoxes().forEach(box-> System.err.println("box "+box.row+" "+box.col));
+
 		StringBuilder s = new StringBuilder();
 		s.append("\n");
 		for (int i = 0; i < map.length; i++) {
@@ -544,7 +494,6 @@ public class Node implements NodeInterface, LevelInterface{
 			}
 			s.append("\n");
 		}
-		
 		return s.toString();
 	}
 	
@@ -553,10 +502,7 @@ public class Node implements NodeInterface, LevelInterface{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		//result = prime * result + Arrays.deepHashCode(this.getBoxes());
 		result = prime * result + this.boxesByPoint.hashCode();
-//		result = prime * result + this.boxesByType.hashCode();
-//		result = prime * result + this.boxesByPoint.hashCode();
 		result = prime * result + Arrays.deepHashCode(agents);
 		return result;
 	}
@@ -587,7 +533,4 @@ public class Node implements NodeInterface, LevelInterface{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
-
-
 }

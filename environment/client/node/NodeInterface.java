@@ -37,12 +37,11 @@ public interface NodeInterface {
 	public Node subdomain(ArrayList<Integer> agents);
 	public Node subdomain(int agent);
 
-
-	
 	// Search functions
 	public ArrayList< Node > getExpandedNodes(int agentID);
 	public LinkedList<Node> extractPlan();
 	public int g();
 	
+	// Route
 	public ArrayList<Base> getRoute(); 
 }
