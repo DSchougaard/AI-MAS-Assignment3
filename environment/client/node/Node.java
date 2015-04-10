@@ -20,7 +20,8 @@ import client.node.storage.Goal;
 
 
 public class Node implements NodeInterface, LevelInterface{
-	private static Random rnd = new Random( System.currentTimeMillis() );
+
+	private static Random rnd = new Random( System.nanoTime());
 	private static Level level;
 	// Box DS
 	HashMap<Character, ArrayList<Box>> boxesByType;
