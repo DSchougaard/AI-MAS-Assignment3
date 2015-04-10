@@ -11,7 +11,7 @@ import client.Heuristic.*;
 import client.parser.LevelParser;
 import client.parser.ArgumentParser;
 import client.parser.SettingsContainer;
-import client.node.Node
+import client.node.Node;
 import client.node.storage.Goal;
 import client.node.storage.SearchResult;
 import client.node.level.distancemap.BasicManhattanDistanceMap;
