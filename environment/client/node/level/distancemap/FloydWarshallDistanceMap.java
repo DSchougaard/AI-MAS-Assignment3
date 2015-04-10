@@ -39,7 +39,6 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 
 		System.err.println("Initialized FloydWarshall matrix to size " + size + "x" + size + ".");
 
-
 		distance = new int[size][size];
 		
 		for (int i = 0; i < distance.length; i++) {
@@ -47,7 +46,6 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 				distance[i][j]=999;
 			}
 		}
-		
 		
 		for( int i = 0 ; i < size ; i++ )
 			distance[i][i] = 0;
@@ -70,9 +68,7 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 		long end_time = System.currentTimeMillis();
 		long difference = end_time-start_time;
 		System.err.println("Initialization time for " + name() + " took " + difference + " ms."); 
-
 	}
-
 
 	private HashMap<Point, ArrayList<Point>> explore(Level level){
 		Point start = level.getGoals().get(0).getPoint();
@@ -115,7 +111,6 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
 		return distance[getIndex(rowFrom, colFrom)][getIndex(rowTo, colTo)];
 	}
-
 
 	public String name(){
 		return "FloydWarshallDistanceMap";
