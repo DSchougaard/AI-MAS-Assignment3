@@ -58,7 +58,7 @@ negotiation
 *  [x] Refactor Agent - Kasper
 *  [ ] Relaxed by number of colours - Kasper
 *  [x] Refactor Map - Daniel
-*  [ ] Route - Martin
+*  [x] Route - Martin
 *  [ ] Heuristic - Martin
 *  [ ] Speed, profiler- martin
 *  [ ] Conflict - Kasper og Daniel

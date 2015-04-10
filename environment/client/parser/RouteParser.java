@@ -38,7 +38,7 @@ public class RouteParser {
 					break;
 				}
 				
-				if (!rute.contains(agentPosition)){
+				if (!rute.contains(boxPosition)){
 					rute.add(boxPosition);
 				}
 			}
