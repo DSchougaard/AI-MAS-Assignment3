@@ -1,8 +1,8 @@
-package client.node.map;
+package client.node.level.distancemap;
 
 import java.awt.Point;
 
-import client.node.map.Level;
+import client.node.level.Level;
 
 public abstract class DistanceMap {
 

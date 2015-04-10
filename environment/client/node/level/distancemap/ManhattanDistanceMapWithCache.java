@@ -1,9 +1,9 @@
-package client.node.map;
+package client.node.level.distancemap;
 
 import java.util.*;
 import java.awt.Point;
 
-import client.node.map.Level;
+import client.node.level.Level;
 
 public class ManhattanDistanceMapWithCache extends DistanceMap{
 

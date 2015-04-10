@@ -1,4 +1,4 @@
-package client.node.map;
+package client.node.level.distancemap;
 
 import java.awt.Point;
 import java.util.ArrayDeque;
