@@ -9,6 +9,8 @@ import client.node.storage.Base;
 import client.node.storage.Goal;
 import client.node.storage.LogicalAgent;
 
+import client.node.level.distancemap.DistanceMap;
+
 /*
 	@author: Daniel Schougaard
 */

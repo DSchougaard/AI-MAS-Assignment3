@@ -2,6 +2,7 @@ all:
 	javac client/*.java
 	javac client/*/*.java
 	javac client/*/*/*.java
+	javac client/*/*/*/*.java
 
 
 map:

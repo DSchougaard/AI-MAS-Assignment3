@@ -5,6 +5,8 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import client.node.level.Level;
+
 public class BruteForceDistanceMap extends DistanceMap{
 	private HashMap<Point, HashMap<Point, Integer>> values;
 

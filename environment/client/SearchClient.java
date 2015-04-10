@@ -10,12 +10,13 @@ import java.util.List;
 import client.Heuristic.*;
 import client.Strategy.StrategyBestFirst;
 import client.node.Node;
-import client.node.map.BasicManhattanDistanceMap;
-import client.node.map.Parser;
+import client.node.level.distancemap.BasicManhattanDistanceMap;
+import client.parser.LevelParser;
 import client.SearchAgent.Status;
 import client.node.storage.Goal;
 import client.node.storage.SearchResult;
-import client.ArgumentParser;
+import client.parser.ArgumentParser;
+import client.parser.SettingsContainer;
 
 public class SearchClient {
 
@@ -68,7 +69,7 @@ public class SearchClient {
 
 	public SearchClient(BufferedReader serverMessages, SettingsContainer settings) throws Exception {
 
-		state = Parser.parse(serverMessages, settings);
+		state = LevelParser.parse(serverMessages, settings);
 		for (int i = 0; i < state.agents.length; i++) {
 			if (state.agents[i] != null) {
 				agents.add(new SearchAgent( state.agents[i]));
@@ -80,7 +81,7 @@ public class SearchClient {
 
 		SettingsContainer settings = new SettingsContainer();
 		settings.dm = new BasicManhattanDistanceMap();
-		state = Parser.parse(serverMessages, settings);
+		state = LevelParser.parse(serverMessages, settings);
 		for (int i = 0; i < state.agents.length; i++) {
 			if (state.agents[i] != null) {
 				agents.add(new SearchAgent( state.agents[i]));

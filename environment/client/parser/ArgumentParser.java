@@ -1,6 +1,6 @@
 package client.parser;
 
-import client.SettingsContainer;
+import client.parser.SettingsContainer;
 
 import client.node.level.distancemap.DistanceMap;
 import client.node.level.distancemap.BasicManhattanDistanceMap;

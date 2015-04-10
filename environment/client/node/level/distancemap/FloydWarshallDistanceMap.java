@@ -5,6 +5,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import client.node.level.Level;
+
 /*
 	DistanceMap based on the Floyd Warshall algorithm.
 	http://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
