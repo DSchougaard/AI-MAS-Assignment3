@@ -4,8 +4,6 @@ import java.util.LinkedList;
 
 import client.node.Node;
 
-
-
 public class SearchResult{
 
 	public enum Result{PLAN, STUCK, DONE, MEMMORY, TIME, IMPOSIBLE}

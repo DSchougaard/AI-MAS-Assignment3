@@ -16,7 +16,6 @@ public class Box extends Base{
 		}else{
 			this.color = color;
 		}
-		
 	}
 
 	public Box(Box box) {
