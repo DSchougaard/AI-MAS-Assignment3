@@ -278,6 +278,7 @@ public class SearchClient {
 		Goal subgoal = heuristic.selectGoal();
 		if(subgoal!=null){
 			agent.subgoals.add(subgoal);
+			System.err.println("new subgoal "+subgoal.getType());
 		}
 		SearchResult result = agentClient.Search(strategy, agent.id, agent.subgoals);		
 

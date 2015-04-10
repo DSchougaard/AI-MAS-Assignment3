@@ -1,4 +1,4 @@
-package Test;
+package test;
 
 
 import static org.junit.Assert.*;
@@ -20,12 +20,12 @@ import client.Command.dir;
 import client.Command.type;
 import client.Heuristic.AStar;
 import client.SearchClient;
-import client.SettingsContainer;
+import client.parser.SettingsContainer;
 import client.Strategy;
 import client.Strategy.StrategyBestFirst;
 import client.node.Color;
 import client.node.Node;
-import client.node.map.FloydWarshallDistanceMap;
+import client.node.level.distancemap.FloydWarshallDistanceMap;
 import client.node.storage.Box;
 
 public class test {
