@@ -8,15 +8,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import client.Heuristic.*;
-import client.Strategy.StrategyBestFirst;
-import client.node.Node;
-import client.node.level.distancemap.BasicManhattanDistanceMap;
 import client.parser.LevelParser;
-import client.SearchAgent.Status;
-import client.node.storage.Goal;
-import client.node.storage.SearchResult;
 import client.parser.ArgumentParser;
 import client.parser.SettingsContainer;
+import client.node.Node
+import client.node.storage.Goal;
+import client.node.storage.SearchResult;
+import client.node.level.distancemap.BasicManhattanDistanceMap;
+import client.Strategy.StrategyBestFirst;
+import client.SearchAgent.Status;
 
 public class SearchClient {
 
