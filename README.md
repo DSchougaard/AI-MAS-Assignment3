@@ -29,7 +29,7 @@ negotiation
 *  [x] Adjustable Resolution
 *  [ ] Goal state
 *  [ ] H: variable goal state
-*  [ ] K cluster
+*  [x] K cluster
 
 
 
