@@ -34,5 +34,4 @@ public class Base{
 		result = prime * result + this.col;
 		return result;
 	}
-
 }
