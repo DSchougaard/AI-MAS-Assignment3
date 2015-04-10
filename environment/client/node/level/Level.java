@@ -16,21 +16,6 @@ import client.node.level.distancemap.DistanceMap;
 */
 
 public class Level implements LevelInterface{
-
-
-	/*
-			-----------> col
-			|
-			|
-			|
-			|
-			|
-		    \/
-		    row
-
-
-	*/
-
 	/*
 		Private variables for Level
 	*/
@@ -40,7 +25,6 @@ public class Level implements LevelInterface{
 
 
 	public class Cell{
-
 		private Type type;
 		private char letter;
 
@@ -117,8 +101,6 @@ public class Level implements LevelInterface{
 		chrs.add(goal);
 	}
 
-
-
 	/*
 		Interface for the Heuristic to use
 	*/
@@ -140,9 +122,6 @@ public class Level implements LevelInterface{
 	}
 
 	public boolean isWall(int row, int col){
-		//if(Level.map[row][col] == null)
-			//System.err.println("------------"+row +" "+ col);
-			
 		return ( Level.map[row][col].type == Type.WALL );
 	}
 
@@ -170,8 +149,7 @@ public class Level implements LevelInterface{
 
 	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
 		if(dm==null){
-			//FIXME:
-			System.err.println("Distance mp "+dm);
+			System.err.println("DistanceMap: "+dm);
 			return 0;
 		}
 		
@@ -183,31 +161,21 @@ public class Level implements LevelInterface{
 		return distance(from.row, from.col, to.row, to.col);
 	}
 
-
 	public void calculateCluster(LogicalAgent[] agents){
 		for( int i = 0 ; i < agents.length ; i++ ){
 			if( agents[i] != null )
 				this.clusters.put( new Integer(agents[i].id), this.goalTypeByColor.get(agents[i].color) );
 		}
 	}
+
 	public HashMap<Integer, ArrayList<Goal>> getClusters(){
 		return this.clusters;
 	}
+
 	public ArrayList<Goal> getCluster(LogicalAgent agent){
 		return clusters.get( new Integer(agent.id) );
 	}
 
-	/*
-		Cluster 1: Color
-	*/
-
-
-
-
-
-
-
-	
 	public Character[][] toArray(){
 		Character[][] result= new Character[maxRow][maxCol];
 		for (int i = 0; i < map.length; i++) {
@@ -231,5 +199,3 @@ public class Level implements LevelInterface{
 		return result;
 	}
 }
-
-
