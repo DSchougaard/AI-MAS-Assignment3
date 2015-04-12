@@ -68,7 +68,8 @@ public class Command {
 	public Command reverseCommand( Command command ){
 		type newType = null;
 		dir newDir1 = null, newDir2 = null;
-
+		System.err.println("Reversing: " + this);
+		
 		switch( command.actType ){
 			case Move:
 				newType = type.Move;
@@ -100,24 +101,13 @@ public class Command {
 					break;
 			}
 		}
-		if( command.dir2 != null ){
-			switch( command.dir2 ){
-				case N:
-					newDir2 = dir.S;
-					break;
-				case W:
-					newDir2 = dir.E;
-					break;
-				case E:
-					newDir2 = dir.W;
-					break;
-				case S:
-					newDir2 = dir.N;
-					break;
-			}
-		}
 
-		return new Command(newType, newDir1, newDir2);
+		if( command.actType == type.Pull || command.actType == type.Push )
+			newDir2 = command.dir2;
+
+		Command newCommand = new Command(newType, newDir1, newDir2);
+		System.err.println("Reversed Command : " + newCommand);
+		return newCommand;
 	}
 
 	@Override
