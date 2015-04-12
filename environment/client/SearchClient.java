@@ -313,14 +313,6 @@ public class SearchClient {
 		SearchResult result = agentClient.Search(strategy, agent.id, agent.subgoals);		
 
 		solution.get(agent.id).addAll(result.solution);
-		
-		ArrayList<Base> rute = RouteParser.parse(solution, agent.id);
-		String ruteString = "length:"+solution.get(0).size()+" ";
-		for (int i = 0 ; i < rute.size() ; i++){
-			ruteString += "[" + rute.get(i).row +","+ rute.get(i).col + "] ";
-		}
-		System.err.println("Rute: "+ruteString);
-
 	}
 
 	private static void MultiAgentPlaning(SearchClient client, ArrayList<LinkedList<Node>> solutions) throws IOException {
