@@ -306,9 +306,9 @@ public class SearchClient {
 
 				// relaxed search setup
 				Node relaxed = agentClient.state.subdomain(agent.id);
-				System.err.println(relaxed);
 				Heuristic relaxedHeuristic = new Greedy(relaxed, agent);
 				relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
+				SearchClient relaxedClient = new SearchClient(relaxed);
 
 				// normal search setup
 				Heuristic heuristic = new Greedy(agentClient.state, agent);
@@ -323,16 +323,16 @@ public class SearchClient {
 					}
 				}
 				
-				System.err.println("relaxed search");
-				SearchResult relaxedResult = agentClient.Search(relaxedStrategy, agent.id, agent.subgoals);
-				System.err.println("normal search");
+				System.err.println("MA Planning :: Performing relaxed search");
+				SearchResult relaxedResult = relaxedClient.Search(relaxedStrategy, agent.id, agent.subgoals);
+				System.err.println("MA Planning :: Performing normal search");
 				SearchResult result = agentClient.Search(strategy, agent.id, agent.subgoals, relaxedResult);
 
 				switch (result.reason) {
 				case STUCK:
 					agent.status = Status.STUCK;
 
-					System.err.println("agent " + agent.id + " is stuck");
+					System.err.println("MA Planning :: Agent " + agent.id + " is stuck.");
 					System.err.println("\nSummary for " + relaxedStrategy);
 					System.err.println("Found solution of length " + relaxedResult.solution.size());
 					System.err.println(relaxedStrategy.searchStatus());

@@ -84,34 +84,37 @@ public class Command {
 				break;
 		}
 
-		switch( command.dir1 ){
-			case N:
-				newDir1 = dir.S;
-				break;
-			case W:
-				newDir1 = dir.E;
-				break;
-			case E:
-				newDir1 = dir.W;
-				break;
-			case S:
-				newDir1 = dir.N;
-				break;
+		if( command.dir1 != null ){
+			switch( command.dir1 ){
+				case N:
+					newDir1 = dir.S;
+					break;
+				case W:
+					newDir1 = dir.E;
+					break;
+				case E:
+					newDir1 = dir.W;
+					break;
+				case S:
+					newDir1 = dir.N;
+					break;
+			}
 		}
-
-		switch( command.dir2 ){
-			case N:
-				newDir2 = dir.S;
-				break;
-			case W:
-				newDir2 = dir.E;
-				break;
-			case E:
-				newDir2 = dir.W;
-				break;
-			case S:
-				newDir2 = dir.N;
-				break;
+		if( command.dir2 != null ){
+			switch( command.dir2 ){
+				case N:
+					newDir2 = dir.S;
+					break;
+				case W:
+					newDir2 = dir.E;
+					break;
+				case E:
+					newDir2 = dir.W;
+					break;
+				case S:
+					newDir2 = dir.N;
+					break;
+			}
 		}
 
 		return new Command(newType, newDir1, newDir2);
