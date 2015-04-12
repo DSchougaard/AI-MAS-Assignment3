@@ -64,7 +64,59 @@ public class Command {
 		dir2 = d2;
 		
 	}
-	
+
+	public Command reverseCommand( Command command ){
+		type newType = null;
+		dir newDir1 = null, newDir2 = null;
+
+		switch( command.actType ){
+			case Move:
+				newType = type.Move;
+				break;
+			case Push:
+				newType = type.Pull;
+				break;
+			case Pull:
+				newType = type.Push;
+				break;
+			case NoOp:
+				newType = type.NoOp;
+				break;
+		}
+
+		switch( command.dir1 ){
+			case N:
+				newDir1 = dir.S;
+				break;
+			case W:
+				newDir1 = dir.E;
+				break;
+			case E:
+				newDir1 = dir.W;
+				break;
+			case S:
+				newDir1 = dir.N;
+				break;
+		}
+
+		switch( command.dir2 ){
+			case N:
+				newDir2 = dir.S;
+				break;
+			case W:
+				newDir2 = dir.E;
+				break;
+			case E:
+				newDir2 = dir.W;
+				break;
+			case S:
+				newDir2 = dir.N;
+				break;
+		}
+
+		return new Command(newType, newDir1, newDir2);
+	}
+
 	@Override
 	public String toString() {
 		switch (actType) {

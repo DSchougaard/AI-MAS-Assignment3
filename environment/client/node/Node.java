@@ -146,6 +146,11 @@ public class Node implements NodeInterface, LevelInterface{
 		return this.boxesByPoint.get(new Point(row, col));
 	}
 
+
+	public Object WTF(Base base){
+		return WTF(base.row, base.col);
+	}
+
 	@Override
 	public Object WTF(int row, int col){
 		Point p = new Point(row, col);
@@ -237,7 +242,7 @@ public class Node implements NodeInterface, LevelInterface{
 	public Node subdomain(int agentID){
 		Node subdomainNode = new Node();
 
-		subdomainNode.agents[agentID]=new LogicalAgent(this.agents[agentID]);
+		subdomainNode.agents[agentID] = new LogicalAgent(this.agents[agentID]);
 		for(Box box: this.getBoxes(agents[agentID].color)){
 			subdomainNode.addBox(box);
 		}
@@ -411,7 +416,7 @@ public class Node implements NodeInterface, LevelInterface{
 		return child;	
 	}
 
-	private void excecuteCommand(Command c, int agentID){
+	public void excecuteCommand(Command c, int agentID){
 		actions.add(c);
 		int newAgentRow = agents[agentID].row + dirToRowChange( c.dir1 );
 		int newAgentCol = agents[agentID].col + dirToColChange( c.dir1 );
@@ -447,7 +452,7 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 	
 	
-	private Node ChildNode() {
+	public Node ChildNode() {
 		Node child =CopyNode();
 		child.parent=this;
 		child.g+=1;

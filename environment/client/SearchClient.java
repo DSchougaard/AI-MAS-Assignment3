@@ -306,6 +306,7 @@ public class SearchClient {
 
 				// relaxed search setup
 				Node relaxed = agentClient.state.subdomain(agent.id);
+				System.err.println(relaxed);
 				Heuristic relaxedHeuristic = new Greedy(relaxed, agent);
 				relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
 
@@ -358,7 +359,7 @@ public class SearchClient {
 
 		if (stuck) {
 			// solve stuck agents
-			solutions = Conflict.solve(solutions, client.agents);
+			solutions = Conflict.solve(client.state, solutions, client.agents);
 			// System.err.println("!!!!!!!!!!!"+solutions.size());
 		}
 	}
