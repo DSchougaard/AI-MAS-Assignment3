@@ -62,7 +62,10 @@ public class Conflict{
 					getBack.action 	= getOut.action.reverseCommand( getOut.action );
 					getBack.excecuteCommand(getBack.action, sa.id);
 
-					solutions.get(sa.id).peek().parent = getBack;
+					if( !solutions.get(sa.id).isEmpty() ) {
+						solutions.get(sa.id).peek().parent = getBack;
+					}
+
 					solutions.get(sa.id).addFirst(getBack);
 					solutions.get(sa.id).addFirst(noOpt);
 					solutions.get(sa.id).addFirst(getOut);
