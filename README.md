@@ -27,8 +27,8 @@ negotiation
 
 ### Sub-Goals
 *  [x] Adjustable Resolution
-*  [ ] Goal state
-*  [ ] H: variable goal state
+*  [x] Goal state
+*  [x] H: variable goal state
 *  [x] K cluster
 
 
@@ -39,15 +39,15 @@ negotiation
   * [x] 2  search
     *  [x] Realistic
     *  [x] Relaxed        
-  *  [ ] DS: route
+  *  [x] DS: route
 *  [ ] Predict a problem
 
 ### Conflict Resolution
-*  [ ] Agent
-  *  [ ] Msg: "Please move"
+*  [-] Agent
+  *  [x] Msg: "Please move"
   *  [ ] Who moves least
-*  [ ] Box
-  *  [ ] Who can move it?
+*  [x] Box
+  *  [x] Who can move it?
 
 ### Heuristic
 *  [ ] Parring box to goal?
@@ -56,11 +56,17 @@ negotiation
 	
 ### Work list
 *  [x] Refactor Agent - Kasper
-*  [ ] Relaxed by number of colours - Kasper
+*  [-] Relaxed by number of colours - Kasper
 *  [x] Refactor Map - Daniel
 *  [x] Route - Martin
 *  [ ] Heuristic - Martin
 *  [ ] Speed, profiler- martin
-*  [ ] Conflict - Kasper og Daniel
+*  [x] Conflict - Kasper og Daniel
 *  [x] Optimize node hashcode - daniel
 *  [x] Optimize node equals - daniel
+*  [ ] Create expand of node, only using box-moves.
+*  [ ] Plan longer move for helper agent.
+*  [ ] NoOPs into stuck agent, for Helper Agent's route to the box in question.
+*  [ ] Identify "safe spot" to stash Helper Agent and box, while stuck agent moves.
+*  [ ] Reduce memory footprint
+  *  [ ] Reduce the seach space?
