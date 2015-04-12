@@ -69,4 +69,4 @@ negotiation
 *  [ ] NoOPs into stuck agent, for Helper Agent's route to the box in question.
 *  [ ] Identify "safe spot" to stash Helper Agent and box, while stuck agent moves.
 *  [ ] Reduce memory footprint
-  *  [ ] Reduce the seach space?
+  *  [ ] Reduce the search space?
