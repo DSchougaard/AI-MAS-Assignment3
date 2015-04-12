@@ -10,7 +10,7 @@ import client.node.storage.Base;
 public class RouteParser {
 	public static ArrayList<Base> parse(ArrayList<LinkedList<Node>> solution, int agentId) {
 		ArrayList<Base> rute = new ArrayList<Base>();
-		for (int i = 0; i < solution.get(0).size(); i++) {
+		for (int i = 0; i < solution.get(agentId).size(); i++) {
 			Node curentNode = solution.get(agentId).get(i);
 			Base agentPosition = new Base(curentNode.getAgents()[agentId].row, curentNode.getAgents()[agentId].col);
 			if (!rute.contains(agentPosition)){
