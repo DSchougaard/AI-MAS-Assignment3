@@ -109,12 +109,7 @@ public class Conflict{
 					}else{
 						System.err.println("Conflict :: No path to help was found.");
 						System.err.println(node);
-						System.exit(0);
 					}
-
-					
-
-
 				}
 
 				// Assumption: The agent can move out of the way.
