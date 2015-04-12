@@ -15,6 +15,7 @@ import client.parser.SettingsContainer;
 import client.node.Node;
 import client.node.storage.Base;
 import client.node.storage.Goal;
+import client.node.storage.Box;
 import client.node.storage.SearchResult;
 import client.node.level.distancemap.BasicManhattanDistanceMap;
 import client.Strategy.StrategyBestFirst;
@@ -109,6 +110,36 @@ public class SearchClient {
 		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color), preResult);
 	}
 
+	public SearchResult ProximitySearch(Strategy strategy, int agentID, Box box) throws IOException {
+		System.err.println("SearchClient:: Starting ProximitySearch.");
+		strategy.addToFrontier(this.state);
+
+		while(true){
+			if (strategy.frontierIsEmpty()) {
+				if (state.isGoalState(agentID, box)) {
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
+				} else {
+					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+				}
+			}
+
+			Node leafNode = strategy.getAndRemoveLeaf();
+
+			if (leafNode.isGoalState(agentID, box)) {
+				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
+			}
+
+			strategy.addToExplored(leafNode);
+
+			for (Node n : leafNode.getExpandedNodes(agentID)) {
+				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
+
+					strategy.addToFrontier(n);
+				}
+			}
+		}
+	}
+
 	public SearchResult Search(Strategy strategy, int agentID, ArrayList<Goal> goals, SearchResult preResult) throws IOException {
 		System.err.format("Search starting with strategy %s\n", strategy);
 		strategy.addToFrontier(this.state);
@@ -137,7 +168,6 @@ public class SearchClient {
 				} else {
 					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
 				}
-
 			}
 
 			Node leafNode = strategy.getAndRemoveLeaf();
@@ -236,8 +266,7 @@ public class SearchClient {
 		SettingsContainer settings = ArgumentParser.parse(args);
 
 		// Use stderr to print to console
-		System.err
-				.println("SearchClient initializing. I am sending this using the error output stream.");
+		System.err.println("SearchClient initializing. I am sending this using the error output stream.");
 
 		// Read level and create the initial state of the problem
 		SearchClient client = new SearchClient(serverMessages, settings);
@@ -256,6 +285,7 @@ public class SearchClient {
 			} else {
 				MultiAgentPlaning(client, solutions);
 			}
+			System.err.println("-----------------------------------------------------------------");
 			System.gc();
 			executePlans(solutions, client);
 
@@ -271,11 +301,11 @@ public class SearchClient {
 		SearchClient agentClient = new SearchClient(client.state);
 
 		// normal search setup
-		Heuristic heuristic = new AStar(agentClient.state, agent);
+		Heuristic heuristic = new AStar(agent);
 		Strategy strategy = new StrategyBestFirst(heuristic);
 
 		// find a subgoal(s) which should be solved
-		Goal subgoal = heuristic.selectGoal();
+		Goal subgoal = heuristic.selectGoal(agentClient.state);
 		if(subgoal!=null){
 			agent.subgoals.add(subgoal);
 			System.err.println("new subgoal "+subgoal.getType());
@@ -300,23 +330,28 @@ public class SearchClient {
 		for (SearchAgent agent : client.agents) {
 			// only plan if there is not already a plan
 			if (solutions.get(agent.id).isEmpty()) {
-				System.err.println("agent " + agent.id + " planing");
+				if(agent.status == Status.HELPING){
+					Conflict.doneHelping(agent);
+					agent.status = Status.IDLE;
+				}
+
+				System.err.println("MultiAgentPlanning :: Agent " + agent.id + " planing");
 
 				SearchClient agentClient = new SearchClient(client.state);
 
 				// relaxed search setup
 				Node relaxed = agentClient.state.subdomain(agent.id);
-				Heuristic relaxedHeuristic = new Greedy(relaxed, agent);
+				Heuristic relaxedHeuristic = new Greedy(agent);
 				relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
 				SearchClient relaxedClient = new SearchClient(relaxed);
 
 				// normal search setup
-				Heuristic heuristic = new Greedy(agentClient.state, agent);
+				Heuristic heuristic = new Greedy(agent);
 				strategy = new StrategyBestFirst(heuristic);
 
 				// find a subgoal(s) which should be solved
 				if(client.state.isGoalState(agent.subgoals)){
-					Goal subgoal = heuristic.selectGoal();
+					Goal subgoal = heuristic.selectGoal(agentClient.state);
 					if(subgoal!=null){
 						agent.subgoals.add(subgoal);
 						System.err.println("new subgoal "+subgoal.getType());

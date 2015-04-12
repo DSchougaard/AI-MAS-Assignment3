@@ -11,17 +11,14 @@ import client.node.storage.Goal;
 
 public abstract class Heuristic implements Comparator< Node > {
 
-	public Node initialState;
 	public SearchAgent agent;
 	
 	public HashMap<Node, Integer> hs =new HashMap<>();
 
 	private static HashMap<Goal, Integer> agent_goal_bookkeeping = new HashMap<>();
 	
-	public Heuristic(Node initialState, SearchAgent agent) {
-		this.initialState = initialState;
+	public Heuristic( SearchAgent agent ){
 		this.agent = agent;
-
 	}
 
 	public int compare( Node n1, Node n2 ) {
@@ -89,11 +86,35 @@ public abstract class Heuristic implements Comparator< Node > {
 		
 	}
 
+
 	public abstract int f( Node n);
 
+
+	public static class Proximity extends Heuristic{
+		private Box box;
+		public Proximity(SearchAgent agent, Box box){
+			super(agent);
+			this.box = box;
+		}
+
+		public int f(Node n){
+			return n.g() + h(n);
+		}
+
+		public String toString(){
+			return "Proximity A* Evaluation";
+		}
+
+		@Override
+		public int h(Node n){
+			return n.distance(n.agents[agent.id], box) - 1;
+		}
+	}
+
+
 	public static class AStar extends Heuristic {
-		public AStar(Node initialState, SearchAgent agent) {
-			super( initialState, agent);
+		public AStar(SearchAgent agent) {
+			super(agent);
 		}
 
 		public int f( Node n) {
@@ -108,8 +129,8 @@ public abstract class Heuristic implements Comparator< Node > {
 	public static class WeightedAStar extends Heuristic {
 		private int W;
 
-		public WeightedAStar(Node initialState, SearchAgent agent) {
-			super( initialState, agent);
+		public WeightedAStar(SearchAgent agent) {
+			super(agent);
 			W = 5; // You're welcome to test this out with different values, but for the reporting part you must at least indicate benchmarks for W = 5
 		}
 
@@ -124,8 +145,8 @@ public abstract class Heuristic implements Comparator< Node > {
 
 	public static class Greedy extends Heuristic {
 
-		public Greedy(Node initialState, SearchAgent agent) {
-			super( initialState, agent);
+		public Greedy(SearchAgent agent) {
+			super(agent);
 		}
 		
 
@@ -144,8 +165,8 @@ public abstract class Heuristic implements Comparator< Node > {
 	}
 
 
-	public Goal selectGoal(){
-		Goal g = selectGoal_boxGoalDist();
+	public Goal selectGoal(Node node){
+		Goal g = selectGoal_boxGoalDist(node);
 		if(g!=null){
 			Heuristic.agent_goal_bookkeeping.put(g, this.agent.id);
 		}
@@ -157,24 +178,24 @@ public abstract class Heuristic implements Comparator< Node > {
 	}
 
 	@SuppressWarnings("unused")
-	private Goal selectGoal_goalDist(){
-		LogicalAgent agent = this.initialState.agents[this.agent.id];
-		ArrayList<Goal> goals = this.initialState.getCluster(agent);
+	private Goal selectGoal_goalDist(Node node){
+		LogicalAgent agent = node.agents[this.agent.id];
+		ArrayList<Goal> goals = node.getCluster(agent);
 		Goal selectedGoal = goals.get(0);
 		
 		for( Goal goal : goals ){
 			if( goalInUse(goal) )
 				continue;
 
-			if( this.initialState.distance(agent, goal) < this.initialState.distance(agent, selectedGoal) )
+			if( node.distance(agent, goal) < node.distance(agent, selectedGoal) )
 				selectedGoal = goal;
 		}
 		return selectedGoal;
 	}
 
-	private Goal selectGoal_boxGoalDist(){
-		LogicalAgent agent = this.initialState.agents[this.agent.id];
-		ArrayList<Goal> goals = this.initialState.getCluster(agent);
+	private Goal selectGoal_boxGoalDist(Node node){
+		LogicalAgent agent = node.agents[this.agent.id];
+		ArrayList<Goal> goals = node.getCluster(agent);
 
 		// Selected Values
 		Goal selectedGoal = null;
@@ -186,9 +207,9 @@ public abstract class Heuristic implements Comparator< Node > {
 			if( goalInUse(goal) )
 				continue;
 
-			for( Box box : initialState.getBoxes(goal.getType()) ){
-				if( ( this.initialState.distance(agent, box) + this.initialState.distance(box, goal) ) < dist ){
-					dist = this.initialState.distance(agent, box) + this.initialState.distance(box, goal);
+			for( Box box : node.getBoxes(goal.getType()) ){
+				if( ( node.distance(agent, box) + node.distance(box, goal) ) < dist ){
+					dist = node.distance(agent, box) + node.distance(box, goal);
 					// Set the selects
 					selectedGoal = goal;
 					selectedBox = box;

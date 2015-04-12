@@ -23,12 +23,14 @@ public class Node implements NodeInterface, LevelInterface{
 
 	private static Random rnd = new Random( System.nanoTime());
 	private static Level level;
+
 	// Box DS
 	HashMap<Character, ArrayList<Box>> boxesByType;
 	HashMap<Point, Box> boxesByPoint;
 
 	// Agents
 	public LogicalAgent[] agents;
+	public static HashMap<Color, ArrayList<Integer>> colorMap = new HashMap<>();
 	
 	// History
 	public Node parent;
@@ -58,6 +60,11 @@ public class Node implements NodeInterface, LevelInterface{
 		int i = (int)name - 48;
 		if( agents[i] != null ) return;
 		agents[i] = new LogicalAgent(i, color, row, col);
+
+		if( !colorMap.containsKey(color) )
+			colorMap.put(color, new ArrayList<Integer>());
+
+		colorMap.get(color).add(i);
 	}
 
 	@SuppressWarnings("unused")
@@ -207,6 +214,18 @@ public class Node implements NodeInterface, LevelInterface{
 		}
 		return true;
 	}
+
+	public boolean isGoalState(int agentID, Box box){
+		LogicalAgent a = agents[agentID];
+
+		return (
+			( box.row == a.row+1 && box.col == a.col ) ||
+			( box.row == a.row-1 && box.col == a.col ) ||
+			( box.row == a.row && box.col == a.col+1 ) ||
+			( box.row == a.row && box.col == a.col-1 )
+			);
+	}
+
 
 	@Override
 	public Node subdomain(Color color){
