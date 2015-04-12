@@ -34,4 +34,9 @@ public class Base{
 		result = prime * result + this.col;
 		return result;
 	}
+	
+	@Override
+	public String toString(){
+		return "["+row+","+col+"]";
+	}
 }
