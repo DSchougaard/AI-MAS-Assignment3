@@ -34,7 +34,9 @@ public class Conflict{
 		
 		for (SearchAgent agent : agents) {
 			if(agent.status == SearchAgent.Status.STUCK){
-				//TODO: find reason
+				/*
+				 * find reason
+				 */
 
 				ArrayList<Base> route = RouteParser.parse(solutions, agent.id);
 
@@ -60,6 +62,10 @@ public class Conflict{
 					}
 				}
 
+				/*
+				 * find some one to solve the problem
+				 */
+				
 				// Call an agent that can move the box, and MOVE the fucking box.
 				for( Box b : boxesInTheWay ){
 					SearchAgent a = agents.get( Node.colorMap.get(b.color).get(0) );
@@ -126,13 +132,6 @@ public class Conflict{
 				}
 
 
-				
-				//TODO: find some one to solve the problem
-				for (SearchAgent OtherAgent : agents) {
-					if(!agent.equals(OtherAgent) && OtherAgent.status!=Status.HELPING){
-						//TODO: find solution
-					}
-				}
 			}
 		}
 		return solutions;
