@@ -185,7 +185,7 @@ public class SearchClient {
 				MultiAgentPlaning( solutions);
 			}
 			System.err.println("-----------------------------------------------------------------");
-			System.gc();
+			
 			executePlans(solutions);
 
 		}
@@ -243,20 +243,23 @@ public class SearchClient {
 					}
 				}
 				
-				System.err.println("MA Planning :: Performing relaxed search");
 				// relaxed search setup
+				System.err.println("MA Planning :: Performing relaxed search");
 				Node relaxed = state.subdomain(agent.id);
 				Heuristic relaxedHeuristic = new Greedy(agent);
 				relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
 				agent.setState(relaxed);
 				SearchResult relaxedResult = agent.Search(relaxedStrategy, agent.subgoals);
-				System.err.println("MA Planning :: Performing normal search");
-				// normal search setup
-				agent.setState(state);
+				System.gc();
 				
+				
+				// normal search setup
+				System.err.println("MA Planning :: Performing normal search");
+				agent.setState(state);
 				strategy = new StrategyBestFirst(heuristic);
 				SearchResult result = agent.Search(strategy, agent.subgoals, relaxedResult);
-
+				System.gc();
+				
 				switch (result.reason) {
 				case STUCK:
 					agent.status = Status.STUCK;
