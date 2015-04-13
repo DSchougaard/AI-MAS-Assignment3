@@ -8,7 +8,6 @@ import client.node.Color;
 import client.node.storage.Base;
 import client.node.storage.Goal;
 import client.node.storage.LogicalAgent;
-import client.node.level.clustering.KClusteringGoals;
 
 
 import client.node.level.distancemap.DistanceMap;
@@ -24,7 +23,6 @@ public class Level implements LevelInterface{
 	private int maxRow;
 	private int maxCol;
 	private static DistanceMap dm;
-	private static KClusteringGoals kcg;
 
 	public class Cell{
 		private Type type;

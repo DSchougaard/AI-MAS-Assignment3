@@ -11,8 +11,6 @@ import client.parser.SettingsContainer;
 import client.node.Node;
 import client.node.level.Level;
 
-import client.node.level.clustering.KClusteringGoals;
-
 public class LevelParser{
 	public static Node parse(BufferedReader in, SettingsContainer settings) throws IOException{
 		Map< Character, Color > colors = new HashMap< Character, Color >();

@@ -1,37 +1,22 @@
 package client;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.HashMap;
 
-
-import java.io.IOException;
-
+import client.Heuristic.Proximity;
 import client.SearchAgent.Status;
+import client.Strategy.StrategyBestFirst;
 import client.node.Node;
-
-import client.node.storage.Box;
 import client.node.storage.Base;
+import client.node.storage.Box;
 import client.node.storage.LogicalAgent;
 import client.node.storage.SearchResult;
 import client.node.storage.SearchResult.Result;
-import client.SearchAgent;
-
-import client.node.Color;
-
-import client.Command;
-import client.Command.type;
-import client.Command.dir;
-
 import client.parser.RouteParser;
-
 // Searches
-import client.Heuristic;
-import client.Heuristic.Proximity;
-import client.SearchClient;
-import client.Strategy;
-import client.Strategy.StrategyBestFirst;
 
 public class Conflict{
 
@@ -77,7 +62,7 @@ public class Conflict{
 
 				// Call an agent that can move the box, and MOVE the fucking box.
 				for( Box b : boxesInTheWay ){
-					SearchAgent a = agents.get( node.colorMap.get(b.color).get(0) );
+					SearchAgent a = agents.get( Node.colorMap.get(b.color).get(0) );
 
 					System.err.println("Conflict:: Found agent to help. Asking Agent " + a.id);
 
