@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -584,6 +583,5 @@ SearchClient.init( serverMessages );
 		SearchClient.init( serverMessages );
 		
 		assertEquals(764559546, SearchClient.state.hashCode());
-		System.out.println(SearchClient.state.hashCode());
 	}
 }
