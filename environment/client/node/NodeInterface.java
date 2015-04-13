@@ -10,7 +10,7 @@ import client.node.storage.Goal;
 
 public interface NodeInterface {
 	// Index query
-	public Object WTF(int row, int col);
+	public Object objectAt(int row, int col);
 
 	// Boxes
 	public Box boxAt(int row, int col);

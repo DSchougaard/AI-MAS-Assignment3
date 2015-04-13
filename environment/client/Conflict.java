@@ -48,7 +48,7 @@ public class Conflict{
 				}
 
 				for( Base b : route ){
-					Object o = node.WTF(b);
+					Object o = node.objectAt(b);
 					if( o instanceof LogicalAgent ){
 						System.err.println("Conflict :: Agent found in route for agent " + agent.id + "!");
 						agentsInTheWay.add( (LogicalAgent)o );

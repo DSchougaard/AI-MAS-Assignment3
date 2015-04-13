@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -507,7 +508,7 @@ SearchClient.init( serverMessages );
 	public void multiGoals() throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAsimple1.lvl")) );
 		
-SearchClient.init( serverMessages );
+		SearchClient.init( serverMessages );
 		
 		assertEquals(2, SearchClient.state.getGoals().size());
 		assertNull( SearchClient.state.getGoals(Color.cyan));
@@ -554,7 +555,7 @@ SearchClient.init( serverMessages );
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				
-				if(n.cellIsFree(i, j) || n.WTF(i, j) != null){
+				if(n.cellIsFree(i, j) || n.objectAt(i, j) != null){
 
 					builder.append(n.distance(2, 1, i, j));
 //					System.out.print(n.distance(2, 1, i, j));
@@ -574,5 +575,15 @@ SearchClient.init( serverMessages );
 				"x3xxxx10x\n"+
 				"x456789x\n"+
 				"xxxxxxxx\n", builder.toString());
+	}
+	
+	@Test
+	public void hash() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAsimple1.lvl")) );
+		
+		SearchClient.init( serverMessages );
+		
+		assertEquals(764559546, SearchClient.state.hashCode());
+		System.out.println(SearchClient.state.hashCode());
 	}
 }
