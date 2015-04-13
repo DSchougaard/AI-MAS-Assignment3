@@ -62,35 +62,35 @@ public class Conflict{
 
 				// Call an agent that can move the box, and MOVE the fucking box.
 				for( Box b : boxesInTheWay ){
-					SearchAgent a = agents.get( Node.colorMap.get(b.color).get(0) );
+					SearchAgent helpingAgent = agents.get( Node.colorMap.get(b.color).get(0) );
 
-					System.err.println("Conflict:: Found agent to help. Asking Agent " + a.id);
+					System.err.println("Conflict:: Found agent to help. Asking Agent " + helpingAgent.id);
 
 					Heuristic proximityHeuristic 	= new Proximity(agent, b);
 					Strategy helpingStrategy 		= new StrategyBestFirst(proximityHeuristic);
-					SearchClient helpingClient 		= new SearchClient(node);
-					SearchResult result = helpingClient.ProximitySearch(helpingStrategy, a.id, b);
+					helpingAgent.setState(node);
+					SearchResult result = helpingAgent.ProximitySearch(helpingStrategy, b);
 
 					// Clear the Helping Agents plan
 					if( result.reason != Result.STUCK ){
-						solutions.get(a.id).clear();
-						solutions.get(a.id).addAll(result.solution);
-						a.status = Status.HELPING;
-						helping.put(a, agent);
+						solutions.get(helpingAgent.id).clear();
+						solutions.get(helpingAgent.id).addAll(result.solution);
+						helpingAgent.status = Status.HELPING;
+						helping.put(helpingAgent, agent);
 
 						Node chaoticMove = null;
 						if( !result.solution.isEmpty() ){
-							chaoticMove = result.solution.get(result.solution.size()-1).getExpandedNodes(a.id).get(0);
+							chaoticMove = result.solution.get(result.solution.size()-1).getExpandedNodes(helpingAgent.id).get(0);
 						}else{
-							chaoticMove = node.getExpandedNodes(a.id).get(0);
+							chaoticMove = node.getExpandedNodes(helpingAgent.id).get(0);
 						}
 						Node noOpt		= chaoticMove.ChildNode();
 						noOpt.action 	= new Command(); // NoOP command
 
-						solutions.get(a.id).addLast(chaoticMove);
-						solutions.get(a.id).addLast(noOpt);
+						solutions.get(helpingAgent.id).addLast(chaoticMove);
+						solutions.get(helpingAgent.id).addLast(noOpt);
 
-						System.err.println("Conflict :: Agent " + a.id + " moving to help.");
+						System.err.println("Conflict :: Agent " + helpingAgent.id + " moving to help.");
 					}else{
 						System.err.println("Conflict :: No path to help was found.");
 						System.err.println(node);

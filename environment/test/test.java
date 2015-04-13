@@ -12,13 +12,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import org.junit.After;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import client.Command;
 import client.Command.dir;
 import client.Command.type;
 import client.Heuristic.AStar;
+import client.SearchAgent;
 import client.SearchClient;
 import client.parser.SettingsContainer;
 import client.Strategy;
@@ -28,6 +32,8 @@ import client.node.Node;
 import client.node.level.distancemap.FloydWarshallDistanceMap;
 import client.node.storage.Box;
 
+//I am a horrible person
+@FixMethodOrder(MethodSorters.JVM)
 public class test {
 
 	@Before
@@ -38,6 +44,11 @@ public class test {
 		}));
 	}
 	
+	@After
+	public void tearDown(){
+		SearchClient.state=null;
+		SearchClient.agents=new ArrayList<>();
+	}
 	@Test
 	public void addBoxes(){
 		Node n = new Node();
@@ -61,23 +72,23 @@ public class test {
 	public void distance() throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/simple.lvl")) );
 	
-		SearchClient client = new SearchClient( serverMessages );
+		SearchClient.init( serverMessages );
 		
-		assertEquals(1, client.state.distance(1, 2, 1, 3));
-		assertEquals(2, client.state.distance(1, 1, 1, 3));
+		assertEquals(1, SearchClient.state.distance(1, 2, 1, 3));
+		assertEquals(2, SearchClient.state.distance(1, 1, 1, 3));
 		
-		assertEquals(1, client.state.distance(client.state.agents[0],client.state.getBoxes()[0]));
+		assertEquals(1, SearchClient.state.distance(SearchClient.state.agents[0],SearchClient.state.getBoxes()[0]));
 	}
 	
 	@Test
 	public void goals() throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/simple.lvl")) );
 		
-		SearchClient client = new SearchClient( serverMessages );
+		SearchClient.init( serverMessages );
 		
-		assertEquals(1, client.state.getGoals().size());
-		assertNull( client.state.getGoals(Color.cyan));
-		assertEquals(1, client.state.getGoals(Color.noColor).size());
+		assertEquals(1, SearchClient.state.getGoals().size());
+		assertNull( SearchClient.state.getGoals(Color.cyan));
+		assertEquals(1, SearchClient.state.getGoals(Color.noColor).size());
 	}
 
 	
@@ -86,63 +97,63 @@ public class test {
  	public void levelSetup()throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/simple.lvl")) );
 		
-		SearchClient client = new SearchClient( serverMessages );
+		SearchClient.init( serverMessages );
 		
-		assertEquals(1, client.agents.size());
+		assertEquals(1, SearchClient.agents.size());
 		
 		assertEquals("\n+++++\n"
 				+ "+0Aa+\n"
 				+ "+++++\n"
-				+ "   + \n", client.state.toString());
+				+ "   + \n", SearchClient.state.toString());
 		
-		assertNotNull(client.state.agentAt(1, 1));
-		assertNull(client.state.agentAt(1, 2));
-		assertNull(client.state.agentAt(1, 3));
+		assertNotNull(SearchClient.state.agentAt(1, 1));
+		assertNull(SearchClient.state.agentAt(1, 2));
+		assertNull(SearchClient.state.agentAt(1, 3));
 		
-		assertNotNull(client.state.boxAt(1, 2));
-		assertNull(client.state.boxAt(1, 1));
-		assertNull(client.state.boxAt(1, 3));
+		assertNotNull(SearchClient.state.boxAt(1, 2));
+		assertNull(SearchClient.state.boxAt(1, 1));
+		assertNull(SearchClient.state.boxAt(1, 3));
 
-		assertFalse(client.state.isGoalState());
+		assertFalse(SearchClient.state.isGoalState());
 	}
 	@Test
  	public void levelSetup2()throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/SACrunch.lvl")) );
 		
-		SearchClient client = new SearchClient( serverMessages );
+SearchClient.init( serverMessages );
 		
-		assertEquals(1, client.agents.size());
-		
-
-		
-		assertNotNull(client.state.agentAt(1, 1));
-		assertNull(client.state.agentAt(1, 2));
-		assertNull(client.state.agentAt(1, 3));
+		assertEquals(1, SearchClient.agents.size());
 		
 
-		assertNull(client.state.boxAt(1, 1));
-		assertNull(client.state.boxAt(1, 3));
-
-		assertFalse(client.state.isGoalState());
-		assertFalse(client.state.isGoalState(Color.noColor));
 		
-		assertEquals(4, client.state.getGoals(Color.noColor).size());
+		assertNotNull(SearchClient.state.agentAt(1, 1));
+		assertNull(SearchClient.state.agentAt(1, 2));
+		assertNull(SearchClient.state.agentAt(1, 3));
+		
+
+		assertNull(SearchClient.state.boxAt(1, 1));
+		assertNull(SearchClient.state.boxAt(1, 3));
+
+		assertFalse(SearchClient.state.isGoalState());
+		assertFalse(SearchClient.state.isGoalState(Color.noColor));
+		
+		assertEquals(4, SearchClient.state.getGoals(Color.noColor).size());
 
 	}
 	@Test
 	public void singleExpand()throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/simple.lvl")) );
 		
-		SearchClient client = new SearchClient( serverMessages );
+		SearchClient.init( serverMessages );
 		
+		SearchAgent agent =SearchClient.agents.get(0);
 		
-		
-		SearchClient agentClient = new SearchClient( client.state);
+		agent.setState( SearchClient.state);
 
-		assertEquals(client.state, agentClient.state);
+		assertEquals(SearchClient.state, agent.state);
 		
 
-		ArrayList<Node>expanded =agentClient.state.getExpandedNodes(0);
+		ArrayList<Node>expanded =agent.state.getExpandedNodes(0);
 	
 		assertEquals(1, expanded.size());
 		assertEquals(new Command(type.Push, dir.E, dir.E), expanded.get(0).action);
@@ -154,7 +165,7 @@ public class test {
 		assertEquals("\n+++++\n"
 				+ "+0Aa+\n"
 				+ "+++++\n"
-				+ "   + \n", client.state.toString());
+				+ "   + \n", SearchClient.state.toString());
 		
 		assertNotNull(expanded.get(0).agentAt(1, 2));
 		assertNull(expanded.get(0).agentAt(1, 1));
@@ -168,21 +179,21 @@ public class test {
 		
 		
 		
-		assertNotNull(client.state.agentAt(1, 1));
-		assertNull(client.state.agentAt(1, 2));
-		assertNull(client.state.agentAt(1, 3));
+		assertNotNull(SearchClient.state.agentAt(1, 1));
+		assertNull(SearchClient.state.agentAt(1, 2));
+		assertNull(SearchClient.state.agentAt(1, 3));
 		
-		assertNotNull(client.state.boxAt(1, 2));
-		assertNull(client.state.boxAt(1, 1));
-		assertNull(client.state.boxAt(1, 3));
+		assertNotNull(SearchClient.state.boxAt(1, 2));
+		assertNull(SearchClient.state.boxAt(1, 1));
+		assertNull(SearchClient.state.boxAt(1, 3));
 
-		assertFalse(client.state.isGoalState());
+		assertFalse(SearchClient.state.isGoalState());
 
 		
 		
 		ArrayList<Command>cmds=new ArrayList<>();
 		cmds.add(new Command(type.Push, dir.E, dir.E));
-		Node excuted=client.state.excecuteCommands(cmds);
+		Node excuted=SearchClient.state.excecuteCommands(cmds);
 		
 		
 		assertNotNull(excuted.agentAt(1, 2));
@@ -199,15 +210,15 @@ public class test {
 		
 		
 		
-		assertNotNull(client.state.agentAt(1, 1));
-		assertNull(client.state.agentAt(1, 2));
-		assertNull(client.state.agentAt(1, 3));
+		assertNotNull(SearchClient.state.agentAt(1, 1));
+		assertNull(SearchClient.state.agentAt(1, 2));
+		assertNull(SearchClient.state.agentAt(1, 3));
 		
-		assertNotNull(client.state.boxAt(1, 2));
-		assertNull(client.state.boxAt(1, 1));
-		assertNull(client.state.boxAt(1, 3));
+		assertNotNull(SearchClient.state.boxAt(1, 2));
+		assertNull(SearchClient.state.boxAt(1, 1));
+		assertNull(SearchClient.state.boxAt(1, 3));
 
-		assertFalse(client.state.isGoalState());
+		assertFalse(SearchClient.state.isGoalState());
 
 		
 	}
@@ -218,14 +229,10 @@ public class test {
 		
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/simple.lvl")) );
 
-		SearchClient client = new SearchClient( serverMessages );
-
-
-		SearchClient agentClient = new SearchClient( client.state);
-
+		SearchClient.init( serverMessages );
 		
 
-		ArrayList<Node>expanded =agentClient.state.getExpandedNodes(0);
+		ArrayList<Node>expanded =SearchClient.state.getExpandedNodes(0);
 	
 		Node expanded1=expanded.get(0);
 		
@@ -254,24 +261,24 @@ public class test {
 				assertNotNull(node.parent.parent.boxAt(1, 2));
 				assertNotNull(node.parent.boxAt(1, 3));
 				assertNotNull(node.boxAt(1, 3));
-				assertNotEquals(client.state.hashCode(), node.hashCode());
+				assertNotEquals(SearchClient.state.hashCode(), node.hashCode());
 				
 			}else if(node.action.actType==type.Pull){
 
-				assertEquals(client.state, node);
+				assertEquals(SearchClient.state, node);
 				assertNotNull(node.parent.boxAt(1, 3));
 				assertNotNull(node.boxAt(1, 2));
 				assertNotNull(node.agentAt(1, 1));
 				assertNotNull(node.cellIsFree(1, 3));
 				assertEquals("Pull(W,E)", node.action.toString());
-				assertEquals(client.state.hashCode(), node.hashCode());
+				assertEquals(SearchClient.state.hashCode(), node.hashCode());
 			}else{
 				fail();
 			}
 		}
 
 		
-		assertEquals(client.state.hashCode(), agentClient.state.hashCode());
+		assertEquals(SearchClient.state.hashCode(), SearchClient.state.hashCode());
 	
 	}
 
@@ -279,50 +286,50 @@ public class test {
  	public void multiLevelSetup()throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAsimple1.lvl")) );
 		
-		SearchClient client = new SearchClient( serverMessages );
+		SearchClient.init( serverMessages );
 		
-		assertEquals(2, client.agents.size());
+		assertEquals(2, SearchClient.agents.size());
 		
 		assertEquals("\n++++++++++++++++++++++++++++\n"
 				+ "+             0        Aa  +\n"
 				+ "+     1                Bb  +\n"
 				+ "+ +++++++++++++++++        +\n"
 				+ "+                          +\n"
-				+ "++++++++++++++++++++++++++++\n", client.state.toString());
+				+ "++++++++++++++++++++++++++++\n", SearchClient.state.toString());
 		
-		assertNotNull(client.state.agentAt(2, 6));
-		assertNotNull(client.state.agentAt(1, 14));
-		assertNull(client.state.agentAt(1, 23));
-		assertNull(client.state.agentAt(2, 23));
+		assertNotNull(SearchClient.state.agentAt(2, 6));
+		assertNotNull(SearchClient.state.agentAt(1, 14));
+		assertNull(SearchClient.state.agentAt(1, 23));
+		assertNull(SearchClient.state.agentAt(2, 23));
 		
-		assertNotNull(client.state.boxAt(1, 23));
-		assertNotNull(client.state.boxAt(2, 23));
-		assertNull(client.state.boxAt(1, 1));
-		assertNull(client.state.boxAt(1, 3));
+		assertNotNull(SearchClient.state.boxAt(1, 23));
+		assertNotNull(SearchClient.state.boxAt(2, 23));
+		assertNull(SearchClient.state.boxAt(1, 1));
+		assertNull(SearchClient.state.boxAt(1, 3));
 
-		assertFalse(client.state.isGoalState());
+		assertFalse(SearchClient.state.isGoalState());
 		
-		assertEquals(1, client.state.getGoals(Color.red).size());
-		assertEquals(Color.red, client.state.boxAt(1, 23).color);
+		assertEquals(1, SearchClient.state.getGoals(Color.red).size());
+		assertEquals(Color.red, SearchClient.state.boxAt(1, 23).color);
 		
-		assertEquals(1, client.state.getGoals(Color.green).size());
-		assertEquals(Color.green, client.state.boxAt(2, 23).color);
+		assertEquals(1, SearchClient.state.getGoals(Color.green).size());
+		assertEquals(Color.green, SearchClient.state.boxAt(2, 23).color);
 	}
 	
 	@Test
 	public void MAsingleExpand()throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAsimple.lvl")) );
 		
-		SearchClient client = new SearchClient( serverMessages );
+		SearchClient.init( serverMessages );
 		
+		SearchAgent agent1 = SearchClient.agents.get(0);
 		
-		
-		SearchClient agentClient = new SearchClient( client.state );
+		agent1.setState(SearchClient.state);
 
-		assertEquals(client.state, agentClient.state);
-		assertEquals(Color.red, agentClient.state.boxAt(1, 2).color);
+		assertEquals(SearchClient.state, agent1.state);
+		assertEquals(Color.red, agent1.state.boxAt(1, 2).color);
 
-		ArrayList<Node>expanded =agentClient.state.getExpandedNodes(0);
+		ArrayList<Node>expanded =agent1.state.getExpandedNodes(0);
 	
 		assertEquals(1, expanded.size());
 		assertEquals(new Command(type.Push, dir.E, dir.E), expanded.get(0).action);
@@ -335,7 +342,7 @@ public class test {
 				+ "+0Aa+\n"
 				+ "+1Bb+\n"
 				+ "+++++\n"
-				, client.state.toString());
+				, SearchClient.state.toString());
 		
 		assertNotNull(expanded.get(0).agentAt(1, 2));
 		assertNull(expanded.get(0).agentAt(1, 1));
@@ -349,21 +356,21 @@ public class test {
 		
 		
 		
-		assertNotNull(client.state.agentAt(1, 1));
-		assertNull(client.state.agentAt(1, 2));
-		assertNull(client.state.agentAt(1, 3));
+		assertNotNull(SearchClient.state.agentAt(1, 1));
+		assertNull(SearchClient.state.agentAt(1, 2));
+		assertNull(SearchClient.state.agentAt(1, 3));
 		
-		assertNotNull(client.state.boxAt(1, 2));
-		assertNull(client.state.boxAt(1, 1));
-		assertNull(client.state.boxAt(1, 3));
+		assertNotNull(SearchClient.state.boxAt(1, 2));
+		assertNull(SearchClient.state.boxAt(1, 1));
+		assertNull(SearchClient.state.boxAt(1, 3));
 
-		assertFalse(client.state.isGoalState(Color.red));
+		assertFalse(SearchClient.state.isGoalState(Color.red));
 
 		
 		
 		ArrayList<Command>cmds=new ArrayList<>();
 		cmds.add(new Command(type.Push, dir.E, dir.E));
-		Node excuted=client.state.excecuteCommands(cmds);
+		Node excuted=SearchClient.state.excecuteCommands(cmds);
 		
 		
 		assertNotNull(excuted.agentAt(1, 2));
@@ -380,15 +387,15 @@ public class test {
 		
 		
 		
-		assertNotNull(client.state.agentAt(1, 1));
-		assertNull(client.state.agentAt(1, 2));
-		assertNull(client.state.agentAt(1, 3));
+		assertNotNull(SearchClient.state.agentAt(1, 1));
+		assertNull(SearchClient.state.agentAt(1, 2));
+		assertNull(SearchClient.state.agentAt(1, 3));
 		
-		assertNotNull(client.state.boxAt(1, 2));
-		assertNull(client.state.boxAt(1, 1));
-		assertNull(client.state.boxAt(1, 3));
+		assertNotNull(SearchClient.state.boxAt(1, 2));
+		assertNull(SearchClient.state.boxAt(1, 1));
+		assertNull(SearchClient.state.boxAt(1, 3));
 
-		assertFalse(client.state.isGoalState());
+		assertFalse(SearchClient.state.isGoalState());
 
 		
 	}
@@ -398,18 +405,18 @@ public class test {
 	public void MAsingleExpand2()throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAsimple1.lvl")) );
 		
-		SearchClient client = new SearchClient( serverMessages );
+		SearchClient.init( serverMessages );
 		
 		
-		
-		SearchClient agentClient = new SearchClient( client.state );
+		SearchAgent agent= SearchClient.agents.get(0);
+		agent.setState( SearchClient.state );
 
-		Strategy strategy1 = new StrategyBestFirst( new AStar(client.agents.get(0)) );
+		Strategy strategy1 = new StrategyBestFirst( new AStar(agent) );
 		assertTrue( strategy1.frontierIsEmpty());
-		strategy1.addToFrontier(agentClient.state);
-		assertEquals(client.state, agentClient.state);
+		strategy1.addToFrontier(agent.state);
+		assertEquals(SearchClient.state, agent.state);
 
-		ArrayList<Node>expanded =agentClient.state.getExpandedNodes(0);
+		ArrayList<Node>expanded =agent.state.getExpandedNodes(0);
 		assertEquals(3, expanded.size());
 		for (Node node : expanded) {
 //			System.err.println(node);
@@ -419,8 +426,8 @@ public class test {
 				strategy1.addToFrontier(node);
 			}
 		}
-		assertNotEquals(agentClient.state.toString(), expanded.get(0).toString());
-		assertNotEquals(agentClient.state, expanded.get(0));
+		assertNotEquals(SearchClient.state.toString(), expanded.get(0).toString());
+		assertNotEquals(SearchClient.state, expanded.get(0));
 		assertNotEquals(expanded.get(0), expanded.get(1));
 		assertEquals(4, strategy1.countFrontier());
 
@@ -452,20 +459,21 @@ public class test {
 		
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAsimple1.lvl")) );
 
-		SearchClient client = new SearchClient( serverMessages );
+		SearchClient.init( serverMessages );
 
 
 		
 		
-		
-		SearchClient agentClient = new SearchClient( client.state );
-		Strategy strategy1 = new StrategyBestFirst( new AStar(client.agents.get(0) ) );
-		LinkedList<Node> sol1=agentClient.Search(strategy1, client.state.agents[0].id).solution;
+		SearchAgent agent1 = SearchClient.agents.get(0);
+		agent1.setState( SearchClient.state );
+		Strategy strategy1 = new StrategyBestFirst( new AStar(agent1 ) );
+		LinkedList<Node> sol1=agent1.Search(strategy1).solution;
 		assertEquals(9, sol1.size());
-//		System.err.println(client.state.agents[0].color);
-		SearchClient agentClient2 = new SearchClient( client.state );
-		Strategy strategy2 = new StrategyBestFirst( new AStar(client.agents.get(1)) );
-		LinkedList<Node> sol2=agentClient2.Search(strategy2, client.state.agents[1].id).solution;
+//		System.err.println(SearchClient.state.agents[0].color);
+		SearchAgent agent2 = SearchClient.agents.get(1);
+		agent2.setState(SearchClient.state);
+		Strategy strategy2 = new StrategyBestFirst( new AStar(SearchClient.agents.get(1)) );
+		LinkedList<Node> sol2=agent2.Search(strategy2).solution;
 		assertEquals(17, sol2.size());
 
 
@@ -476,20 +484,21 @@ public class test {
 		
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAsimple1.lvl")) );
 
-		SearchClient client = new SearchClient( serverMessages );
+SearchClient.init( serverMessages );
 
 
 		
 		
-		
-		SearchClient agentClient = new SearchClient( client.state );
-		Strategy strategy1 = new StrategyBestFirst( new AStar(client.agents.get(0) ) );
-		LinkedList<Node> sol1=agentClient.Search(strategy1, client.state.agents[0].id).solution;
+		SearchAgent agent1 = SearchClient.agents.get(0);
+		agent1.setState( SearchClient.state );
+		Strategy strategy1 = new StrategyBestFirst( new AStar(agent1 ) );
+		LinkedList<Node> sol1=agent1.Search(strategy1).solution;
 		assertEquals(9, sol1.size());
-//		System.err.println(client.state.agents[0].color);
-		SearchClient agentClient2 = new SearchClient( client.state );
-		Strategy strategy2 = new StrategyBestFirst( new AStar(client.agents.get(1)) );
-		LinkedList<Node> sol2=agentClient2.Search(strategy2, client.state.agents[1].id).solution;
+//		System.err.println(SearchClient.state.agents[0].color);
+		SearchAgent agent2 = SearchClient.agents.get(1);
+		agent2.setState(SearchClient.state);
+		Strategy strategy2 = new StrategyBestFirst( new AStar(agent2) );
+		LinkedList<Node> sol2=agent2.Search(strategy2).solution;
 		assertEquals(17, sol2.size());
 
 
@@ -498,19 +507,19 @@ public class test {
 	public void multiGoals() throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAsimple1.lvl")) );
 		
-		SearchClient client = new SearchClient( serverMessages );
+SearchClient.init( serverMessages );
 		
-		assertEquals(2, client.state.getGoals().size());
-		assertNull( client.state.getGoals(Color.cyan));
-		assertEquals(1, client.state.getGoals(Color.green).size());
-		assertEquals(1, client.state.getGoals(Color.red).size());
+		assertEquals(2, SearchClient.state.getGoals().size());
+		assertNull( SearchClient.state.getGoals(Color.cyan));
+		assertEquals(1, SearchClient.state.getGoals(Color.green).size());
+		assertEquals(1, SearchClient.state.getGoals(Color.red).size());
 		ArrayList<Command> cms= new ArrayList<>();
 		for (int i = 0; i < 16; i++) {
 			cms.add(new Command(dir.E));
 			
 		}
 		cms.add(new Command(type.Push,dir.E,dir.E));
-		Node agent0=client.state.excecuteCommands(cms, 1);
+		Node agent0=SearchClient.state.excecuteCommands(cms, 1);
 		assertTrue(agent0.isGoalState(Color.green));
 		assertTrue(!agent0.isGoalState(Color.red));
 		
@@ -520,7 +529,7 @@ public class test {
 			
 		}
 		cms2.add(new Command(type.Push,dir.E,dir.E));
-		Node agent1=client.state.excecuteCommands(cms2, 0);
+		Node agent1=SearchClient.state.excecuteCommands(cms2, 0);
 		assertTrue(!agent1.isGoalState(Color.green));
 		assertTrue(agent1.isGoalState(Color.red));
 
@@ -538,9 +547,9 @@ public class test {
 		
 		SettingsContainer con = new SettingsContainer();
 		con.dm=new FloydWarshallDistanceMap();
-		SearchClient client = new SearchClient( serverMessages, con );
+		SearchClient.init( serverMessages, con );
 		
-		Node n=client.state;
+		Node n=SearchClient.state;
 		StringBuilder builder= new StringBuilder();
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {

@@ -1,20 +1,32 @@
 package client;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
+import java.util.LinkedList;
+
+import client.SearchClient.Memory;
 // Goals have a type
 // Agents have a color
 // Boxes have a color AND a type
 import client.node.Color;
+import client.node.Node;
+import client.node.storage.Box;
 import client.node.storage.LogicalAgent;
 import client.node.storage.Goal;
+import client.node.storage.SearchResult;
 
 public class SearchAgent{
+	
 	public int id;
 	public Color color;
 	public enum Status{STUCK, PLAN, DONE, IDLE, HELPING}
 	public Status status = Status.IDLE;
 	public ArrayList<Goal> subgoals = new ArrayList<>();
+	
+	public Node state;
+	public static int searchMaxOffset = 2;
+	
 	
 	public SearchAgent(int name, Color color, int row, int col){
 		this.id 	= name;
@@ -41,6 +53,108 @@ public class SearchAgent{
 		this.color=agent.color;
 	}
 
+	public void setState(Node state){
+		Node n = state.CopyNode();
+		n.parent = null;
+		this.state = n;
+	}
+	
+	public SearchResult Search(Strategy strategy) throws IOException {
+		return Search(strategy,  this.state.getGoals(state.agents[id].color), null);
+	}
+
+	public SearchResult Search(Strategy strategy, ArrayList<Goal> goals) throws IOException {
+		return Search(strategy, goals, null);
+	}
+
+	public SearchResult Search(Strategy strategy, SearchResult preResult) throws IOException {
+		return Search(strategy, this.state.getGoals(state.agents[id].color), preResult);
+	}
+
+	public SearchResult ProximitySearch(Strategy strategy, Box box) throws IOException {
+		System.err.println("SearchClient:: Starting ProximitySearch.");
+		strategy.addToFrontier(this.state);
+
+		while(true){
+			if (strategy.frontierIsEmpty()) {
+				if (state.isGoalState(id, box)) {
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
+				} else {
+					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+				}
+			}
+
+			Node leafNode = strategy.getAndRemoveLeaf();
+
+			if (leafNode.isGoalState(id, box)) {
+				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
+			}
+
+			strategy.addToExplored(leafNode);
+
+			for (Node n : leafNode.getExpandedNodes(id)) {
+				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
+
+					strategy.addToFrontier(n);
+				}
+			}
+		}
+	}
+
+	public SearchResult Search(Strategy strategy, ArrayList<Goal> goals, SearchResult preResult) throws IOException {
+		System.err.format("Search starting with strategy %s\n", strategy);
+		strategy.addToFrontier(this.state);
+
+		int iterations = 0;
+		while (true) {
+
+			if (iterations % 2000 == 0) {
+				System.err.println(strategy.searchStatus());
+			}
+			if (Memory.shouldEnd()) {
+				System.err.format("Memory limit almost reached, terminating search %s\n", Memory.stringRep());
+				return new SearchResult(SearchResult.Result.MEMMORY, new LinkedList<>());
+			}
+			if (strategy.timeSpent() > Memory.timeLimit) { // Minutes timeout
+				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep());
+				return new SearchResult(SearchResult.Result.TIME,
+						new LinkedList<>());
+			}
+
+			if (strategy.frontierIsEmpty()) {
+				if (state.isGoalState(goals)) {
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
+				} else if (preResult != null) {
+					return new SearchResult(SearchResult.Result.IMPOSIBLE, new LinkedList<>());
+				} else {
+					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+				}
+			}
+
+			Node leafNode = strategy.getAndRemoveLeaf();
+
+			if (preResult != null && leafNode.g() > (preResult.solution.size() * searchMaxOffset)) {
+				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+			}
+
+			if (leafNode.isGoalState(goals)) {
+				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
+			}
+
+			strategy.addToExplored(leafNode);
+
+			for (Node n : leafNode.getExpandedNodes(id)) {
+				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
+
+					strategy.addToFrontier(n);
+				}
+			}
+			iterations++;
+		}
+	}
+	
+	
+	
 	@Override
 	public boolean equals( Object obj ) {
 		if( getClass() != obj.getClass() ){
