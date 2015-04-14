@@ -122,6 +122,7 @@ public class SearchAgent{
 			}
 
 			if (strategy.frontierIsEmpty()) {
+				System.err.println(strategy.searchStatus());
 				if (state.isGoalState(goals)) {
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
 				} else if (preResult != null) {
@@ -151,6 +152,7 @@ public class SearchAgent{
 			}
 			iterations++;
 		}
+		
 	}
 	
 	
