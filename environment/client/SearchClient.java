@@ -228,15 +228,12 @@ public class SearchClient {
 
 				System.err.println("MultiAgentPlanning :: Agent " + agent.id + " planing");
 
-
-
-
 				Heuristic heuristic = new Greedy(agent);
 
-
+				Goal subgoal = null;
 				// find a subgoal(s) which should be solved
 				if(state.isGoalState(agent.subgoals)){
-					Goal subgoal = heuristic.selectGoal(state);
+					subgoal = heuristic.selectGoal(state);
 					if(subgoal!=null){
 						agent.subgoals.add(subgoal);
 						System.err.println("new subgoal "+subgoal.getType());
@@ -249,7 +246,14 @@ public class SearchClient {
 				Heuristic relaxedHeuristic = new Greedy(agent);
 				relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
 				agent.setState(relaxed);
-				SearchResult relaxedResult = agent.Search(relaxedStrategy, agent.subgoals);
+				SearchResult relaxedResult;
+				if(subgoal==null){
+					relaxedResult = agent.Search(relaxedStrategy, agent.subgoals);
+				}else{
+					ArrayList<Goal> goals = new ArrayList<>();
+					goals.add(subgoal);
+					relaxedResult = agent.Search(relaxedStrategy, goals);
+				}
 				System.gc();
 				
 				
