@@ -131,7 +131,6 @@ public class Conflict{
 							// Impossible to help?!
 						}
 
-
 						System.err.println("Conflict :: Agent " + helpingAgent.id + " moving to help.");
 					}else{
 						System.err.println("Conflict :: No path to help was found.");

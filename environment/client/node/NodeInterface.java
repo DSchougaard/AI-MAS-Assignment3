@@ -3,10 +3,9 @@ package client.node;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import client.node.storage.LogicalAgent;
-import client.node.storage.Base;
 import client.node.storage.Box;
 import client.node.storage.Goal;
+import client.node.storage.LogicalAgent;
 
 public interface NodeInterface {
 	// Index query
@@ -41,7 +40,5 @@ public interface NodeInterface {
 	public ArrayList< Node > getExpandedNodes(int agentID);
 	public LinkedList<Node> extractPlan();
 	public int g();
-	
-	// Route
-	public ArrayList<Base> getRoute(); 
+	 
 }

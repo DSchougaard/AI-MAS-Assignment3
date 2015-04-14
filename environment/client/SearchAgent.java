@@ -32,7 +32,7 @@ public class SearchAgent{
 	public SearchAgent(int name, Color color, int row, int col){
 		this.id 	= name;
 		if(color==null){
-			this.color = Color.noColor;
+			this.color = Color.blue;
 		}else{
 			this.color = color;
 		}
@@ -40,7 +40,7 @@ public class SearchAgent{
 
 	public SearchAgent(char name, int row, int col){
 		this.id 	= (int)name;
-		this.color 	= Color.noColor;
+		this.color 	= Color.blue;
 	}
 
 	
@@ -153,6 +153,7 @@ public class SearchAgent{
 			}
 
 			if (strategy.frontierIsEmpty()) {
+				System.err.println(strategy.searchStatus());
 				if (state.isGoalState(goals)) {
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
 				} else if (preResult != null) {
@@ -182,6 +183,7 @@ public class SearchAgent{
 			}
 			iterations++;
 		}
+		
 	}
 	
 	

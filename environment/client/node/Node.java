@@ -58,7 +58,7 @@ public class Node implements NodeInterface, LevelInterface{
 	// Add'ers for the setup
 	public void addAgent(char name, Color color, int row, int col){
 		int i = (int)name - 48;
-		if( agents[i] != null ) return;
+		if( agents[i] != null  ) return;
 		agents[i] = new LogicalAgent(i, color, row, col);
 
 		if( !colorMap.containsKey(color) )
@@ -328,12 +328,11 @@ public class Node implements NodeInterface, LevelInterface{
 		return Node.level.getClusters();
 	}
 	public ArrayList<Goal> getCluster(LogicalAgent agent){
-		ArrayList<Goal> cluster 			= Node.level.getCluster(agent);
+		ArrayList<Goal> cluster 	= Node.level.getCluster(agent);
 		ArrayList<Goal> filtered 	= new ArrayList<Goal>();
 
 		// Bypass filtering
 		// return t;
-
 		// Filter
 		for( Goal goal : cluster ){
 			Box box=this.boxesByPoint.get(goal.getPoint());
@@ -345,6 +344,56 @@ public class Node implements NodeInterface, LevelInterface{
 		return filtered;
 	}
 
+	public ArrayList< Node > getExpandedBoxNodes(int agentID) {
+		ArrayList< Node > expandedNodes = new ArrayList< Node >( Command.every.length );
+		for ( Command c : Command.every ) {
+			// Determine applicability of action
+			
+			int newAgentRow = agents[agentID].row + dirToRowChange( c.dir1 );
+			int newAgentCol = agents[agentID].col + dirToColChange( c.dir1 );
+			Box box;
+			if ( c.actType == type.Push ) {
+				// Make sure that there's actually a box to move
+				box = boxAt(newAgentRow, newAgentCol);
+				if ( box!=null && agents[agentID].color.equals(box.color)) {
+					int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
+					int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
+					// .. and that new cell of box is free
+
+					if ( cellIsFree( newBoxRow, newBoxCol ) ) {
+						Node n = this.ChildNode();
+						n.action = c;
+						n.agents[agentID].row = newAgentRow;
+						n.agents[agentID].col = newAgentCol;
+
+						n.moveBox(n.boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
+						expandedNodes.add( n );
+					}
+				}
+			} else if ( c.actType == type.Pull ) {
+				// Cell is free where agent is going
+				if ( cellIsFree( newAgentRow, newAgentCol ) ) {
+					int boxRow = agents[agentID].row + dirToRowChange( c.dir2 );
+					int boxCol = agents[agentID].col + dirToColChange( c.dir2 );
+					// .. and there's a box in "dir2" of the agent			
+					box = boxAt( boxRow, boxCol );
+
+					if ( box!= null  && agents[agentID].color == box.color) {
+						Node n = this.ChildNode();
+						n.action = c;
+						n.agents[agentID].row = newAgentRow;
+						n.agents[agentID].col = newAgentCol;
+	
+						n.moveBox(n.boxAt(boxRow, boxCol), agents[agentID].row, agents[agentID].col);
+						expandedNodes.add( n );
+					}
+				}
+			}
+		}
+		Collections.shuffle( expandedNodes, rnd );
+		return expandedNodes;
+	}
+	
 	@Override
 	public ArrayList< Node > getExpandedNodes(int agentID) {
 		ArrayList< Node > expandedNodes = new ArrayList< Node >( Command.every.length );
@@ -572,9 +621,4 @@ public class Node implements NodeInterface, LevelInterface{
 		return true;
 	}
 
-	@Override
-	public ArrayList<Base> getRoute() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
 }

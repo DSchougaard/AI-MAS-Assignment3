@@ -12,7 +12,7 @@ public class Box extends Base{
 		super(row, col);
 		this.setType(t);
 		if(color==null){
-			this.color = Color.noColor;
+			this.color = Color.blue;
 		}else{
 			this.color = color;
 		}
