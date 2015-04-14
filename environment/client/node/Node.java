@@ -230,6 +230,20 @@ public class Node implements NodeInterface, LevelInterface{
 			);
 	}
 
+	public boolean isGoalState(int agentID, int obstructionCount, ArrayList<Base> route){
+		LogicalAgent agent = this.agents[agentID];
+
+		int count = 0;
+
+		for( Base b : route ){
+			Object o = objectAt(b);	
+			if( o instanceof Box || o instanceof LogicalAgent )
+				count++;
+		}
+
+		return (count == (obstructionCount - 1));
+	}
+
 
 	@Override
 	public Node subdomain(Color color){

@@ -243,7 +243,7 @@ public class SearchClient {
 				// relaxed search setup
 				System.err.println("MA Planning :: Performing relaxed search");
 				Node relaxed = state.subdomain(agent.id);
-				Heuristic relaxedHeuristic = new AStar(agent);
+				Heuristic relaxedHeuristic = new Greedy(agent);
 				relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
 				agent.setState(relaxed);
 				SearchResult relaxedResult;

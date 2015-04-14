@@ -176,12 +176,7 @@ public class Level implements LevelInterface{
 	}
 
 	public ArrayList<Goal> getCluster(LogicalAgent agent){
-//		System.err.println("sdædsajdsæa");
-//		System.err.println(clusters.get( agent.id ));
-//		System.err.println(agent.color);
-		System.err.println(agent.color);
 		return clusters.get( agent.id );
-		//return this.kcg.getCluster(agent.id);
 	}
 
 	public Character[][] toArray(){
