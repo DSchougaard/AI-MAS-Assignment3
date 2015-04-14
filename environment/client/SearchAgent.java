@@ -31,7 +31,7 @@ public class SearchAgent{
 	public SearchAgent(int name, Color color, int row, int col){
 		this.id 	= name;
 		if(color==null){
-			this.color = Color.noColor;
+			this.color = Color.blue;
 		}else{
 			this.color = color;
 		}
@@ -39,7 +39,7 @@ public class SearchAgent{
 
 	public SearchAgent(char name, int row, int col){
 		this.id 	= (int)name;
-		this.color 	= Color.noColor;
+		this.color 	= Color.blue;
 	}
 
 	
