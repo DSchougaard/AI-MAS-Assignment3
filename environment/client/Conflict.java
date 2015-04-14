@@ -88,13 +88,16 @@ public class Conflict{
 						if( !result.solution.isEmpty() ){
 							chaoticMove = result.solution.get(result.solution.size()-1).getExpandedNodes(helpingAgent.id).get(0);
 						}else{
-							chaoticMove = node.getExpandedNodes(helpingAgent.id).get(0);
+							chaoticMove = node.getExpandedBoxNodes(helpingAgent.id).get(0);
 						}
+						solutions.get(helpingAgent.id).addLast(chaoticMove);
+						
 						Node noOpt		= chaoticMove.ChildNode();
 						noOpt.action 	= new Command(); // NoOP command
-
-						solutions.get(helpingAgent.id).addLast(chaoticMove);
 						solutions.get(helpingAgent.id).addLast(noOpt);
+//						Node noOpt2		= noOpt.ChildNode();
+//						noOpt2.action 	= new Command(); // NoOP command
+//						solutions.get(helpingAgent.id).addLast(noOpt2);
 
 						System.err.println("Conflict :: Agent " + helpingAgent.id + " moving to help.");
 					}else{
