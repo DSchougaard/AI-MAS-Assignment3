@@ -14,6 +14,7 @@ import client.node.Node;
 import client.node.storage.Box;
 import client.node.storage.LogicalAgent;
 import client.node.storage.Goal;
+import client.node.storage.Base;
 import client.node.storage.SearchResult;
 
 public class SearchAgent{
@@ -72,7 +73,7 @@ public class SearchAgent{
 	}
 
 	public SearchResult ProximitySearch(Strategy strategy, Box box) throws IOException {
-		System.err.println("SearchClient:: Starting ProximitySearch.");
+		System.err.println("SearchClient :: Starting ProximitySearch.");
 		strategy.addToFrontier(this.state);
 
 		while(true){
@@ -95,6 +96,38 @@ public class SearchAgent{
 			for (Node n : leafNode.getExpandedNodes(id)) {
 				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
 
+					strategy.addToFrontier(n);
+				}
+			}
+		}
+	}
+
+	
+	public SearchResult ClearRouteSearch(Strategy strategy, Box box, ArrayList<Base> route){
+		System.err.println("SearchClient :: Starting Route Clearing Search");
+		strategy.addToFrontier(this.state);
+
+		LogicalAgent agent = this.state.agents[this.id];
+
+		while(true){
+			if (strategy.frontierIsEmpty()) {
+				if (state.isGoalState(agent, box, route)) {
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
+				} else {
+					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+				}
+			}
+
+			Node leafNode = strategy.getAndRemoveLeaf();
+
+			if (leafNode.isGoalState(agent, box, route)) {
+				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
+			}
+
+			strategy.addToExplored(leafNode);
+
+			for (Node n : leafNode.getExpandedNodes(id)) {
+				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
 					strategy.addToFrontier(n);
 				}
 			}

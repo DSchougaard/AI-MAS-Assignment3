@@ -230,6 +230,17 @@ public class Node implements NodeInterface, LevelInterface{
 			);
 	}
 
+	public boolean isGoalState(LogicalAgent agent, Box box, ArrayList<Base> route){
+		for( Base b : route ){
+			if( agent.row == b.row && agent.col == b.col )
+				return false;
+			if( box.row == b.row && box.col == b.col )
+				return false;
+		}
+
+		return true;
+	}
+
 
 	@Override
 	public Node subdomain(Color color){
