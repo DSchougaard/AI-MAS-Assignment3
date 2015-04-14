@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import client.Heuristic.Proximity;
+import client.heuristic.ClearHeuristic;
 import client.SearchAgent.Status;
 import client.Strategy.StrategyBestFirst;
 import client.node.Node;
@@ -43,6 +44,9 @@ public class Conflict{
 				ArrayList<LogicalAgent> agentsInTheWay = new ArrayList<>();
 				ArrayList<Box> boxesInTheWay = new ArrayList<>();
 
+				int dirty_test_count = 0;
+				boolean dirty_test_flag = true;
+
 				// Parse the route, storing what might be in the way
 				// Sanity check on route!
 				if( route.size() < 1 ){
@@ -51,10 +55,13 @@ public class Conflict{
 
 				for( Base b : route ){
 					Object o = node.objectAt(b);
+					if(dirty_test_flag)dirty_test_count++;
 					if( o instanceof LogicalAgent ){
+						dirty_test_flag = false;
 						System.err.println("Conflict :: Agent found in route for agent " + agent.id + "!");
 						agentsInTheWay.add( (LogicalAgent)o );
 					}else if( o instanceof Box ){
+						dirty_test_flag = false;
 						System.err.println("Conflict :: Box found in route for agent " + agent.id + "!");
 						System.err.println("            Color of box: " + ((Box)o).color + ".");
 						if( agent.color != ((Box)o).color )
@@ -84,17 +91,46 @@ public class Conflict{
 						helpingAgent.status = Status.HELPING;
 						helping.put(helpingAgent, agent);
 
-						Node chaoticMove = null;
-						if( !result.solution.isEmpty() ){
-							chaoticMove = result.solution.get(result.solution.size()-1).getExpandedNodes(helpingAgent.id).get(0);
-						}else{
-							chaoticMove = node.getExpandedNodes(helpingAgent.id).get(0);
-						}
-						Node noOpt		= chaoticMove.ChildNode();
-						noOpt.action 	= new Command(); // NoOP command
 
-						solutions.get(helpingAgent.id).addLast(chaoticMove);
-						solutions.get(helpingAgent.id).addLast(noOpt);
+						// Figure out what to do
+						Node moveStart = null;
+						if( !result.solution.isEmpty() ){
+							moveStart = result.solution.get(result.solution.size()-1) ;
+						}else{
+							moveStart = node;
+						}
+
+						Heuristic clearHeuristic = new ClearHeuristic(agent, agentsInTheWay.size()+boxesInTheWay.size(), route);
+						Strategy clearStrategy = new StrategyBestFirst(clearHeuristic);
+						helpingAgent.setState(moveStart);
+						SearchResult result2 = helpingAgent.ClearRouteSearch(clearStrategy, agentsInTheWay.size()+boxesInTheWay.size(), route);
+
+						if( result2.reason != Result.STUCK ){
+							solutions.get(helpingAgent.id).clear();
+							solutions.get(helpingAgent.id).addAll(result2.solution);
+
+							// Remove stuck flag from invoking agent. Makes it move instantly. 
+							agent.status = SearchAgent.Status.PLAN;
+
+							// Inject dirty NoOpts into helping agent.
+							Node noOptParent = null;
+							if( !result2.solution.isEmpty() ){
+								noOptParent = result2.solution.get(result2.solution.size()-1) ;
+							}else{
+								noOptParent = node;
+							}
+
+							for( int i = 0 ; i < dirty_test_count ; i++ ){
+								Node noOpt = noOptParent.ChildNode();
+								noOpt.action = new Command();
+								solutions.get(helpingAgent.id).addLast(noOpt);
+								noOptParent = noOpt;
+							}
+
+						}else{
+							// Impossible to help?!
+						}
+
 
 						System.err.println("Conflict :: Agent " + helpingAgent.id + " moving to help.");
 					}else{
