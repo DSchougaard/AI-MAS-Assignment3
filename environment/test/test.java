@@ -88,7 +88,7 @@ public class test {
 		
 		assertEquals(1, SearchClient.state.getGoals().size());
 		assertNull( SearchClient.state.getGoals(Color.cyan));
-		assertEquals(1, SearchClient.state.getGoals(Color.noColor).size());
+		assertEquals(1, SearchClient.state.getGoals(Color.blue).size());
 	}
 
 	
@@ -135,9 +135,9 @@ SearchClient.init( serverMessages );
 		assertNull(SearchClient.state.boxAt(1, 3));
 
 		assertFalse(SearchClient.state.isGoalState());
-		assertFalse(SearchClient.state.isGoalState(Color.noColor));
+		assertFalse(SearchClient.state.isGoalState(Color.blue));
 		
-		assertEquals(4, SearchClient.state.getGoals(Color.noColor).size());
+		assertEquals(4, SearchClient.state.getGoals(Color.blue).size());
 
 	}
 	@Test
