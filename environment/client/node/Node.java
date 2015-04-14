@@ -58,7 +58,7 @@ public class Node implements NodeInterface, LevelInterface{
 	// Add'ers for the setup
 	public void addAgent(char name, Color color, int row, int col){
 		int i = (int)name - 48;
-		if( agents[i] != null ) return;
+		if( agents[i] != null  ) return;
 		agents[i] = new LogicalAgent(i, color, row, col);
 
 		if( !colorMap.containsKey(color) )
@@ -314,12 +314,11 @@ public class Node implements NodeInterface, LevelInterface{
 		return Node.level.getClusters();
 	}
 	public ArrayList<Goal> getCluster(LogicalAgent agent){
-		ArrayList<Goal> cluster 			= Node.level.getCluster(agent);
+		ArrayList<Goal> cluster 	= Node.level.getCluster(agent);
 		ArrayList<Goal> filtered 	= new ArrayList<Goal>();
 
 		// Bypass filtering
 		// return t;
-
 		// Filter
 		for( Goal goal : cluster ){
 			Box box=this.boxesByPoint.get(goal.getPoint());

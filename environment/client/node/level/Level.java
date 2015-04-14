@@ -78,7 +78,7 @@ public class Level implements LevelInterface{
 			goals.put( letter, new ArrayList<Goal>() );
 		}
 		if(color==null){
-			color=Color.noColor;
+			color=Color.blue;
 		}
 		Goal goal=new Goal(letter, row, col);
 		ArrayList<Goal> tempGoals = goals.get( new Character(letter) );
@@ -116,7 +116,7 @@ public class Level implements LevelInterface{
 
 	public char isGoal(int row, int col){
 		if( Level.map[row][col] .type == Type.GOAL )
-			return Level.map[row][col] .letter;
+			return Level.map[row][col].letter;
 
 		return '\0';
 	}
@@ -176,6 +176,10 @@ public class Level implements LevelInterface{
 	}
 
 	public ArrayList<Goal> getCluster(LogicalAgent agent){
+//		System.err.println("sdædsajdsæa");
+//		System.err.println(clusters.get( agent.id ));
+//		System.err.println(agent.color);
+		System.err.println(agent.color);
 		return clusters.get( agent.id );
 		//return this.kcg.getCluster(agent.id);
 	}

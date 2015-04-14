@@ -22,7 +22,7 @@ public class LogicalAgent extends Base{
 	public LogicalAgent(char name, int row, int col){
 		super(row, col);
 		this.id 	= (int)name;
-		this.color 	= Color.noColor;
+		this.color 	= Color.blue;
 	}
 
 	
