@@ -230,15 +230,18 @@ public class Node implements NodeInterface, LevelInterface{
 			);
 	}
 
-	public boolean isGoalState(LogicalAgent agent, Box box, ArrayList<Base> route){
+	public boolean isGoalState(int agentID, int obstructionCount, ArrayList<Base> route){
+		LogicalAgent agent = this.agents[agentID];
+
+		int count = 0;
+
 		for( Base b : route ){
-			if( agent.row == b.row && agent.col == b.col )
-				return false;
-			if( box.row == b.row && box.col == b.col )
-				return false;
+			Object o = objectAt(b);	
+			if( o instanceof Box || o instanceof LogicalAgent )
+				count++;
 		}
 
-		return true;
+		return (count == (obstructionCount - 1));
 	}
 
 

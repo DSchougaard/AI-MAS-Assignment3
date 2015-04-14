@@ -95,7 +95,6 @@ public class SearchAgent{
 
 			for (Node n : leafNode.getExpandedNodes(id)) {
 				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
-
 					strategy.addToFrontier(n);
 				}
 			}
@@ -103,15 +102,13 @@ public class SearchAgent{
 	}
 
 	
-	public SearchResult ClearRouteSearch(Strategy strategy, Box box, ArrayList<Base> route){
+	public SearchResult ClearRouteSearch(Strategy strategy, int numObstructions, ArrayList<Base> route){
 		System.err.println("SearchClient :: Starting Route Clearing Search");
 		strategy.addToFrontier(this.state);
 
-		LogicalAgent agent = this.state.agents[this.id];
-
 		while(true){
 			if (strategy.frontierIsEmpty()) {
-				if (state.isGoalState(agent, box, route)) {
+				if (state.isGoalState(id, numObstructions, route)) {
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
 				} else {
 					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
@@ -119,14 +116,15 @@ public class SearchAgent{
 			}
 
 			Node leafNode = strategy.getAndRemoveLeaf();
+			System.err.println(leafNode);
 
-			if (leafNode.isGoalState(agent, box, route)) {
+			if (leafNode.isGoalState(id, numObstructions, route)) {
 				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
 			}
 
 			strategy.addToExplored(leafNode);
 
-			for (Node n : leafNode.getExpandedNodes(id)) {
+			for (Node n : leafNode.getExpandedBoxNodes(id)) {
 				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
 					strategy.addToFrontier(n);
 				}
