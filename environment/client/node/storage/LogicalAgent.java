@@ -13,7 +13,7 @@ public class LogicalAgent extends Base{
 		super(row, col);
 		this.id 	= name;
 		if(color==null){
-			this.color = Color.noColor;
+			this.color = Color.blue;
 		}else{
 			this.color = color;
 		}

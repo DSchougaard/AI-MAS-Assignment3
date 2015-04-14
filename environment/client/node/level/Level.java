@@ -166,7 +166,7 @@ public class Level implements LevelInterface{
 		//this.kcg = new KClusteringGoals(agents, this);
 		for( int i = 0 ; i < agents.length ; i++ ){
 			if( agents[i] != null )
-				this.clusters.put( new Integer(agents[i].id), this.goalTypeByColor.get(agents[i].color) );
+				this.clusters.put( agents[i].id, this.goalTypeByColor.get(agents[i].color) );
 		}
 	}
 
@@ -176,7 +176,7 @@ public class Level implements LevelInterface{
 	}
 
 	public ArrayList<Goal> getCluster(LogicalAgent agent){
-		return clusters.get( new Integer(agent.id) );
+		return clusters.get( agent.id );
 		//return this.kcg.getCluster(agent.id);
 	}
 
