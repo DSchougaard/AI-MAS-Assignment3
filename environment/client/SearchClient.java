@@ -13,7 +13,6 @@ import client.parser.ArgumentParser;
 import client.parser.SettingsContainer;
 import client.node.Node;
 import client.node.storage.Goal;
-import client.node.storage.Box;
 import client.node.storage.SearchResult;
 import client.node.level.distancemap.BasicManhattanDistanceMap;
 import client.Strategy.StrategyBestFirst;
@@ -29,7 +28,6 @@ public class SearchClient {
 		throw new Exception("GSCError: " + msg);
 	}
 
-	public static int searchMaxOffset = 2;
 
 	public static class Memory {
 		public static Runtime runtime = Runtime.getRuntime();
@@ -63,12 +61,12 @@ public class SearchClient {
 		}
 	}
 
-	public Node state = null;
+	public static Node state = null;
 
 	// all the active agents in sorted order
-	public List<SearchAgent> agents = new ArrayList<>();
+	public static List<SearchAgent> agents = new ArrayList<>();
 
-	public SearchClient(BufferedReader serverMessages, SettingsContainer settings) throws Exception {
+	public static void init(BufferedReader serverMessages, SettingsContainer settings) throws Exception {
 
 		state = LevelParser.parse(serverMessages, settings);
 		for (int i = 0; i < state.agents.length; i++) {
@@ -78,7 +76,7 @@ public class SearchClient {
 		}
 	}
 
-	public SearchClient(BufferedReader serverMessages) throws Exception {
+	public static void init(BufferedReader serverMessages) throws Exception {
 
 		SettingsContainer settings = new SettingsContainer();
 		settings.dm = new BasicManhattanDistanceMap();
@@ -90,105 +88,8 @@ public class SearchClient {
 		}
 	}
 
-	public SearchClient(Node initialState) {
-		Node n = initialState.CopyNode();
-		n.parent = null;
-		this.state = n;
-	}
 
-	public SearchResult Search(Strategy strategy, int agentID) throws IOException {
-		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color), null);
-	}
-
-	public SearchResult Search(Strategy strategy, int agentID, ArrayList<Goal> goals) throws IOException {
-		return Search(strategy, agentID, goals, null);
-	}
-
-	public SearchResult Search(Strategy strategy, int agentID, SearchResult preResult) throws IOException {
-		return Search(strategy, agentID, this.state.getGoals(state.agents[agentID].color), preResult);
-	}
-
-	public SearchResult ProximitySearch(Strategy strategy, int agentID, Box box) throws IOException {
-		System.err.println("SearchClient:: Starting ProximitySearch.");
-		strategy.addToFrontier(this.state);
-
-		while(true){
-			if (strategy.frontierIsEmpty()) {
-				if (state.isGoalState(agentID, box)) {
-					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
-				} else {
-					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
-				}
-			}
-
-			Node leafNode = strategy.getAndRemoveLeaf();
-
-			if (leafNode.isGoalState(agentID, box)) {
-				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
-			}
-
-			strategy.addToExplored(leafNode);
-
-			for (Node n : leafNode.getExpandedNodes(agentID)) {
-				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
-
-					strategy.addToFrontier(n);
-				}
-			}
-		}
-	}
-
-	public SearchResult Search(Strategy strategy, int agentID, ArrayList<Goal> goals, SearchResult preResult) throws IOException {
-		System.err.format("Search starting with strategy %s\n", strategy);
-		strategy.addToFrontier(this.state);
-
-		int iterations = 0;
-		while (true) {
-
-			if (iterations % 2000 == 0) {
-				System.err.println(strategy.searchStatus());
-			}
-			if (Memory.shouldEnd()) {
-				System.err.format("Memory limit almost reached, terminating search %s\n", Memory.stringRep());
-				return new SearchResult(SearchResult.Result.MEMMORY, new LinkedList<>());
-			}
-			if (strategy.timeSpent() > Memory.timeLimit) { // Minutes timeout
-				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep());
-				return new SearchResult(SearchResult.Result.TIME,
-						new LinkedList<>());
-			}
-
-			if (strategy.frontierIsEmpty()) {
-				if (state.isGoalState(goals)) {
-					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
-				} else if (preResult != null) {
-					return new SearchResult(SearchResult.Result.IMPOSIBLE, new LinkedList<>());
-				} else {
-					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
-				}
-			}
-
-			Node leafNode = strategy.getAndRemoveLeaf();
-
-			if (preResult != null && leafNode.g() > (preResult.solution.size() * searchMaxOffset)) {
-				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
-			}
-
-			if (leafNode.isGoalState(goals)) {
-				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
-			}
-
-			strategy.addToExplored(leafNode);
-
-			for (Node n : leafNode.getExpandedNodes(agentID)) {
-				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
-
-					strategy.addToFrontier(n);
-				}
-			}
-			iterations++;
-		}
-	}
+	
 
 	/**
 	 * Executes the plans until done or some things goes wrong
@@ -197,7 +98,7 @@ public class SearchClient {
 	 * @param client
 	 * @throws IOException
 	 */
-	public static void executePlans(ArrayList<LinkedList<Node>> solutions, SearchClient client) throws IOException {
+	public static void executePlans(ArrayList<LinkedList<Node>> solutions) throws IOException {
 		StringBuilder builder = new StringBuilder();
 
 		boolean done = false;
@@ -243,14 +144,14 @@ public class SearchClient {
 				}
 			}
 
-			client.state = client.state.excecuteCommands(commands);
+			state = state.excecuteCommands(commands);
 
 			// evaluate if it should continue
 			for (int i = 0; i < solutions.size(); i++) {
 				if (solutions.get(i).isEmpty()) {
 					// should it be empty
-					if (!client.state.isGoalState(client.state.agents[i].color)) {
-						client.agents.get(i).status = Status.IDLE;
+					if (!state.isGoalState(state.agents[i].color)) {
+						agents.get(i).status = Status.IDLE;
 						done = true;
 					}
 				}
@@ -267,57 +168,57 @@ public class SearchClient {
 		System.err.println("SearchClient initializing. I am sending this using the error output stream.");
 
 		// Read level and create the initial state of the problem
-		SearchClient client = new SearchClient(serverMessages, settings);
+		init(serverMessages, settings);
 		System.err.println("level loaded");
 
 		// online planning loop
 		ArrayList<LinkedList<Node>> solutions = new ArrayList<LinkedList<Node>>();
 		for (@SuppressWarnings("unused")
-		SearchAgent agent : client.agents) {
+		SearchAgent agent : agents) {
 			solutions.add(new LinkedList<Node>());
 		}
-		while (!client.state.isGoalState()) {
+		while (!state.isGoalState()) {
 
-			if (client.agents.size() == 1) {
-				SingleAgentPlaning(client, solutions);
+			if (agents.size() == 1) {
+				SingleAgentPlaning(solutions);
 			} else {
-				MultiAgentPlaning(client, solutions);
+				MultiAgentPlaning( solutions);
 			}
 			System.err.println("-----------------------------------------------------------------");
-			System.gc();
-			executePlans(solutions, client);
+			
+			executePlans(solutions);
 
 		}
 
 		System.err.println("done");
 	}
 
-	private static void SingleAgentPlaning(SearchClient client, ArrayList<LinkedList<Node>> solution) throws IOException {
-		SearchAgent agent = client.agents.get(0);
+	private static void SingleAgentPlaning( ArrayList<LinkedList<Node>> solution) throws IOException {
+		SearchAgent agent = agents.get(0);
 		System.err.println("\nAgent " + agent.id + " planing");
 
-		SearchClient agentClient = new SearchClient(client.state);
+		agent.setState(state);
 
 		// normal search setup
 		Heuristic heuristic = new AStar(agent);
 		Strategy strategy = new StrategyBestFirst(heuristic);
 
 		// find a subgoal(s) which should be solved
-		Goal subgoal = heuristic.selectGoal(agentClient.state);
+		Goal subgoal = heuristic.selectGoal(agent.state);
 		if(subgoal!=null){
 			agent.subgoals.add(subgoal);
 			System.err.println("new subgoal "+subgoal.getType());
 		}
-		SearchResult result = agentClient.Search(strategy, agent.id, agent.subgoals);		
+		SearchResult result = agent.Search(strategy,  agent.subgoals);		
 
 		solution.get(agent.id).addAll(result.solution);
 	}
 
-	private static void MultiAgentPlaning(SearchClient client, ArrayList<LinkedList<Node>> solutions) throws IOException {
+	private static void MultiAgentPlaning( ArrayList<LinkedList<Node>> solutions) throws IOException {
 		boolean stuck = false;
 		Strategy strategy = null;
 		Strategy relaxedStrategy = null;
-		for (SearchAgent agent : client.agents) {
+		for (SearchAgent agent : agents) {
 			// only plan if there is not already a plan
 			if (solutions.get(agent.id).isEmpty()) {
 				if(agent.status == Status.HELPING){
@@ -327,32 +228,38 @@ public class SearchClient {
 
 				System.err.println("MultiAgentPlanning :: Agent " + agent.id + " planing");
 
-				SearchClient agentClient = new SearchClient(client.state);
 
-				// relaxed search setup
-				Node relaxed = agentClient.state.subdomain(agent.id);
-				Heuristic relaxedHeuristic = new Greedy(agent);
-				relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
-				SearchClient relaxedClient = new SearchClient(relaxed);
 
-				// normal search setup
+
 				Heuristic heuristic = new Greedy(agent);
-				strategy = new StrategyBestFirst(heuristic);
+
 
 				// find a subgoal(s) which should be solved
-				if(client.state.isGoalState(agent.subgoals)){
-					Goal subgoal = heuristic.selectGoal(agentClient.state);
+				if(state.isGoalState(agent.subgoals)){
+					Goal subgoal = heuristic.selectGoal(state);
 					if(subgoal!=null){
 						agent.subgoals.add(subgoal);
 						System.err.println("new subgoal "+subgoal.getType());
 					}
 				}
 				
+				// relaxed search setup
 				System.err.println("MA Planning :: Performing relaxed search");
-				SearchResult relaxedResult = relaxedClient.Search(relaxedStrategy, agent.id, agent.subgoals);
+				Node relaxed = state.subdomain(agent.id);
+				Heuristic relaxedHeuristic = new Greedy(agent);
+				relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
+				agent.setState(relaxed);
+				SearchResult relaxedResult = agent.Search(relaxedStrategy, agent.subgoals);
+				System.gc();
+				
+				
+				// normal search setup
 				System.err.println("MA Planning :: Performing normal search");
-				SearchResult result = agentClient.Search(strategy, agent.id, agent.subgoals, relaxedResult);
-
+				agent.setState(state);
+				strategy = new StrategyBestFirst(heuristic);
+				SearchResult result = agent.Search(strategy, agent.subgoals, relaxedResult);
+				System.gc();
+				
 				switch (result.reason) {
 				case STUCK:
 					agent.status = Status.STUCK;
@@ -384,7 +291,7 @@ public class SearchClient {
 
 		if (stuck) {
 			// solve stuck agents
-			solutions = Conflict.solve(client.state, solutions, client.agents);
+			solutions = Conflict.solve(state, solutions, agents);
 			// System.err.println("!!!!!!!!!!!"+solutions.size());
 		}
 	}

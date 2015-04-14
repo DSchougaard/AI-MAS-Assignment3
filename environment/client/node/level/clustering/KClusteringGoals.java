@@ -27,7 +27,7 @@ public class KClusteringGoals{
 		ArrayList<Goal> allGoals = level.getGoals();
 		int agentCount = agents.size();
 		int goalCount = allGoals.size();
-		int startGoal = (new Random()).nextInt(goalCount-1);
+		int startGoal = (new Random(System.nanoTime())).nextInt(goalCount-1);
 
 		ArrayList<Goal> picked = new ArrayList<Goal>();
 		picked.add(allGoals.get(startGoal));

@@ -25,8 +25,8 @@ public class Node implements NodeInterface, LevelInterface{
 	private static Level level;
 
 	// Box DS
-	HashMap<Character, ArrayList<Box>> boxesByType;
-	HashMap<Point, Box> boxesByPoint;
+	private HashMap<Character, ArrayList<Box>> boxesByType;
+	private HashMap<Point, Box> boxesByPoint;
 
 	// Agents
 	public LogicalAgent[] agents;
@@ -133,6 +133,10 @@ public class Node implements NodeInterface, LevelInterface{
 
 		return true;
 	}
+	
+	public ArrayList<Integer> getAgentIDs(Color color){
+		return colorMap.get(color);
+	}
 
 	@Override
 	public LogicalAgent[] getAgents(){
@@ -154,12 +158,12 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 
-	public Object WTF(Base base){
-		return WTF(base.row, base.col);
+	public Object objectAt(Base base){
+		return objectAt(base.row, base.col);
 	}
 
 	@Override
-	public Object WTF(int row, int col){
+	public Object objectAt(int row, int col){
 		Point p = new Point(row, col);
 		
 		// Check for boxes
@@ -528,6 +532,7 @@ public class Node implements NodeInterface, LevelInterface{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + this.boxesByPoint.hashCode();
+//		result = prime * result + Arrays.deepHashCode(getBoxes());
 		result = prime * result + Arrays.deepHashCode(agents);
 		return result;
 	}
