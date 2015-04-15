@@ -150,6 +150,13 @@ public class Conflict{
 					SearchAgent sa = agents.get(a.id);
 
 					sa.status = SearchAgent.Status.HELPING;
+					ArrayList< Node > moves = node.getExpandedNodes(sa.id);
+					if( moves.size() == 0 ){
+						// If there's no possible moves available, report stuck and skip
+						agents.get(a.id).status = Status.STUCK;
+						continue;
+					}
+
 					Node getOut		= node.getExpandedNodes(sa.id).get(0);
 					Node noOpt		= getOut.ChildNode();
 					noOpt.action 	= new Command(); // NoOP command
@@ -170,5 +177,7 @@ public class Conflict{
 			}
 		}
 		return solutions;
-	}	
+	}
+
+
 }
