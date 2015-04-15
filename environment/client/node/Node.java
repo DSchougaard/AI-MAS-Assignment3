@@ -25,7 +25,8 @@ public class Node implements NodeInterface, LevelInterface{
 	private static Level level;
 
 	// Box DS
-	public BoxStorage boxes;
+	private HashMap<Character, ArrayList<Box>> boxesByType;
+	private HashMap<Point, Box> boxesByPoint;
 
 	// Agents
 	public LogicalAgent[] agents;
@@ -33,12 +34,13 @@ public class Node implements NodeInterface, LevelInterface{
 	
 	// History
 	public Node parent;
-	public ArrayList<Command> actions = new ArrayList<>();
+	public ArrayList<Command> actions= new ArrayList<>();
 	public Command action;
 	private int g;
 	
 	public Node(){
-		this.boxes 		= new BoxStorage();
+		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
+		boxesByPoint 	= new HashMap<Point, Box>();
 		agents 			= new LogicalAgent[10];
 		g=0;
 
@@ -46,7 +48,8 @@ public class Node implements NodeInterface, LevelInterface{
 	
 	public Node(Level level){
 		Node.level = level;
-		this.boxes 		= new BoxStorage();
+		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
+		boxesByPoint 	= new HashMap<Point, Box>();
 		agents 			= new LogicalAgent[10];
 		g=0;
 	}
@@ -64,40 +67,57 @@ public class Node implements NodeInterface, LevelInterface{
 		colorMap.get(color).add(i);
 	}
 
-
+	@SuppressWarnings("unused")
+	private void removeBox(Box box){
+		this.boxesByPoint.remove(new Point(box.row, box.col));
+		ArrayList<Box> boxList = boxesByType.get(box.getType());
+		boxList.remove(box);
+	}
 	private void addBox(Box box){
-		this.boxes.insertBox(box);
+		this.boxesByPoint.put(new Point(box.row, box.col), box);
+		
+		ArrayList<Box> boxList= boxesByType.get(box.getType());
+		if(boxList==null){
+			boxesByType.put(box.getType(), new ArrayList<>());
+			boxList= boxesByType.get(box.getType());
+		}
+		boxList.add(box);
 	}
 	
 	public void addBox(char type, Color color, int row, int col){
-		this.boxes.insertBox(new Box(type, color, row, col));
+		addBox(new Box(type, color, row, col));
 	}
 	
 	private void moveBox(Box box, int row, int col){
-		this.boxes.moveBox(box, row, col);
+		boxesByPoint.remove(new Point(box.row, box.col));
+		box.row=row;
+		box.col=col;
+		boxesByPoint.put(new Point(box.row, box.col),box);
 	}
 
 	/*
 			NodeInterface
 	*/
 	@Override
-	public ArrayList<Box> getBoxes(){
-		return this.boxes.getBoxes();
-	}
-
-	@Override
 	public ArrayList<Box> getBoxes(char type){
-		return this.boxes.getBoxes(type);
+
+		return boxesByType.get(type);
 	}
 
 	@Override
 	public ArrayList<Box> getBoxes(Color color){
-		return this.boxes.getBoxes(color);
+		ArrayList<Box> results = new ArrayList<>();
+		for(Box box:boxesByPoint.values()){
+			if(box.color==color){
+				results.add(box);
+			}
+		}
+		return results;
 	}
 
 	@Override
-	public Box boxAt(int row, int col){
-		return this.boxes.boxAt(row, col);
+	public Box[] getBoxes(){
+		return boxesByPoint.values().toArray(new Box[0]);
 	}
 	
 	@Override
@@ -105,7 +125,7 @@ public class Node implements NodeInterface, LevelInterface{
 		if( Node.level.isWall(row, col) )
 			return false;
 
-		if( this.boxes.boxAt(row, col) != null )
+		if( this.boxesByPoint.containsKey( new Point(row, col) ) )
 			return false;
 
 		if( this.agentAt(row, col) != null )
@@ -132,6 +152,12 @@ public class Node implements NodeInterface, LevelInterface{
 		return null;
 	}
 
+	@Override
+	public Box boxAt(int row, int col){
+		return this.boxesByPoint.get(new Point(row, col));
+	}
+
+
 	public Object objectAt(Base base){
 		return objectAt(base.row, base.col);
 	}
@@ -141,9 +167,9 @@ public class Node implements NodeInterface, LevelInterface{
 		Point p = new Point(row, col);
 		
 		// Check for boxes
-		Box b = null;
-		if( ( b = this.boxes.boxAt(row, col) ) != null )
-			return b;
+		if( boxesByPoint.containsKey(p) ){
+			return boxesByPoint.get(p);
+		}
 
 		// Check for agents
 		for( int i = 0; i < 10 ; i++ ){
@@ -174,14 +200,14 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 	@Override
 	public boolean isGoalState(Goal goal){
-		return ( this.boxes.boxAt( goal.getPoint() ) != null && this.boxes.boxAt( goal.getPoint() ).getType() == goal.getType() );
+		return ( this.boxesByPoint.containsKey( goal.getPoint() ) && this.boxesByPoint.get( goal.getPoint() ).getType() == goal.getType() );
 	}
 
 	@Override
 	public boolean isGoalState(ArrayList<Goal> goals){
 		for( int i = 0 ; i < goals.size() ; i++ ){
 			Point p = goals.get(i).getPoint();
-			Box b = this.boxes.boxAt(p);
+			Box b = this.boxesByPoint.get(p);
 			if( b==null ){
 				return false;
 			}
@@ -193,7 +219,6 @@ public class Node implements NodeInterface, LevelInterface{
 		return true;
 	}
 
-	// Goal state for proximity search
 	public boolean isGoalState(int agentID, Box box){
 		LogicalAgent a = agents[agentID];
 
@@ -205,11 +230,10 @@ public class Node implements NodeInterface, LevelInterface{
 			);
 	}
 
-	// Goal state to check of agent is not on route
 	public boolean isGoalState(int agentID, ArrayList<Base> route){
 		LogicalAgent a = agents[agentID];
 		for( Base b : route ){
-			if( a.row == b.row && a.col == b.col )
+			if( a.row == b. row && a.col == b.col )
 				return false;
 		}
 		return true;
@@ -238,7 +262,7 @@ public class Node implements NodeInterface, LevelInterface{
 			if( this.agents[i].color == color )
 				subdomainNode.agents[i] = new LogicalAgent(this.agents[i]);
 		}
-		for( Box b : this.boxes.getBoxes() ){
+		for( Box b : this.boxesByPoint.values() ){
 			if( b.color == color )
 				subdomainNode.addBox(b);
 		}
@@ -251,7 +275,7 @@ public class Node implements NodeInterface, LevelInterface{
 		for( int agentID : agentIDs ){
 			subdomainNode.agents[agentID] = new LogicalAgent(this.agents[agentID]);
 		}
-		for( Box b  : this.boxes.getBoxes() ){
+		for( Box b  : this.boxesByPoint.values() ){
 			for( LogicalAgent a : agents ){
 				if( a.color == b.color )
 					subdomainNode.addBox(b);
@@ -320,7 +344,7 @@ public class Node implements NodeInterface, LevelInterface{
 		// return t;
 		// Filter
 		for( Goal goal : cluster ){
-			Box box = this.boxes.boxAt(goal.getPoint());
+			Box box=this.boxesByPoint.get(goal.getPoint());
 			if(box == null || (box.getType() != goal.getType())){
 				filtered.add(goal);
 			}
@@ -339,7 +363,7 @@ public class Node implements NodeInterface, LevelInterface{
 			Box box;
 			if ( c.actType == type.Push ) {
 				// Make sure that there's actually a box to move
-				box = this.boxes.boxAt(newAgentRow, newAgentCol);
+				box = boxAt(newAgentRow, newAgentCol);
 				if ( box!=null && agents[agentID].color.equals(box.color)) {
 					int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
 					int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
@@ -351,7 +375,7 @@ public class Node implements NodeInterface, LevelInterface{
 						n.agents[agentID].row = newAgentRow;
 						n.agents[agentID].col = newAgentCol;
 
-						n.boxes.moveBox(n.boxes.boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
+						n.moveBox(n.boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
 						expandedNodes.add( n );
 					}
 				}
@@ -361,7 +385,7 @@ public class Node implements NodeInterface, LevelInterface{
 					int boxRow = agents[agentID].row + dirToRowChange( c.dir2 );
 					int boxCol = agents[agentID].col + dirToColChange( c.dir2 );
 					// .. and there's a box in "dir2" of the agent			
-					box = this.boxes.boxAt( boxRow, boxCol );
+					box = boxAt( boxRow, boxCol );
 
 					if ( box!= null  && agents[agentID].color == box.color) {
 						Node n = this.ChildNode();
@@ -369,7 +393,7 @@ public class Node implements NodeInterface, LevelInterface{
 						n.agents[agentID].row = newAgentRow;
 						n.agents[agentID].col = newAgentCol;
 	
-						n.boxes.moveBox(n.boxes.boxAt(boxRow, boxCol), agents[agentID].row, agents[agentID].col);
+						n.moveBox(n.boxAt(boxRow, boxCol), agents[agentID].row, agents[agentID].col);
 						expandedNodes.add( n );
 					}
 				}
@@ -400,7 +424,7 @@ public class Node implements NodeInterface, LevelInterface{
 				}
 			} else if ( c.actType == type.Push ) {
 				// Make sure that there's actually a box to move
-				box = this.boxes.boxAt(newAgentRow, newAgentCol);
+				box = boxAt(newAgentRow, newAgentCol);
 				if ( box!=null && agents[agentID].color.equals(box.color)) {
 					int newBoxRow = newAgentRow + dirToRowChange( c.dir2 );
 					int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
@@ -412,7 +436,7 @@ public class Node implements NodeInterface, LevelInterface{
 						n.agents[agentID].row = newAgentRow;
 						n.agents[agentID].col = newAgentCol;
 
-						n.boxes.moveBox(n.boxes.boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
+						n.moveBox(n.boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
 						expandedNodes.add( n );
 					}
 				}
@@ -422,7 +446,7 @@ public class Node implements NodeInterface, LevelInterface{
 					int boxRow = agents[agentID].row + dirToRowChange( c.dir2 );
 					int boxCol = agents[agentID].col + dirToColChange( c.dir2 );
 					// .. and there's a box in "dir2" of the agent			
-					box = this.boxes.boxAt( boxRow, boxCol );
+					box = boxAt( boxRow, boxCol );
 
 					if ( box!= null  && agents[agentID].color == box.color) {
 						Node n = this.ChildNode();
@@ -430,7 +454,7 @@ public class Node implements NodeInterface, LevelInterface{
 						n.agents[agentID].row = newAgentRow;
 						n.agents[agentID].col = newAgentCol;
 	
-						n.boxes.moveBox(n.boxes.boxAt(boxRow, boxCol), agents[agentID].row, agents[agentID].col);
+						n.moveBox(n.boxAt(boxRow, boxCol), agents[agentID].row, agents[agentID].col);
 						expandedNodes.add( n );
 					}
 				}
@@ -501,7 +525,7 @@ public class Node implements NodeInterface, LevelInterface{
 			int newBoxCol = newAgentCol + dirToColChange( c.dir2 );
 			agents[agentID].row = newAgentRow;
 			agents[agentID].col = newAgentCol;
-			this.boxes.moveBox(this.boxes.boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
+			moveBox(boxAt(newAgentRow, newAgentCol), newBoxRow, newBoxCol);
 			
 			break;
 		case Pull:
@@ -513,7 +537,7 @@ public class Node implements NodeInterface, LevelInterface{
 			
 			agents[agentID].row = newAgentRow;
 			agents[agentID].col = newAgentCol;
-			this.boxes.moveBox(this.boxes.boxAt(boxRow, boxCol), tmpAgentRow, tmpAgentCol);
+			moveBox(boxAt(boxRow, boxCol), tmpAgentRow, tmpAgentCol);
 			break;
 		case NoOp:
 			break;
@@ -540,7 +564,7 @@ public class Node implements NodeInterface, LevelInterface{
 			}
 		}
 
-		for ( Box box : this.boxes.getBoxes() ) {
+		for (Box box : this.boxesByPoint.values()) {
 			copy.addBox(new Box(box));
 		}
 
@@ -559,7 +583,7 @@ public class Node implements NodeInterface, LevelInterface{
 			}
 		}
 		
-		for (Box box : this.boxes.getBoxes()) {
+		for (Box box : getBoxes()) {
 			map[box.row][box.col]=Character.toUpperCase(box.getType());
 		}
 
@@ -579,7 +603,8 @@ public class Node implements NodeInterface, LevelInterface{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + this.boxes.hashCode();
+		result = prime * result + this.boxesByPoint.hashCode();
+//		result = prime * result + Arrays.deepHashCode(getBoxes());
 		result = prime * result + Arrays.deepHashCode(agents);
 		return result;
 	}
@@ -599,7 +624,7 @@ public class Node implements NodeInterface, LevelInterface{
 			return false;
 		}
 
-		if( !this.boxes.equals(other.boxes) )
+		if( !this.boxesByPoint.equals(other.boxesByPoint) )
 			return false;
 
 		return true;

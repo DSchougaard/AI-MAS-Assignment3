@@ -76,6 +76,7 @@ public class SearchAgent{
 		System.err.println("SearchClient :: Starting ProximitySearch.");
 		strategy.addToFrontier(this.state);
 
+
 		while(true){
 			if (strategy.frontierIsEmpty()) {
 				if (state.isGoalState(id, box)) {
@@ -101,12 +102,43 @@ public class SearchAgent{
 		}
 	}
 
-	
-	public SearchResult ClearRouteSearch(Strategy strategy, int numObstructions, ArrayList<Base> route){
-		System.err.println("SearchClient :: Starting Route Clearing Search");
+	public SearchResult LeaveRouteSearch(Strategy strategy, ArrayList<Base> route){
+		System.err.println("SearchClient :: Agent " + id + " leaving route.");
 		strategy.addToFrontier(this.state);
 
 		while(true){
+			if (strategy.frontierIsEmpty()) {
+				if (state.isGoalState(id, route)) {
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
+				} else {
+					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+				}
+			}
+
+			Node leafNode = strategy.getAndRemoveLeaf();
+
+			if (leafNode.isGoalState(id, route)) {
+				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
+			}
+
+			strategy.addToExplored(leafNode);
+
+			for (Node n : leafNode.getExpandedBoxNodes(id)) {
+				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
+					strategy.addToFrontier(n);
+				}
+			}
+		}
+	}
+
+	public SearchResult ClearRouteSearch(Strategy strategy, int numObstructions, ArrayList<Base> route){
+		System.err.println("SearchAgent :: Starting Route Clearing Search");
+		strategy.addToFrontier(this.state);
+		int count = 0;
+		while(true){
+			if( count >= 25 )
+				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+
 			if (strategy.frontierIsEmpty()) {
 				if (state.isGoalState(id, numObstructions, route)) {
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
@@ -116,7 +148,6 @@ public class SearchAgent{
 			}
 
 			Node leafNode = strategy.getAndRemoveLeaf();
-			System.err.println(leafNode);
 
 			if (leafNode.isGoalState(id, numObstructions, route)) {
 				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
@@ -129,6 +160,7 @@ public class SearchAgent{
 					strategy.addToFrontier(n);
 				}
 			}
+			count++;
 		}
 	}
 

@@ -13,7 +13,7 @@ public interface NodeInterface {
 
 	// Boxes
 	public Box boxAt(int row, int col);
-	public ArrayList<Box> getBoxes();
+	public Box[] getBoxes();
 	public ArrayList<Box> getBoxes(Color color);
 	public ArrayList<Box> getBoxes(char type);
 

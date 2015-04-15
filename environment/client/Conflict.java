@@ -30,7 +30,7 @@ public class Conflict{
 		}
 	}
 
-	// Test. Sorry :(
+
 	public static ArrayList< LinkedList< Node > > solve(Node node, ArrayList< LinkedList< Node > > solutions, List< SearchAgent > agents) throws IOException{
 		
 		for (SearchAgent agent : agents) {
