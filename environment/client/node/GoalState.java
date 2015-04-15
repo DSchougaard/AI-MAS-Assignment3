@@ -59,7 +59,25 @@ public abstract class GoalState{
 				( box.row == a.row && box.col == a.col-1 )
 				);
 		}
+	}
 
+	public static class RouteClearOfAgentGoalState{
+		private int agentID;
+		private ArrayList<Base> route;
+
+		public RouteClearOfAgentGoalState(int agentID, ArrayList<Base> route){
+			this.agentID = agentID;
+			this.route = route;
+		}
+
+		public boolean eval(Node node){
+			LogicalAgent a = node.agents[agentID];
+			for( Base b : route ){
+				if( a.row == b. row && a.col == b.col )
+					return false;
+			}
+			return true;
+		}
 	}
 
 }
