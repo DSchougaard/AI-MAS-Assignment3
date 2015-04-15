@@ -157,7 +157,7 @@ public class Conflict{
 						continue;
 					}
 
-					Node getOut		= node.getExpandedNodes(sa.id).get(0);
+					Node getOut		= moves.get(0);
 					Node noOpt		= getOut.ChildNode();
 					noOpt.action 	= new Command(); // NoOP command
 					Node getBack	= noOpt.ChildNode();
