@@ -17,6 +17,8 @@ import client.node.storage.LogicalAgent;
 import client.node.storage.SearchResult;
 import client.node.storage.SearchResult.Result;
 import client.parser.RouteParser;
+import client.node.GoalState;
+import client.node.GoalState.*;
 // Searches
 
 public class Conflict{
@@ -80,9 +82,17 @@ public class Conflict{
 					System.err.println("Conflict:: Found agent to help. Asking Agent " + helpingAgent.id);
 
 					Heuristic proximityHeuristic 	= new Proximity(agent, b);
+					GoalState proxGoal 				= new ProximityGoalState(agent.id, b);
 					Strategy helpingStrategy 		= new StrategyBestFirst(proximityHeuristic);
 					helpingAgent.setState(node);
-					SearchResult result = helpingAgent.ProximitySearch(helpingStrategy, b);
+					SearchResult result = helpingAgent.CustomSearch(helpingStrategy, proxGoal);
+
+
+
+
+
+
+
 
 					// Clear the Helping Agents plan
 					if( result.reason != Result.STUCK ){
