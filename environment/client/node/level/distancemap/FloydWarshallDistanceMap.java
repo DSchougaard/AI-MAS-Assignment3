@@ -23,8 +23,9 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 		id = 0;
 	}
 
-	private int getIndex(Base p1){
-		return index.get(p1).intValue();
+	private Integer getIndex(Base p){
+
+		return index.get(p);
 	}
 
 	public void initialize(Level level){
@@ -39,7 +40,7 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 		
 		for (int i = 0; i < distance.length; i++) {
 			for (int j = 0; j < distance.length; j++) {
-				distance[i][j]=999;
+				distance[i][j]=9999;
 			}
 		}
 		
@@ -67,7 +68,25 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 	}
 
 	private HashMap<Base, ArrayList<Base>> explore(Level level){
-		Base start = level.getGoals().get(0);
+
+		HashMap<Base, ArrayList<Base>> visited = new HashMap<Base, ArrayList<Base>>();
+
+		for(Base base: level.getGoals()){
+			HashMap<Base, ArrayList<Base>> visited2 =explore(level, base);
+			if(visited2 != null){
+				visited.putAll(visited2);
+			}
+		}
+		
+		return visited;
+	}
+	
+	private HashMap<Base, ArrayList<Base>> explore(Level level, Base start){
+		if(getIndex(start)!= null){
+			return null;
+		}
+		
+		
 		ArrayDeque<Base> frontier = new ArrayDeque<Base>();
 		frontier.push(start);
 		HashMap<Base, ArrayList<Base>> visited = new HashMap<Base, ArrayList<Base>>();
@@ -77,7 +96,7 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 
 			if( !index.containsKey(p) ){
 				// I have absolutely no idea why this is necesary
-				index.put( p, new Integer(id) );
+				index.put( p, id );
 				id++;
 			}
 
@@ -100,7 +119,13 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 	}
 
 	public int distance(Base p1, Base p2){
-		return distance[getIndex(p1)][getIndex(p2)];	
+		try {
+			return distance[getIndex(p1)][getIndex(p2)];
+		} catch (Exception e) {
+			return 404;
+			//distance not found
+		}
+			
 	}
 
 

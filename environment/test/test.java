@@ -3,7 +3,7 @@ package test;
 
 import static org.junit.Assert.*;
 
-import java.awt.Point;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -25,7 +25,6 @@ import client.Command.type;
 import client.Heuristic.AStar;
 import client.SearchAgent;
 import client.SearchClient;
-import client.parser.SettingsContainer;
 import client.Strategy;
 import client.Strategy.StrategyBestFirst;
 import client.node.Color;
@@ -33,6 +32,7 @@ import client.node.Node;
 import client.node.level.distancemap.FloydWarshallDistanceMap;
 import client.node.storage.Base;
 import client.node.storage.Box;
+import client.parser.SettingsContainer;
 
 //I am a horrible person
 @FixMethodOrder(MethodSorters.JVM)
@@ -597,7 +597,7 @@ SearchClient.init( serverMessages );
 		SearchClient.init( serverMessages );
 		
 		System.out.println(SearchClient.state);
-		System.out.println(SearchClient.state.toStringDistance(2, 2));
+		System.out.println(SearchClient.state.toStringDistance(2, 7));
 		
 	}
 	
@@ -610,6 +610,7 @@ SearchClient.init( serverMessages );
 		Node state = SearchClient.state;
 		
 		assertEquals(state.distance(new Base(1, 1), new Base(2, 2)), state.distance(1, 1, 2, 2));
-		
+		assertEquals(state.distance(new Base(1, 1), new Base(2, 7)), 9999);
+		assertEquals(state.distance(new Base(1, 1), new Base(2, 5)), 404);
 	}
 }
