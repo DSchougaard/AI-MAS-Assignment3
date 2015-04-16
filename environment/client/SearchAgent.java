@@ -1,8 +1,6 @@
 package client;
 import java.io.IOException;
 import java.util.ArrayList;
-
-
 import java.util.LinkedList;
 
 import client.SearchClient.Memory;
@@ -11,12 +9,11 @@ import client.SearchClient.Memory;
 // Boxes have a color AND a type
 import client.node.Color;
 import client.node.Node;
-import client.node.storage.Box;
-import client.node.storage.LogicalAgent;
-import client.node.storage.Goal;
 import client.node.storage.Base;
+import client.node.storage.Box;
+import client.node.storage.Goal;
+import client.node.storage.LogicalAgent;
 import client.node.storage.SearchResult;
-import client.node.storage.SearchResult.Result;
 
 public class SearchAgent{
 	

@@ -56,17 +56,17 @@ negotiation
 	
 ### Work list
 *  [x] Refactor Agent - Kasper
-*  [-] Relaxed by number of colours - Kasper
+	*  [-] Relaxed by number of colours - Kasper
 *  [x] Refactor Map - Daniel
 *  [x] Route - Martin
-*  [ ] Heuristic - Martin
+*  [x] Heuristic
 *  [ ] Speed, profiler- martin
 *  [x] Conflict - Kasper og Daniel
 *  [x] Optimize node hashcode - daniel
 *  [x] Optimize node equals - daniel
-*  [ ] Create expand of node, only using box-moves.
+*  [x] Create expand of node, only using box-moves.
 *  [ ] Plan longer move for helper agent.
 *  [ ] NoOPs into stuck agent, for Helper Agent's route to the box in question.
 *  [ ] Identify "safe spot" to stash Helper Agent and box, while stuck agent moves.
 *  [ ] Reduce memory footprint
-  *  [ ] Reduce the search space?
+	*  [ ] Reduce the search space?
