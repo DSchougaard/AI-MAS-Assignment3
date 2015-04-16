@@ -16,7 +16,7 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 	private HashMap<Base, Integer> index;
 	private int id;
 
-	Integer[][] distance;
+	int[][] distance;
 
 	public FloydWarshallDistanceMap(){
 		index = new HashMap<Base, Integer>();
@@ -36,7 +36,7 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 
 		System.err.println("Initialized FloydWarshall matrix to size " + size + "x" + size + ".");
 
-		distance = new Integer[size][size];
+		distance = new int[size][size];
 		
 		for (int i = 0; i < distance.length; i++) {
 			for (int j = 0; j < distance.length; j++) {

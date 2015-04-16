@@ -94,15 +94,11 @@ public class SearchAgent{
 			}
 
 			if (strategy.frontierIsEmpty()) {
-				System.err.println(strategy.searchStatus());
-				System.err.println(state.isGoalState(goals));
 				if (state.isGoalState(goals)) {
-					System.err.println("0000000000000000000000000000000000000000000000000000");
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
 				} else if (preResult != null) {
 					return new SearchResult(SearchResult.Result.IMPOSIBLE, new LinkedList<>());
 				} else {
-					System.err.println("1111111111111111111111111111111111111111111111111111111111111");
 					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
 				}
 			}
@@ -110,10 +106,7 @@ public class SearchAgent{
 			Node leafNode = strategy.getAndRemoveLeaf();
 
 			if (preResult != null && leafNode.g() > (preResult.solution.size() * searchMaxOffset)) {
-				System.err.println("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
-				System.err.println(preResult.reason);
 				if(preResult.reason==SearchResult.Result.DONE){
-					System.err.println("..........................................................");
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
 					
 				}
@@ -156,6 +149,9 @@ public class SearchAgent{
 			Node leafNode = strategy.getAndRemoveLeaf();
 
 			if (leafNode.isGoalState(id, box)) {
+				if(leafNode.isInitialState()){
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
+				}
 				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
 			}
 
