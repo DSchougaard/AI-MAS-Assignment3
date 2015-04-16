@@ -584,15 +584,4 @@ SearchClient.init( serverMessages );
 		
 		assertEquals(764559546, SearchClient.state.hashCode());
 	}
-	
-	@Test
-	public void Floyd() throws Exception{
-		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/Test1.lvl")) );
-		
-		SearchClient.init( serverMessages );
-		
-		System.out.println(SearchClient.state);
-		System.out.println(SearchClient.state.toStringDistance(1, 1));
-		
-	}
 }

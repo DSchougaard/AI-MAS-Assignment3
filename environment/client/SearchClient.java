@@ -14,7 +14,7 @@ import client.parser.SettingsContainer;
 import client.node.Node;
 import client.node.storage.Goal;
 import client.node.storage.SearchResult;
-import client.node.level.distancemap.FloydWarshallDistanceMap;
+import client.node.level.distancemap.BasicManhattanDistanceMap;
 import client.Strategy.StrategyBestFirst;
 import client.SearchAgent.Status;
 
@@ -79,7 +79,7 @@ public class SearchClient {
 	public static void init(BufferedReader serverMessages) throws Exception {
 
 		SettingsContainer settings = new SettingsContainer();
-		settings.dm = new FloydWarshallDistanceMap();
+		settings.dm = new BasicManhattanDistanceMap();
 		state = LevelParser.parse(serverMessages, settings);
 		for (int i = 0; i < state.agents.length; i++) {
 			if (state.agents[i] != null) {
