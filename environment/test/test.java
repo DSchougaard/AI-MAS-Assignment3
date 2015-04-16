@@ -596,8 +596,22 @@ SearchClient.init( serverMessages );
 		
 		SearchClient.init( serverMessages );
 		
-		System.out.println(SearchClient.state);
-		System.out.println(SearchClient.state.toStringDistance(2, 7));
+		assertEquals("\n+++++NaN+++++\n"+
+				"+012+NaN+NaNNaNNaN+\n"+
+				"+123+NaN+NaNNaNNaN+\n"+
+				"+234+NaN+NaNNaNNaN+\n"+
+				"+345+NaN+NaNNaNNaN+\n"+
+				"+456+NaN+NaNNaNNaN+\n"+
+				"+++++NaN+++++\n", SearchClient.state.toStringDistance(1, 1));
+		assertEquals("\n"
+				+ "+++++NaN+++++\n"
+				+ "+NaNNaNNaN+NaN+123+\n"
+				+ "+NaNNaNNaN+NaN+012+\n"
+				+ "+NaNNaNNaN+NaN+123+\n"
+				+ "+NaNNaNNaN+NaN+234+\n"
+				+ "+NaNNaNNaN+NaN+345+\n"
+				+ "+++++NaN+++++\n",
+				 SearchClient.state.toStringDistance(2, 7));
 		
 	}
 	

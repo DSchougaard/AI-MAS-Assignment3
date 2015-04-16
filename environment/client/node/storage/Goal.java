@@ -27,4 +27,9 @@ public class Goal extends Base{
 		Goal b = (Goal)obj;
 		return ( this.type == b.type );
 	}
+	
+	@Override
+	public String toString(){
+		return type+" "+super.toString();
+	}
 }

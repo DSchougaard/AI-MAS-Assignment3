@@ -69,7 +69,7 @@ public abstract class Heuristic implements Comparator< Node > {
 			for (Goal subgoal : agent.subgoals) {
 				int tmp=Integer.MAX_VALUE;
 				for (Box box : n.getBoxes(subgoal.getType())) {
-					if(!box.isAt(subgoal.row, subgoal.col)){
+					if(!box.isAt(subgoal.row, subgoal.col) && n.distance(n.agents[agent.id], box)!=null){
 						tmp=Math.min(tmp, n.distance(n.agents[agent.id], box)+n.distance(box, subgoal));
 					}else{
 						tmp=0;
@@ -206,9 +206,12 @@ public abstract class Heuristic implements Comparator< Node > {
 		for( Goal goal : goals ){
 			if( goalInUse(goal) )
 				continue;
-
+			if(node.distance(goal, agent)== null){
+				continue;
+			}
+			
 			for( Box box : node.getBoxes(goal.getType()) ){
-				if( ( node.distance(agent, box) + node.distance(box, goal) ) < dist ){
+				if(node.distance(agent, box) != null && ( node.distance(agent, box) + node.distance(box, goal) ) < dist ){
 					dist = node.distance(agent, box) + node.distance(box, goal);
 					// Set the selects
 					selectedGoal = goal;

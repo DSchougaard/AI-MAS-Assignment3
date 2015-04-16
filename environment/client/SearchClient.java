@@ -207,7 +207,7 @@ public class SearchClient {
 		Goal subgoal = heuristic.selectGoal(agent.state);
 		if(subgoal!=null){
 			agent.subgoals.add(subgoal);
-			System.err.println("new subgoal "+subgoal.getType());
+			System.err.println("new subgoal "+subgoal);
 		}
 		SearchResult result = agent.Search(strategy,  agent.subgoals);		
 
@@ -227,6 +227,7 @@ public class SearchClient {
 				}
 
 				System.err.println("MultiAgentPlanning :: Agent " + agent.id + " planing");
+				System.err.println("subgoals "+ agent.subgoals);
 
 				Heuristic heuristic = new Greedy(agent);
 
@@ -236,7 +237,7 @@ public class SearchClient {
 					subgoal = heuristic.selectGoal(state);
 					if(subgoal!=null){
 						agent.subgoals.add(subgoal);
-						System.err.println("new subgoal "+subgoal.getType());
+						System.err.println("new subgoal "+subgoal);
 					}
 				}
 				
@@ -277,6 +278,7 @@ public class SearchClient {
 					break;
 				case DONE:
 					agent.status=Status.DONE;
+					System.err.println("done");
 					break;
 				default:
 					agent.status=Status.PLAN;

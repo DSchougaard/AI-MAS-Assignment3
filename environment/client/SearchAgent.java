@@ -16,6 +16,7 @@ import client.node.storage.LogicalAgent;
 import client.node.storage.Goal;
 import client.node.storage.Base;
 import client.node.storage.SearchResult;
+import client.node.storage.SearchResult.Result;
 
 public class SearchAgent{
 	
@@ -72,6 +73,73 @@ public class SearchAgent{
 		return Search(strategy, this.state.getGoals(state.agents[id].color), preResult);
 	}
 
+	public SearchResult Search(Strategy strategy, ArrayList<Goal> goals, SearchResult preResult) throws IOException {
+		System.err.format("Search starting with strategy %s\n", strategy);
+		strategy.addToFrontier(this.state);
+
+		int iterations = 0;
+		while (true) {
+
+			if (iterations % 2000 == 0) {
+				System.err.println(strategy.searchStatus());
+			}
+			if (Memory.shouldEnd()) {
+				System.err.format("Memory limit almost reached, terminating search %s\n", Memory.stringRep());
+				return new SearchResult(SearchResult.Result.MEMMORY, new LinkedList<>());
+			}
+			if (strategy.timeSpent() > Memory.timeLimit) { // Minutes timeout
+				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep());
+				return new SearchResult(SearchResult.Result.TIME,
+						new LinkedList<>());
+			}
+
+			if (strategy.frontierIsEmpty()) {
+				System.err.println(strategy.searchStatus());
+				System.err.println(state.isGoalState(goals));
+				if (state.isGoalState(goals)) {
+					System.err.println("0000000000000000000000000000000000000000000000000000");
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
+				} else if (preResult != null) {
+					return new SearchResult(SearchResult.Result.IMPOSIBLE, new LinkedList<>());
+				} else {
+					System.err.println("1111111111111111111111111111111111111111111111111111111111111");
+					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+				}
+			}
+
+			Node leafNode = strategy.getAndRemoveLeaf();
+
+			if (preResult != null && leafNode.g() > (preResult.solution.size() * searchMaxOffset)) {
+				System.err.println("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
+				System.err.println(preResult.reason);
+				if(preResult.reason==SearchResult.Result.DONE){
+					System.err.println("..........................................................");
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
+					
+				}
+				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+			}
+
+			if (leafNode.isGoalState(goals)) {
+				if(leafNode.isInitialState()){
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
+				}
+				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
+			}
+
+			strategy.addToExplored(leafNode);
+
+			for (Node n : leafNode.getExpandedNodes(id)) {
+				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
+
+					strategy.addToFrontier(n);
+				}
+			}
+			iterations++;
+		}
+		
+	}
+	
 	public SearchResult ProximitySearch(Strategy strategy, Box box) throws IOException {
 		System.err.println("SearchClient :: Starting ProximitySearch.");
 		strategy.addToFrontier(this.state);
@@ -131,62 +199,6 @@ public class SearchAgent{
 			}
 		}
 	}
-
-	public SearchResult Search(Strategy strategy, ArrayList<Goal> goals, SearchResult preResult) throws IOException {
-		System.err.format("Search starting with strategy %s\n", strategy);
-		strategy.addToFrontier(this.state);
-
-		int iterations = 0;
-		while (true) {
-
-			if (iterations % 2000 == 0) {
-				System.err.println(strategy.searchStatus());
-			}
-			if (Memory.shouldEnd()) {
-				System.err.format("Memory limit almost reached, terminating search %s\n", Memory.stringRep());
-				return new SearchResult(SearchResult.Result.MEMMORY, new LinkedList<>());
-			}
-			if (strategy.timeSpent() > Memory.timeLimit) { // Minutes timeout
-				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep());
-				return new SearchResult(SearchResult.Result.TIME,
-						new LinkedList<>());
-			}
-
-			if (strategy.frontierIsEmpty()) {
-				System.err.println(strategy.searchStatus());
-				if (state.isGoalState(goals)) {
-					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
-				} else if (preResult != null) {
-					return new SearchResult(SearchResult.Result.IMPOSIBLE, new LinkedList<>());
-				} else {
-					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
-				}
-			}
-
-			Node leafNode = strategy.getAndRemoveLeaf();
-
-			if (preResult != null && leafNode.g() > (preResult.solution.size() * searchMaxOffset)) {
-				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
-			}
-
-			if (leafNode.isGoalState(goals)) {
-				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
-			}
-
-			strategy.addToExplored(leafNode);
-
-			for (Node n : leafNode.getExpandedNodes(id)) {
-				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
-
-					strategy.addToFrontier(n);
-				}
-			}
-			iterations++;
-		}
-		
-	}
-	
-	
 	
 	@Override
 	public boolean equals( Object obj ) {
