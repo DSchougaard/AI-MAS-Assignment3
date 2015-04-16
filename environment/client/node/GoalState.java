@@ -42,26 +42,27 @@ public abstract class GoalState{
 	public static class ProximityGoalState extends GoalState{
 
 		private int agentID;
-		private Box box;
+		private int targetRow, targetCol;
 
-		public ProximityGoalState(int agentID, Box box){
+		public ProximityGoalState(int agentID, int targetRow, int targetCol){
 			this.agentID = agentID;
-			this.box = box;
+			this.targetCol = targetCol;
+			this.targetRow = targetRow;
 		}
 
 		public boolean eval(Node node){
 			LogicalAgent a = node.agents[agentID];
 
 			return (
-				( box.row == a.row+1 && box.col == a.col ) ||
-				( box.row == a.row-1 && box.col == a.col ) ||
-				( box.row == a.row && box.col == a.col+1 ) ||
-				( box.row == a.row && box.col == a.col-1 )
+				( targetRow == a.row+1 && targetCol == a.col ) ||
+				( targetRow == a.row-1 && targetCol == a.col ) ||
+				( targetRow == a.row && targetCol == a.col+1 ) ||
+				( targetRow == a.row && targetCol == a.col-1 )
 				);
 		}
 	}
 
-	public static class RouteClearOfAgentGoalState{
+	public static class RouteClearOfAgentGoalState extends GoalState{
 		private int agentID;
 		private ArrayList<Base> route;
 
