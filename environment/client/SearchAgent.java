@@ -16,6 +16,8 @@ import client.node.storage.LogicalAgent;
 import client.node.storage.Goal;
 import client.node.storage.Base;
 import client.node.storage.SearchResult;
+import client.node.GoalState;
+
 
 public class SearchAgent{
 	
@@ -71,6 +73,46 @@ public class SearchAgent{
 	public SearchResult Search(Strategy strategy, SearchResult preResult) throws IOException {
 		return Search(strategy, this.state.getGoals(state.agents[id].color), preResult);
 	}
+
+
+
+	public SearchResult CustomSearch(Strategy strategy, GoalState goal) throws IOException {
+		System.err.println("SearchClient :: Starting ProximitySearch.");
+		strategy.addToFrontier(this.state);
+
+
+		while(true){
+			if (strategy.frontierIsEmpty()) {
+				if ( goal.eval(state) ) {
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
+				} else {
+					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+				}
+			}
+
+			Node leafNode = strategy.getAndRemoveLeaf();
+
+			if ( goal.eval(leafNode) ) {
+				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
+			}
+
+			strategy.addToExplored(leafNode);
+
+			for (Node n : leafNode.getExpandedNodes(id)) {
+				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
+					strategy.addToFrontier(n);
+				}
+			}
+		}
+	}
+
+
+
+
+
+
+
+
 
 	public SearchResult ProximitySearch(Strategy strategy, Box box) throws IOException {
 		System.err.println("SearchClient :: Starting ProximitySearch.");
