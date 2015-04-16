@@ -72,7 +72,7 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 		HashMap<Base, ArrayList<Base>> visited = new HashMap<Base, ArrayList<Base>>();
 
 		for(Base base: level.getGoals()){
-			HashMap<Base, ArrayList<Base>> visited2 =explore(level, base);
+			HashMap<Base, ArrayList<Base>> visited2 =explore(level, new Base(base.row, base.col));
 			if(visited2 != null){
 				visited.putAll(visited2);
 			}
