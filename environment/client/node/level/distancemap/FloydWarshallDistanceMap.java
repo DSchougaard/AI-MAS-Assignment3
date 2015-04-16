@@ -16,7 +16,7 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 	private HashMap<Base, Integer> index;
 	private int id;
 
-	Integer[][] distance;
+	int[][] distance;
 
 	public FloydWarshallDistanceMap(){
 		index = new HashMap<Base, Integer>();
@@ -36,7 +36,7 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 
 		System.err.println("Initialized FloydWarshall matrix to size " + size + "x" + size + ".");
 
-		distance = new Integer[size][size];
+		distance = new int[size][size];
 		
 		for (int i = 0; i < distance.length; i++) {
 			for (int j = 0; j < distance.length; j++) {
@@ -82,7 +82,7 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 	}
 	
 	private HashMap<Base, ArrayList<Base>> explore(Level level, Base start){
-		if(index.containsKey(start)){
+		if(getIndex(start)!= null){
 			return null;
 		}
 		
@@ -118,24 +118,19 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 		return visited;
 	}
 
-	public Integer distance(Base p1, Base p2){
-		Integer result;
+	public int distance(Base p1, Base p2){
 		try {
-			
-			result= distance[getIndex(p1)][getIndex(p2)];
+			return distance[getIndex(p1)][getIndex(p2)];
 		} catch (Exception e) {
 			//distance not found
-			return null;
+			return Integer.MAX_VALUE;
+			
 		}
-		if(result== Integer.MAX_VALUE){
-			//unreachable
-			return null;
-		}
-		return result;
+			
 	}
 
 
-	public Integer distance(int rowFrom, int colFrom, int rowTo, int colTo){
+	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
 
 		return distance(new Base(rowFrom, colFrom), new Base(rowTo, colTo));
 	}

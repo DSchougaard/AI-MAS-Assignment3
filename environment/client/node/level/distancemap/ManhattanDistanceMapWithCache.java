@@ -15,7 +15,7 @@ public class ManhattanDistanceMapWithCache extends DistanceMap{
 		this.dm 	= new BasicManhattanDistanceMap();
 	}
 
-	public Integer distance(Base p1, Base p2){
+	public int distance(Base p1, Base p2){
 		if( !cache.containsKey( p1 ) )
 			cache.put(p1, new HashMap<Base, Integer>());
 
@@ -27,7 +27,7 @@ public class ManhattanDistanceMapWithCache extends DistanceMap{
 		return l2Cache.get(p2);
 	}
 
-	public Integer distance(int rowFrom, int colFrom, int rowTo, int colTo){
+	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
 		return this.distance( new Base(rowFrom, colFrom), new Base(rowTo, colTo));
 	}	
 

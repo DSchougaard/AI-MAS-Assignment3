@@ -19,8 +19,8 @@ public interface LevelInterface {
 	public ArrayList<Goal> getGoals(Color color);
 
 	// Distance Methods
-	public Integer distance(int rowFrom, int colFrom, int rowTo, int colTo);
-	public Integer distance(Base from, Base to);
+	public int distance(int rowFrom, int colFrom, int rowTo, int colTo);
+	public int distance(Base from, Base to);
 
 	// Clusters
 	public void calculateCluster(LogicalAgent[] agents);
