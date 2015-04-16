@@ -40,7 +40,7 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 		
 		for (int i = 0; i < distance.length; i++) {
 			for (int j = 0; j < distance.length; j++) {
-				distance[i][j]=9999;
+				distance[i][j]=Integer.MAX_VALUE;
 			}
 		}
 		
@@ -56,7 +56,7 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 		for( int k = 0 ; k < size ; k++ ){
 			for( int i = 0 ; i < size ; i++ ){
 				for( int j = 0 ; j < size ; j++ ){
-					if( distance[i][j] > distance[i][k] + distance[k][j] )
+					if( distance[i][j] > ((distance[i][k] == Integer.MAX_VALUE || distance[k][j]== Integer.MAX_VALUE)?Integer.MAX_VALUE:distance[i][k] + distance[k][j]) )
 						distance[i][j] = distance[i][k] + distance[k][j];
 				}
 			}
@@ -122,8 +122,9 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 		try {
 			return distance[getIndex(p1)][getIndex(p2)];
 		} catch (Exception e) {
-			return 404;
 			//distance not found
+			return Integer.MAX_VALUE;
+			
 		}
 			
 	}

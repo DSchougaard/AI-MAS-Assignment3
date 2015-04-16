@@ -610,7 +610,7 @@ SearchClient.init( serverMessages );
 		Node state = SearchClient.state;
 		
 		assertEquals(state.distance(new Base(1, 1), new Base(2, 2)), state.distance(1, 1, 2, 2));
-		assertEquals(state.distance(new Base(1, 1), new Base(2, 7)), 9999);
-		assertEquals(state.distance(new Base(1, 1), new Base(2, 5)), 404);
+		assertEquals(state.distance(new Base(1, 1), new Base(2, 7)), Integer.MAX_VALUE);
+		assertEquals(state.distance(new Base(1, 1), new Base(2, 5)), Integer.MAX_VALUE);
 	}
 }

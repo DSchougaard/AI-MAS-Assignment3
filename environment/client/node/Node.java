@@ -598,9 +598,13 @@ public class Node implements NodeInterface, LevelInterface{
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[0].length; j++) {
 				if(map[i][j] != '+'){
+					if(distance(row, col, i, j)==Integer.MAX_VALUE){
+						s.append("NaN");
+					}else{
 					s.append(distance(row, col, i, j));
+					}
 				}else{
-					s.append(map[i][j]);
+						s.append(map[i][j]);
 				}
 			}
 			s.append("\n");
