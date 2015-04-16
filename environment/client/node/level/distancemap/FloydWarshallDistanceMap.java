@@ -27,10 +27,6 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 		return index.get(p1).intValue();
 	}
 
-	private int getIndex(int row, int col){
-		return getIndex(new Point(row, col));
-	}
-
 	public void initialize(Level level){
 		long start_time = System.currentTimeMillis();
 
@@ -104,12 +100,13 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 	}
 
 	public int distance(Point p1, Point p2){
-		return distance[getIndex(p1)][getIndex(p1)];	
+		return distance[getIndex(p1)][getIndex(p2)];	
 	}
 
 
 	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
-		return distance[getIndex(rowFrom, colFrom)][getIndex(rowTo, colTo)];
+
+		return distance(new Point(rowFrom, colFrom), new Point(rowTo, colTo));
 	}
 
 	public String name(){

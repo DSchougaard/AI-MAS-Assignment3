@@ -3,6 +3,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -78,6 +79,8 @@ public class test {
 		assertEquals(2, SearchClient.state.distance(1, 1, 1, 3));
 		
 		assertEquals(1, SearchClient.state.distance(SearchClient.state.agents[0],SearchClient.state.getBoxes()[0]));
+	
+		
 	}
 	
 	@Test
@@ -585,6 +588,7 @@ SearchClient.init( serverMessages );
 		assertEquals(764559546, SearchClient.state.hashCode());
 	}
 	
+	
 	@Test
 	public void Floyd() throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/Test1.lvl")) );
@@ -592,7 +596,19 @@ SearchClient.init( serverMessages );
 		SearchClient.init( serverMessages );
 		
 		System.out.println(SearchClient.state);
-		System.out.println(SearchClient.state.toStringDistance(1, 1));
+		System.out.println(SearchClient.state.toStringDistance(2, 2));
+		
+	}
+	
+	@Test
+	public void Floyd2() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/Test1.lvl")) );
+		
+		SearchClient.init( serverMessages );
+		
+		Node state = SearchClient.state;
+		
+		assertEquals(state.distance(new Point(1, 1), new Point(2, 2)), state.distance(1, 1, 2, 2));
 		
 	}
 }
