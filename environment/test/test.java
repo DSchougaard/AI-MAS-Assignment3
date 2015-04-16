@@ -76,10 +76,10 @@ public class test {
 	
 		SearchClient.init( serverMessages );
 		
-		assertEquals(1, SearchClient.state.distance(1, 2, 1, 3));
-		assertEquals(2, SearchClient.state.distance(1, 1, 1, 3));
+		assertEquals(1, SearchClient.state.distance(1, 2, 1, 3).intValue());
+		assertEquals(2, SearchClient.state.distance(1, 1, 1, 3).intValue());
 		
-		assertEquals(1, SearchClient.state.distance(SearchClient.state.agents[0],SearchClient.state.getBoxes()[0]));
+		assertEquals(1, SearchClient.state.distance(SearchClient.state.agents[0],SearchClient.state.getBoxes()[0]).intValue());
 	
 		
 	}
@@ -610,7 +610,7 @@ SearchClient.init( serverMessages );
 		Node state = SearchClient.state;
 		
 		assertEquals(state.distance(new Base(1, 1), new Base(2, 2)), state.distance(1, 1, 2, 2));
-		assertEquals(state.distance(new Base(1, 1), new Base(2, 7)), Integer.MAX_VALUE);
-		assertEquals(state.distance(new Base(1, 1), new Base(2, 5)), Integer.MAX_VALUE);
+		assertNull(state.distance(new Base(1, 1), new Base(2, 7)));
+		assertNull(state.distance(new Base(1, 1), new Base(2, 5)));
 	}
 }
