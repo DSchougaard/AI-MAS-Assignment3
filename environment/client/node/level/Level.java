@@ -147,7 +147,7 @@ public class Level implements LevelInterface{
 		return this.goalTypeByColor.get(color);
 	}
 
-	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
+	public Integer distance(int rowFrom, int colFrom, int rowTo, int colTo){
 		if(dm==null){
 			System.err.println("DistanceMap: "+dm);
 			return 0;
@@ -157,7 +157,7 @@ public class Level implements LevelInterface{
 	}
 
 	@Override
-	public int distance(Base from, Base to) {
+	public Integer distance(Base from, Base to) {
 		return distance(from.row, from.col, to.row, to.col);
 	}
 

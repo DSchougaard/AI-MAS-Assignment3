@@ -6,11 +6,11 @@ import client.node.storage.Base;
 public class BasicManhattanDistanceMap extends DistanceMap{
 	public BasicManhattanDistanceMap(){}
 
-	public int distance(Base a, Base b){
+	public Integer distance(Base a, Base b){
 		return this.distance(a.row, a.col, b.row, b.col);
 	}
 
-	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){		
+	public Integer distance(int rowFrom, int colFrom, int rowTo, int colTo){		
 		return Math.abs(rowFrom-rowTo)+Math.abs(colFrom-colTo);
 	}
 	
