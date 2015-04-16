@@ -1,34 +1,34 @@
 package client.node.level.distancemap;
 
-import java.util.*;
-import java.awt.Point;
+import java.util.HashMap;
 
 import client.node.level.Level;
+import client.node.storage.Base;
 
 public class ManhattanDistanceMapWithCache extends DistanceMap{
 
-	private HashMap<Point, HashMap<Point, Integer> > cache;
+	private HashMap<Base, HashMap<Base, Integer> > cache;
 	private BasicManhattanDistanceMap dm;
 
 	public ManhattanDistanceMapWithCache(){
-		this.cache 	= new HashMap<Point, HashMap<Point, Integer> >();
+		this.cache 	= new HashMap<Base, HashMap<Base, Integer> >();
 		this.dm 	= new BasicManhattanDistanceMap();
 	}
 
-	public int distance(Point p1, Point p2){
+	public int distance(Base p1, Base p2){
 		if( !cache.containsKey( p1 ) )
-			cache.put(p1, new HashMap<Point, Integer>());
+			cache.put(p1, new HashMap<Base, Integer>());
 
-		HashMap<Point, Integer> l2Cache = cache.get(p1);
+		HashMap<Base, Integer> l2Cache = cache.get(p1);
 
 		if( !l2Cache.containsKey(p2) )
-			l2Cache.put(p2, this.dm.distance(p1.x, p1.y, p2.x, p2.y));
+			l2Cache.put(p2, this.dm.distance(p1.row, p1.col, p2.row, p2.col));
 
 		return l2Cache.get(p2);
 	}
 
 	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
-		return this.distance( new Point(rowFrom, colFrom), new Point(rowTo, colTo));
+		return this.distance( new Base(rowFrom, colFrom), new Base(rowTo, colTo));
 	}	
 
 	public String name(){

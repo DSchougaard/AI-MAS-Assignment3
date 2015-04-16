@@ -31,6 +31,7 @@ import client.Strategy.StrategyBestFirst;
 import client.node.Color;
 import client.node.Node;
 import client.node.level.distancemap.FloydWarshallDistanceMap;
+import client.node.storage.Base;
 import client.node.storage.Box;
 
 //I am a horrible person
@@ -123,7 +124,7 @@ public class test {
  	public void levelSetup2()throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/SACrunch.lvl")) );
 		
-SearchClient.init( serverMessages );
+		SearchClient.init( serverMessages );
 		
 		assertEquals(1, SearchClient.agents.size());
 		
@@ -608,7 +609,7 @@ SearchClient.init( serverMessages );
 		
 		Node state = SearchClient.state;
 		
-		assertEquals(state.distance(new Point(1, 1), new Point(2, 2)), state.distance(1, 1, 2, 2));
+		assertEquals(state.distance(new Base(1, 1), new Base(2, 2)), state.distance(1, 1, 2, 2));
 		
 	}
 }
