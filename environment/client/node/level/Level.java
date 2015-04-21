@@ -46,8 +46,10 @@ public class Level implements LevelInterface{
 
 
 	// Acessing Goals.
-	private HashMap<Character, ArrayList<Goal> > goals;
-	private HashMap<Color, ArrayList<Goal>> goalTypeByColor;
+	private HashMap<Character, ArrayList<Goal> > goalsByType;
+	private HashMap<Color, ArrayList<Goal>> goalsByColor;
+	
+	private ArrayList<Goal> goals;
 
 	// Clusters
 	private HashMap<Integer, ArrayList<Goal>> clusters;
@@ -62,10 +64,11 @@ public class Level implements LevelInterface{
 				map[i][j] = new Cell(Type.SPACE);
 			}
 		}
-		this.goals 				= new HashMap<Character, ArrayList<Goal>>();
-		this.goalTypeByColor 	= new HashMap<Color, ArrayList<Goal>>();
+		this.goalsByType 		= new HashMap<Character, ArrayList<Goal>>();
+		this.goalsByColor 		= new HashMap<Color, ArrayList<Goal>>();
 		Level.dm 				= dm;
 		this.clusters 			= new HashMap<Integer, ArrayList<Goal>>();
+		this.goals= new ArrayList<>();
 	}	
 
 
@@ -78,18 +81,19 @@ public class Level implements LevelInterface{
 		letter=Character.toLowerCase(letter);
 		Level.map[row][col] = new Cell(Type.GOAL, letter);
 
-		if( !goals.containsKey(new Character(letter)) ){
-			goals.put( letter, new ArrayList<Goal>() );
+		if( !goalsByType.containsKey(new Character(letter)) ){
+			goalsByType.put( letter, new ArrayList<Goal>() );
 		}
 		if(color==null){
 			color=Color.blue;
 		}
 		Goal goal=new Goal(letter, row, col);
-		ArrayList<Goal> tempGoals = goals.get( new Character(letter) );
+		ArrayList<Goal> tempGoals = goalsByType.get( new Character(letter) );
 		
 		tempGoals.add(goal);
 		
 		addColor(goal, color);
+		goals.add(goal);
 	}
 
 	public void addSpace(int row, int col){
@@ -97,10 +101,10 @@ public class Level implements LevelInterface{
 	}
 
 	public void addColor(Goal goal, Color color){
-		ArrayList<Goal> chrs= goalTypeByColor.get(color);
+		ArrayList<Goal> chrs= goalsByColor.get(color);
 		if(chrs==null){
 			chrs=new ArrayList<>();
-			goalTypeByColor.put(color, chrs);
+			goalsByColor.put(color, chrs);
 		}
 		chrs.add(goal);
 	}
@@ -131,24 +135,21 @@ public class Level implements LevelInterface{
 
 
 	public ArrayList<Goal> getGoals(char chr){
-		return this.goals.get(new Character(chr));
+		return this.goalsByType.get(new Character(chr));
 	}
 
 
 	public HashMap<Character, ArrayList<Goal>> getGoalMap(){
-		return this.goals;
+		return this.goalsByType;
 	}
 
 	public ArrayList<Goal> getGoals(){
-		ArrayList<Goal> returnGoals = new ArrayList<Goal>();
-		for( Character c  : goals.keySet() ){
-			returnGoals.addAll(this.goals.get(c));
-		}
-		return returnGoals;
+
+		return goals;
 	}
 
 	public ArrayList<Goal> getGoals(Color color){
-		return this.goalTypeByColor.get(color);
+		return this.goalsByColor.get(color);
 	}
 
 	public Integer distance(int rowFrom, int colFrom, int rowTo, int colTo){
@@ -170,7 +171,7 @@ public class Level implements LevelInterface{
 		this.kcg = new KClusteringGoals(agents, this);
 		for( int i = 0 ; i < agents.length ; i++ ){
 			if( agents[i] != null )
-				this.clusters.put( agents[i].id, this.goalTypeByColor.get(agents[i].color) );
+				this.clusters.put( agents[i].id, this.goalsByColor.get(agents[i].color) );
 		}
 	}
 
@@ -206,7 +207,7 @@ public class Level implements LevelInterface{
 		return result;
 	}
 	
-	public int[][] analyse() throws Exception{
+	public int[][] analyse(){
 		int importance[][] = new int[maxRow][maxCol];
 		
 		HashSet<Base> explored= new HashSet<>();
@@ -261,7 +262,10 @@ public class Level implements LevelInterface{
 					deadends.add(new Base(i,j));
 					break;
 				default:
-					throw new Exception("unkown field");
+					while(true){
+						System.err.println("unknown field type");
+						System.out.println("unknown field type");
+					}
 				}
 
 			}
@@ -350,7 +354,14 @@ public class Level implements LevelInterface{
 				importance[base.row][base.col]=max;
 			}
 		}
-		max++;
+
+		Goal.maxImportance=max;
+		for(Goal goal: goals){
+			goal.importance=importance[goal.row][goal.col];
+		}
+
+		
+		
 		return importance;
 	}
 	
