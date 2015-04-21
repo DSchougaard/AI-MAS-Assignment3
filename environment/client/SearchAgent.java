@@ -11,6 +11,7 @@ import client.node.Color;
 import client.node.Node;
 import client.node.storage.Base;
 import client.node.storage.Box;
+import client.node.storage.ExpansionStatus;
 import client.node.storage.Goal;
 import client.node.storage.LogicalAgent;
 import client.node.storage.SearchResult;
@@ -111,10 +112,12 @@ public class SearchAgent{
 			}
 
 			if (leafNode.isGoalState(goals)) {
+				ExpansionStatus expStatus = new ExpansionStatus(strategy);
+				System.err.println(strategy.searchStatus());
 				if(leafNode.isInitialState()){
-					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>(),expStatus);
 				}
-				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
+				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan(),expStatus);
 			}
 
 			strategy.addToExplored(leafNode);
