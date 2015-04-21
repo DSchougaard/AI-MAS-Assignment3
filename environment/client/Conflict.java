@@ -6,8 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import client.Heuristic.Proximity;
-import client.heuristic.ClearHeuristic;
+import client.heuristic.*;
 import client.SearchAgent.Status;
 import client.Strategy.StrategyBestFirst;
 import client.node.Node;

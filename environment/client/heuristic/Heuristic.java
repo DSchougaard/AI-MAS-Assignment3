@@ -1,9 +1,10 @@
-package client;
+package client.heuristic;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import client.SearchAgent;
 import client.node.Node;
 import client.node.storage.LogicalAgent;
 import client.node.storage.Box;
@@ -90,75 +91,6 @@ public abstract class Heuristic implements Comparator< Node > {
 	public abstract int f( Node n);
 
 
-	public static class Proximity extends Heuristic{
-		private Box box;
-		public Proximity(SearchAgent agent, Box box){
-			super(agent);
-			this.box = box;
-		}
-
-		public int f(Node n){
-			return n.g() + h(n);
-		}
-
-		public String toString(){
-			return "Proximity A* Evaluation";
-		}
-
-		@Override
-		public int h(Node n){
-			return n.distance(n.agents[agent.id], box) - 1;
-		}
-	}
-
-
-	public static class AStar extends Heuristic {
-		public AStar(SearchAgent agent) {
-			super(agent);
-		}
-
-		public int f( Node n) {
-			return n.g() + h( n );
-		}
-
-		public String toString() {
-			return "A* evaluation";
-		}
-	}
-
-	public static class WeightedAStar extends Heuristic {
-		private int W;
-
-		public WeightedAStar(SearchAgent agent) {
-			super(agent);
-			W = 5; // You're welcome to test this out with different values, but for the reporting part you must at least indicate benchmarks for W = 5
-		}
-
-		public int f( Node n ) {
-			return n.g() + W * h( n );
-		}
-
-		public String toString() {
-			return String.format( "WA*(%d) evaluation", W );
-		}
-	}
-
-	public static class Greedy extends Heuristic {
-
-		public Greedy(SearchAgent agent) {
-			super(agent);
-		}
-		
-
-		public int f( Node n ) {
-			return h( n );
-		}
-
-		public String toString() {
-			return "Greedy evaluation";
-		}
-	}
-	
 
 	public void finishedWithGoal(Goal g){
 		Heuristic.agent_goal_bookkeeping.remove(g);

@@ -6,6 +6,7 @@ package client.node.storage;
 public class Goal extends Base{
 	private char type;
 	
+	
 	public Goal(char type, int row, int col){
 		super(row, col);
 		this.type = type;

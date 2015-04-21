@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 
 import client.SearchClient.Memory;
+import client.heuristic.*;
 import client.node.Node;
 
 public abstract class Strategy {

@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import client.Heuristic.*;
 import client.parser.LevelParser;
 import client.parser.ArgumentParser;
 import client.parser.SettingsContainer;
+import client.heuristic.*;
 import client.node.Node;
 import client.node.storage.ExpansionStatus;
 import client.node.storage.Goal;
