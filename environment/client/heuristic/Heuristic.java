@@ -143,8 +143,8 @@ public abstract class Heuristic implements Comparator< Node > {
 			}
 			
 			for( Box box : node.getBoxes(goal.getType()) ){
-				if(node.distance(agent, box) != null && ( node.distance(agent, box) + node.distance(box, goal) )*goal.importance < dist ){
-					dist = (node.distance(agent, box) + node.distance(box, goal))*goal.importance;
+				if(node.distance(agent, box) != null && ( node.distance(agent, box) + node.distance(box, goal) ) < dist ){
+					dist = node.distance(agent, box) + node.distance(box, goal);
 					// Set the selects
 					selectedGoal = goal;
 					selectedBox = box;
