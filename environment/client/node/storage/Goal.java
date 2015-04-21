@@ -35,4 +35,6 @@ public class Goal extends Base{
 	public String toString(){
 		return type+" "+super.toString();
 	}
+	
+	
 }

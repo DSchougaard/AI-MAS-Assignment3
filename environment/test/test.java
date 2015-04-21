@@ -1,8 +1,13 @@
 package test;
 
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,11 +27,11 @@ import org.junit.runners.MethodSorters;
 import client.Command;
 import client.Command.dir;
 import client.Command.type;
-import client.Heuristic.AStar;
 import client.SearchAgent;
 import client.SearchClient;
 import client.Strategy;
 import client.Strategy.StrategyBestFirst;
+import client.heuristic.AStar;
 import client.node.Color;
 import client.node.Node;
 import client.node.level.distancemap.FloydWarshallDistanceMap;

@@ -2,6 +2,7 @@ package client.node.level;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -144,7 +145,7 @@ public class Level implements LevelInterface{
 	}
 
 	public ArrayList<Goal> getGoals(){
-
+		
 		return goals;
 	}
 

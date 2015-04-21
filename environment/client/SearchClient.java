@@ -193,7 +193,7 @@ public class SearchClient {
 
 		}
 
-		System.err.println("done");
+		System.err.println("level Completed");
 	}
 
 	private static void SingleAgentPlaning( ArrayList<LinkedList<Node>> solution) throws IOException {

@@ -24,7 +24,7 @@ public class KClusteringGoals{
 		}
 
 		// Preload goals. Takes time. Sorry.
-		ArrayList<Goal> allGoals = level.getGoals();
+		ArrayList<Goal> allGoals = new ArrayList<Goal>(level.getGoals());
 		int agentCount = agents.size();
 		int goalCount = allGoals.size();
 
