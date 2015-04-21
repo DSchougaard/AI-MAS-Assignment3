@@ -1,17 +1,16 @@
 package client.node.level.distancemap;
 
-import java.awt.Point;
-
 import client.node.level.Level;
+import client.node.storage.Base;
 
 public class BasicManhattanDistanceMap extends DistanceMap{
 	public BasicManhattanDistanceMap(){}
 
-	public int distance(Point a, Point b){
-		return this.distance(a.x, a.y, b.x, b.y);
+	public Integer distance(Base a, Base b){
+		return this.distance(a.row, a.col, b.row, b.col);
 	}
 
-	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){		
+	public Integer distance(int rowFrom, int colFrom, int rowTo, int colTo){		
 		return Math.abs(rowFrom-rowTo)+Math.abs(colFrom-colTo);
 	}
 	

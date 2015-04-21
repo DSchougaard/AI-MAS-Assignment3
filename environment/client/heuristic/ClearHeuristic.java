@@ -2,13 +2,12 @@ package client.heuristic;
 
 import java.util.ArrayList;
 
-import client.Heuristic;
+import client.heuristic.Heuristic;
+import client.SearchAgent;
 
 import client.node.storage.Base;
 import client.node.storage.Box;
 import client.node.storage.LogicalAgent;
-
-import client.SearchAgent;
 
 import client.node.Node;
 

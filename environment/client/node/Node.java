@@ -323,12 +323,12 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	@Override
-	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
+	public Integer distance(int rowFrom, int colFrom, int rowTo, int colTo){
 		return Node.level.distance(rowFrom, colFrom, rowTo, colTo);
 	}
 	
 	@Override
-	public int distance(Base from, Base to) {
+	public Integer distance(Base from, Base to) {
 		return Node.level.distance(from, to);
 	}
 
@@ -604,6 +604,30 @@ public class Node implements NodeInterface, LevelInterface{
 		return s.toString();
 	}
 	
+	public String toStringDistance(int row, int col){
+		Character[][] map=level.toArray();
+
+
+		StringBuilder s = new StringBuilder();
+		s.append("\n");
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[0].length; j++) {
+				if(map[i][j] != '+'){
+					if(distance(row, col, i, j)==null){
+						s.append("NaN");
+					}else{
+					s.append(distance(row, col, i, j));
+					}
+				}else{
+						s.append(map[i][j]);
+				}
+			}
+			s.append("\n");
+		}
+		return s.toString();
+	}
+	
+	
 
 	@Override
 	public int hashCode() {
@@ -635,5 +659,7 @@ public class Node implements NodeInterface, LevelInterface{
 
 		return true;
 	}
-
+	public static Level getLevel() {
+		return level;
+	}
 }

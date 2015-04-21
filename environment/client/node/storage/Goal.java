@@ -5,6 +5,9 @@ package client.node.storage;
 
 public class Goal extends Base{
 	private char type;
+	public int importance =0;
+	public static int maxImportance=0; 
+	
 	
 	public Goal(char type, int row, int col){
 		super(row, col);
@@ -26,5 +29,10 @@ public class Goal extends Base{
 
 		Goal b = (Goal)obj;
 		return ( this.type == b.type );
+	}
+	
+	@Override
+	public String toString(){
+		return type+" "+super.toString();
 	}
 }

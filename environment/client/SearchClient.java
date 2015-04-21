@@ -7,14 +7,15 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import client.Heuristic.*;
 import client.parser.LevelParser;
 import client.parser.ArgumentParser;
 import client.parser.SettingsContainer;
+import client.heuristic.*;
 import client.node.Node;
+import client.node.storage.ExpansionStatus;
 import client.node.storage.Goal;
 import client.node.storage.SearchResult;
-import client.node.level.distancemap.BasicManhattanDistanceMap;
+import client.node.level.distancemap.FloydWarshallDistanceMap;
 import client.Strategy.StrategyBestFirst;
 import client.SearchAgent.Status;
 
@@ -62,6 +63,7 @@ public class SearchClient {
 	}
 
 	public static Node state = null;
+	static ExpansionStatus expStatus = null;
 
 	// all the active agents in sorted order
 	public static List<SearchAgent> agents = new ArrayList<>();
@@ -79,7 +81,7 @@ public class SearchClient {
 	public static void init(BufferedReader serverMessages) throws Exception {
 
 		SettingsContainer settings = new SettingsContainer();
-		settings.dm = new BasicManhattanDistanceMap();
+		settings.dm = new FloydWarshallDistanceMap();
 		state = LevelParser.parse(serverMessages, settings);
 		for (int i = 0; i < state.agents.length; i++) {
 			if (state.agents[i] != null) {
@@ -163,6 +165,7 @@ public class SearchClient {
 	public static void main(String[] args) throws Exception {
 
 		SettingsContainer settings = ArgumentParser.parse(args);
+		expStatus = new ExpansionStatus();
 
 		// Use stderr to print to console
 		System.err.println("SearchClient initializing. I am sending this using the error output stream.");
@@ -207,9 +210,14 @@ public class SearchClient {
 		Goal subgoal = heuristic.selectGoal(agent.state);
 		if(subgoal!=null){
 			agent.subgoals.add(subgoal);
-			System.err.println("new subgoal "+subgoal.getType());
+			System.err.println("new subgoal "+subgoal);
 		}
-		SearchResult result = agent.Search(strategy,  agent.subgoals);		
+		SearchResult result = agent.Search(strategy,  agent.subgoals);
+		
+		if (!result.equals(null)||!result.expStatus.equals(null)){
+			expStatus.add(result.expStatus);
+			System.err.println(expStatus.toString());
+		}	
 
 		solution.get(agent.id).addAll(result.solution);
 	}
@@ -227,6 +235,7 @@ public class SearchClient {
 				}
 
 				System.err.println("MultiAgentPlanning :: Agent " + agent.id + " planing");
+				System.err.println("subgoals "+ agent.subgoals);
 
 				Heuristic heuristic = new Greedy(agent);
 
@@ -236,7 +245,7 @@ public class SearchClient {
 					subgoal = heuristic.selectGoal(state);
 					if(subgoal!=null){
 						agent.subgoals.add(subgoal);
-						System.err.println("new subgoal "+subgoal.getType());
+						System.err.println("new subgoal "+subgoal);
 					}
 				}
 				
@@ -254,6 +263,10 @@ public class SearchClient {
 					goals.add(subgoal);
 					relaxedResult = agent.Search(relaxedStrategy, goals);
 				}
+				if (!relaxedResult.equals(null)||!relaxedResult.expStatus.equals(null)){
+					expStatus.add(relaxedResult.expStatus);
+					System.err.println(expStatus.toString());
+				}
 				System.gc();
 				
 				
@@ -262,6 +275,10 @@ public class SearchClient {
 				agent.setState(state);
 				strategy = new StrategyBestFirst(heuristic);
 				SearchResult result = agent.Search(strategy, agent.subgoals, relaxedResult);
+				if (!result.equals(null)||!result.expStatus.equals(null)){
+					expStatus.add(result.expStatus);
+					System.err.println(expStatus.toString());
+				}
 				System.gc();
 				
 				switch (result.reason) {
@@ -277,6 +294,7 @@ public class SearchClient {
 					break;
 				case DONE:
 					agent.status=Status.DONE;
+					System.err.println("done");
 					break;
 				default:
 					agent.status=Status.PLAN;

@@ -3,6 +3,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -24,13 +25,14 @@ import client.Command.type;
 import client.Heuristic.AStar;
 import client.SearchAgent;
 import client.SearchClient;
-import client.parser.SettingsContainer;
 import client.Strategy;
 import client.Strategy.StrategyBestFirst;
 import client.node.Color;
 import client.node.Node;
 import client.node.level.distancemap.FloydWarshallDistanceMap;
+import client.node.storage.Base;
 import client.node.storage.Box;
+import client.parser.SettingsContainer;
 
 //I am a horrible person
 @FixMethodOrder(MethodSorters.JVM)
@@ -74,10 +76,12 @@ public class test {
 	
 		SearchClient.init( serverMessages );
 		
-		assertEquals(1, SearchClient.state.distance(1, 2, 1, 3));
-		assertEquals(2, SearchClient.state.distance(1, 1, 1, 3));
+		assertEquals(1, SearchClient.state.distance(1, 2, 1, 3).intValue());
+		assertEquals(2, SearchClient.state.distance(1, 1, 1, 3).intValue());
 		
-		assertEquals(1, SearchClient.state.distance(SearchClient.state.agents[0],SearchClient.state.getBoxes()[0]));
+		assertEquals(1, SearchClient.state.distance(SearchClient.state.agents[0],SearchClient.state.getBoxes()[0]).intValue());
+	
+		
 	}
 	
 	@Test
@@ -120,7 +124,7 @@ public class test {
  	public void levelSetup2()throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/SACrunch.lvl")) );
 		
-SearchClient.init( serverMessages );
+		SearchClient.init( serverMessages );
 		
 		assertEquals(1, SearchClient.agents.size());
 		
@@ -583,5 +587,110 @@ SearchClient.init( serverMessages );
 		SearchClient.init( serverMessages );
 		
 		assertEquals(764559546, SearchClient.state.hashCode());
+	}
+	
+	
+	@Test
+	public void Floyd() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/Test1.lvl")) );
+		
+		SearchClient.init( serverMessages );
+		
+		assertEquals("\n+++++NaN+++++\n"+
+				"+012+NaN+NaNNaNNaN+\n"+
+				"+123+NaN+NaNNaNNaN+\n"+
+				"+234+NaN+NaNNaNNaN+\n"+
+				"+345+NaN+NaNNaNNaN+\n"+
+				"+456+NaN+NaNNaNNaN+\n"+
+				"+++++NaN+++++\n", SearchClient.state.toStringDistance(1, 1));
+		assertEquals("\n"
+				+ "+++++NaN+++++\n"
+				+ "+NaNNaNNaN+NaN+123+\n"
+				+ "+NaNNaNNaN+NaN+012+\n"
+				+ "+NaNNaNNaN+NaN+123+\n"
+				+ "+NaNNaNNaN+NaN+234+\n"
+				+ "+NaNNaNNaN+NaN+345+\n"
+				+ "+++++NaN+++++\n",
+				 SearchClient.state.toStringDistance(2, 7));
+		
+	}
+	
+	@Test
+	public void Floyd2() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/Test1.lvl")) );
+		
+		SearchClient.init( serverMessages );
+		
+		Node state = SearchClient.state;
+		
+		assertEquals(state.distance(new Base(1, 1), new Base(2, 2)), state.distance(1, 1, 2, 2));
+		assertNull(state.distance(new Base(1, 1), new Base(2, 7)));
+		assertNull(state.distance(new Base(1, 1), new Base(2, 5)));
+	}
+	
+	@Test
+	public void AllInOne() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAallInOne.lvl")) );
+		
+		SearchClient.init( serverMessages );
+		
+		Node state = SearchClient.state;
+		
+//		System.out.println(state);
+//		System.out.println("hallo");
+//		assertEquals("\n\n", state);
+//		fail();
+	}
+	
+	@Test
+	public void clusters() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAallInOne.lvl")) );
+		
+		SearchClient.init( serverMessages );
+		
+		Node state = SearchClient.state;
+		
+//		System.out.println(state);
+//		System.out.println("hallo");
+//		assertEquals("\n\n", state);
+//		fail();
+	}
+	
+	@Test
+	public void importance() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/SAboxesOfHanoi.lvl")) );
+		
+		SearchClient.init( serverMessages );
+		
+		Node state = SearchClient.state;
+		int[][] imp= Node.getLevel().analyse();
+
+		for (int i = 0; i < imp.length; i++) {
+			for (int j = 0; j < imp[0].length; j++) {
+				System.out.print(imp[i][j]);
+			}
+			System.out.println();
+		}
+		System.out.println(state);
+	}
+	
+	@Test
+	public void importance2() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/SACrunch.lvl")) );
+		
+		SearchClient.init( serverMessages );
+		
+		Node state = SearchClient.state;
+		int[][] imp= Node.getLevel().analyse();
+
+		for (int i = 0; i < imp.length; i++) {
+			for (int j = 0; j < imp[0].length; j++) {
+				System.out.print(imp[i][j]);
+			}
+			System.out.println();
+		}
+		System.out.println(state);
+		
+		
 	}
 }

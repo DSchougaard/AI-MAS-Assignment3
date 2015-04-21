@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import client.node.level.Level;
+import client.node.storage.Base;
 
 public class BruteForceDistanceMap extends DistanceMap{
 	private HashMap<Point, HashMap<Point, Integer>> values;
@@ -14,11 +15,11 @@ public class BruteForceDistanceMap extends DistanceMap{
 		values = new HashMap<Point, HashMap<Point, Integer>>();
 	}
 
-	public int distance(int a, int b, int c, int d){
+	public Integer distance(int a, int b, int c, int d){
 		return 0;
 	}
 
-	public int distance(Point p1, Point p2){
+	public Integer distance(Base p1, Base p2){
 		return 0;
 	}
 

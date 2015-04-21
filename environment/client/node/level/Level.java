@@ -3,6 +3,7 @@ package client.node.level;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import client.node.Color;
 import client.node.storage.Base;
@@ -10,6 +11,7 @@ import client.node.storage.Goal;
 import client.node.storage.LogicalAgent;
 
 
+import client.node.level.clustering.KClusteringGoals;
 import client.node.level.distancemap.DistanceMap;
 
 /*
@@ -24,6 +26,8 @@ public class Level implements LevelInterface{
 	private int maxCol;
 	private static DistanceMap dm;
 
+	private KClusteringGoals kcg;
+	
 	public class Cell{
 		private Type type;
 		private char letter;
@@ -42,8 +46,10 @@ public class Level implements LevelInterface{
 
 
 	// Acessing Goals.
-	private HashMap<Character, ArrayList<Goal> > goals;
-	private HashMap<Color, ArrayList<Goal>> goalTypeByColor;
+	private HashMap<Character, ArrayList<Goal> > goalsByType;
+	private HashMap<Color, ArrayList<Goal>> goalsByColor;
+	
+	private ArrayList<Goal> goals;
 
 	// Clusters
 	private HashMap<Integer, ArrayList<Goal>> clusters;
@@ -58,10 +64,11 @@ public class Level implements LevelInterface{
 				map[i][j] = new Cell(Type.SPACE);
 			}
 		}
-		this.goals 				= new HashMap<Character, ArrayList<Goal>>();
-		this.goalTypeByColor 	= new HashMap<Color, ArrayList<Goal>>();
+		this.goalsByType 		= new HashMap<Character, ArrayList<Goal>>();
+		this.goalsByColor 		= new HashMap<Color, ArrayList<Goal>>();
 		Level.dm 				= dm;
 		this.clusters 			= new HashMap<Integer, ArrayList<Goal>>();
+		this.goals= new ArrayList<>();
 	}	
 
 
@@ -74,18 +81,19 @@ public class Level implements LevelInterface{
 		letter=Character.toLowerCase(letter);
 		Level.map[row][col] = new Cell(Type.GOAL, letter);
 
-		if( !goals.containsKey(new Character(letter)) ){
-			goals.put( letter, new ArrayList<Goal>() );
+		if( !goalsByType.containsKey(new Character(letter)) ){
+			goalsByType.put( letter, new ArrayList<Goal>() );
 		}
 		if(color==null){
 			color=Color.blue;
 		}
 		Goal goal=new Goal(letter, row, col);
-		ArrayList<Goal> tempGoals = goals.get( new Character(letter) );
+		ArrayList<Goal> tempGoals = goalsByType.get( new Character(letter) );
 		
 		tempGoals.add(goal);
 		
 		addColor(goal, color);
+		goals.add(goal);
 	}
 
 	public void addSpace(int row, int col){
@@ -93,10 +101,10 @@ public class Level implements LevelInterface{
 	}
 
 	public void addColor(Goal goal, Color color){
-		ArrayList<Goal> chrs= goalTypeByColor.get(color);
+		ArrayList<Goal> chrs= goalsByColor.get(color);
 		if(chrs==null){
 			chrs=new ArrayList<>();
-			goalTypeByColor.put(color, chrs);
+			goalsByColor.put(color, chrs);
 		}
 		chrs.add(goal);
 	}
@@ -127,27 +135,24 @@ public class Level implements LevelInterface{
 
 
 	public ArrayList<Goal> getGoals(char chr){
-		return this.goals.get(new Character(chr));
+		return this.goalsByType.get(new Character(chr));
 	}
 
 
 	public HashMap<Character, ArrayList<Goal>> getGoalMap(){
-		return this.goals;
+		return this.goalsByType;
 	}
 
 	public ArrayList<Goal> getGoals(){
-		ArrayList<Goal> returnGoals = new ArrayList<Goal>();
-		for( Character c  : goals.keySet() ){
-			returnGoals.addAll(this.goals.get(c));
-		}
-		return returnGoals;
+
+		return goals;
 	}
 
 	public ArrayList<Goal> getGoals(Color color){
-		return this.goalTypeByColor.get(color);
+		return this.goalsByColor.get(color);
 	}
 
-	public int distance(int rowFrom, int colFrom, int rowTo, int colTo){
+	public Integer distance(int rowFrom, int colFrom, int rowTo, int colTo){
 		if(dm==null){
 			System.err.println("DistanceMap: "+dm);
 			return 0;
@@ -157,22 +162,22 @@ public class Level implements LevelInterface{
 	}
 
 	@Override
-	public int distance(Base from, Base to) {
+	public Integer distance(Base from, Base to) {
 		return distance(from.row, from.col, to.row, to.col);
 	}
 
 	public void calculateCluster(LogicalAgent[] agents){
 
-		//this.kcg = new KClusteringGoals(agents, this);
+		this.kcg = new KClusteringGoals(agents, this);
 		for( int i = 0 ; i < agents.length ; i++ ){
 			if( agents[i] != null )
-				this.clusters.put( agents[i].id, this.goalTypeByColor.get(agents[i].color) );
+				this.clusters.put( agents[i].id, this.goalsByColor.get(agents[i].color) );
 		}
 	}
 
 	public HashMap<Integer, ArrayList<Goal>> getClusters(){
-		return this.clusters;
-		//return this.kcg.getClusters();
+//		return this.clusters;
+		return this.kcg.getClusters();
 	}
 
 	public ArrayList<Goal> getCluster(LogicalAgent agent){
@@ -201,4 +206,164 @@ public class Level implements LevelInterface{
 		}
 		return result;
 	}
+	
+	public int[][] analyse(){
+		int importance[][] = new int[maxRow][maxCol];
+		
+		HashSet<Base> explored= new HashSet<>();
+		
+		ArrayList<Base> deadends= new ArrayList<>();
+		ArrayList<Base> cornores= new ArrayList<>();
+		ArrayList<Base> onewall= new ArrayList<>();
+		ArrayList<Base> nowalls= new ArrayList<>();
+		ArrayList<Base> twowalls= new ArrayList<>();
+		for (int i = 1; i < map.length-1; i++) {
+			for (int j = 1; j < map[0].length-1; j++) {
+				if(map[i][j].type==Level.Type.WALL){
+					continue;
+				}
+				int wallsCount=0;
+				if(map[i][j-1].type == Type.WALL){
+					wallsCount++;
+				}
+				if(map[i][j+1].type == Type.WALL){
+					wallsCount++;
+				}
+				
+				if(map[i-1][j].type == Type.WALL){
+					wallsCount++;
+				}
+				
+				if(map[i+1][j].type == Type.WALL){
+					wallsCount++;
+				}
+				switch (wallsCount) {
+				case 0:
+					nowalls.add(new Base(i,j));
+					break;
+				case 1:
+					onewall.add(new Base(i,j));
+					break;
+				case 2:
+					if((map[i][j-1].type == Type.WALL && map[i][j+1].type == Type.WALL) || (map[i-1][j].type == Type.WALL && map[i+1][j].type == Type.WALL) ){
+						twowalls.add(new Base(i,j));
+					}else{
+						if((map[i-1][j-1].type == Type.WALL && map[i][j+1].type == Type.WALL && map[i+1][j].type == Type.WALL) 
+								|| (map[i+1][j-1].type == Type.WALL && map[i][j+1].type == Type.WALL && map[i-1][j].type == Type.WALL) 
+								|| (map[i-1][j+1].type == Type.WALL && map[i][j-1].type == Type.WALL && map[i+1][j].type == Type.WALL) 
+								|| (map[i+1][j+1].type == Type.WALL && map[i][j-1].type == Type.WALL && map[i-1][j].type == Type.WALL)){
+							twowalls.add(new Base(i,j));
+						}else{
+							cornores.add(new Base(i,j));
+						}
+					}
+					break;
+				case 3:
+					deadends.add(new Base(i,j));
+					break;
+				default:
+					while(true){
+						System.err.println("unknown field type");
+						System.out.println("unknown field type");
+					}
+				}
+
+			}
+		}
+		int max=0;
+		for (int i = 0; i < deadends.size(); i++) {
+			Base base=deadends.get(i);
+			int wallCount;
+			int imp=1;
+			do{
+				wallCount=0;
+				importance[base.row][base.col]=imp;
+				explored.add(base);
+				imp++;
+				max=Math.max(imp, max);
+				Base tmpBase = null;
+				if(map[base.row][base.col-1].type == Type.WALL){
+					wallCount++;
+				}else{
+					Base b = new Base(base.row, base.col-1);
+					if(!explored.contains(b)){
+						tmpBase=b;
+					}
+				}
+				if(map[base.row][base.col+1].type == Type.WALL){
+					wallCount++;
+				}else{
+					Base b = new Base(base.row, base.col+1);
+					if(!explored.contains(b)){
+						tmpBase=b;
+					}
+				}
+				
+				if(map[base.row-1][base.col].type == Type.WALL){
+					wallCount++;
+				}else{
+					Base b = new Base(base.row-1, base.col);
+					if(!explored.contains(b)){
+						tmpBase=b;
+					}
+				}
+				
+				if(map[base.row+1][base.col].type == Type.WALL){
+					wallCount++;
+				}else{
+					Base b = new Base(base.row+1, base.col);
+					if(!explored.contains(b)){
+						tmpBase=b;
+					}
+				}
+				if(base.equals(new Base(2,4))){
+					System.err.println("hej");
+				}
+				base=tmpBase;
+			}while(base != null && wallCount>=2 && !explored.contains(base) );
+		}
+		
+
+		
+		for (Base base :cornores) {
+			
+			if(!explored.contains(base)){
+				importance[base.row][base.col]=max;
+			}
+		}
+		max++;
+		for (Base base :onewall) {
+			
+			if(!explored.contains(base)){
+				importance[base.row][base.col]=max;
+			}
+		}
+		max++;
+		
+		for (Base base :nowalls) {
+			
+			if(!explored.contains(base)){
+				importance[base.row][base.col]=max;
+			}
+		}
+		max++;
+		
+		for (Base base :twowalls) {
+			
+			if(!explored.contains(base)){
+				importance[base.row][base.col]=max;
+			}
+		}
+
+		Goal.maxImportance=max;
+		for(Goal goal: goals){
+			goal.importance=importance[goal.row][goal.col];
+		}
+
+		
+		
+		return importance;
+	}
+	
+
 }

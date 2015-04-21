@@ -27,7 +27,8 @@ public class KClusteringGoals{
 		ArrayList<Goal> allGoals = level.getGoals();
 		int agentCount = agents.size();
 		int goalCount = allGoals.size();
-		int startGoal = (new Random(System.nanoTime())).nextInt(goalCount-1);
+
+		int startGoal = (new Random(System.nanoTime())).nextInt(goalCount);
 
 		ArrayList<Goal> picked = new ArrayList<Goal>();
 		picked.add(allGoals.get(startGoal));
@@ -42,7 +43,7 @@ public class KClusteringGoals{
 			for( Goal g1 : allGoals ){
 				minDist = Integer.MAX_VALUE;
 				for( Goal g2 : picked ){
-					if( minDist > level.distance(g1, g2) )
+					if(level.distance(g1, g2)!= null && minDist > level.distance(g1, g2) )
 						minDist = level.distance(g1, g2);
 				}
 				if( minDist > maxDist ){
@@ -73,7 +74,7 @@ public class KClusteringGoals{
 			distanceToCenter = Integer.MAX_VALUE;
 			Goal selectedCenter = null;
 			for( Goal center : picked){
-				if( distanceToCenter > level.distance(g, center) ){
+				if(level.distance(g, center)!= null &&  distanceToCenter > level.distance(g, center) ){
 					selectedCenter = center;
 					distanceToCenter = level.distance(g, center);
 				}
@@ -86,7 +87,7 @@ public class KClusteringGoals{
 			int centerToAgentDist = Integer.MAX_VALUE;
 			Integer selectedAgent = null;
 			for( Integer a : agents ){
-				if( centerToAgentDist > level.distance(g, parsedAgents[a.intValue()]) ){
+				if(level.distance(g, parsedAgents[a.intValue()])!= null &&  centerToAgentDist > level.distance(g, parsedAgents[a.intValue()]) ){
 					centerToAgentDist = level.distance(g, parsedAgents[a.intValue()]);
 					selectedAgent = a;
 				}
