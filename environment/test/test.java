@@ -643,6 +643,20 @@ SearchClient.init( serverMessages );
 	}
 	
 	@Test
+	public void clusters() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAallInOne.lvl")) );
+		
+		SearchClient.init( serverMessages );
+		
+		Node state = SearchClient.state;
+		
+//		System.out.println(state);
+//		System.out.println("hallo");
+//		assertEquals("\n\n", state);
+//		fail();
+	}
+	
+	@Test
 	public void importance() throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/SAboxesOfHanoi.lvl")) );
 		
