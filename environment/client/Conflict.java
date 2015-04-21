@@ -6,15 +6,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-<<<<<<< HEAD
 import java.util.Deque;
 
 
 import client.Heuristic.Proximity;
 import client.heuristic.ClearHeuristic;
-=======
 import client.heuristic.*;
->>>>>>> origin/master
 import client.SearchAgent.Status;
 import client.Strategy.StrategyBestFirst;
 import client.node.Node;
