@@ -23,7 +23,7 @@ public class SearchAgent{
 	
 	public int id;
 	public Color color;
-	public enum Status{STUCK, PLAN, DONE, IDLE, HELPING}
+	public enum Status{STUCK, PLAN, DONE, IDLE, HELPING, STUCK_HELPING}
 	public Status status = Status.IDLE;
 	public ArrayList<Goal> subgoals = new ArrayList<>();
 	

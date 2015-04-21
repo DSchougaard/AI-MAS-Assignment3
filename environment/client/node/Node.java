@@ -343,6 +343,10 @@ public class Node implements NodeInterface, LevelInterface{
 		// Bypass filtering
 		// return t;
 		// Filter
+
+		if( cluster == null )
+			return new ArrayList<Goal>();
+
 		for( Goal goal : cluster ){
 			Box box=this.boxesByPoint.get(goal.getPoint());
 			if(box == null || (box.getType() != goal.getType())){

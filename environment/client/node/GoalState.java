@@ -74,11 +74,26 @@ public abstract class GoalState{
 		public boolean eval(Node node){
 			LogicalAgent a = node.agents[agentID];
 			for( Base b : route ){
-				if( a.row == b. row && a.col == b.col )
+				if( a.row == b.row && a.col == b.col )
 					return false;
 			}
 			return true;
 		}
 	}
 
+	public static class MoveToGoalState extends GoalState{
+		private int agentID;
+		private int targetRow, targetCol;
+
+		public MoveToGoalState(int agentID, int targetRow, int targetCol){
+			this.agentID = agentID;
+			this.targetCol = targetCol;
+			this.targetRow = targetRow;
+		}
+
+		public boolean eval(Node node){
+			LogicalAgent a = node.agents[agentID];
+			return ( targetRow == a.row && targetCol == a.col );
+		}
+	}
 }
