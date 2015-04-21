@@ -2,18 +2,15 @@ package client.node.level;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import client.node.Color;
+import client.node.level.clustering.KClusteringGoals;
+import client.node.level.distancemap.DistanceMap;
 import client.node.storage.Base;
 import client.node.storage.Goal;
 import client.node.storage.LogicalAgent;
-
-
-import client.node.level.clustering.KClusteringGoals;
-import client.node.level.distancemap.DistanceMap;
 
 /*
 	@author: Daniel Schougaard

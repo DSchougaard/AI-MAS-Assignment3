@@ -231,7 +231,6 @@ public class Node implements NodeInterface, LevelInterface{
 	}
 
 	public boolean isGoalState(int agentID, int obstructionCount, ArrayList<Base> route){
-		LogicalAgent agent = this.agents[agentID];
 
 		int count = 0;
 
