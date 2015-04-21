@@ -636,9 +636,47 @@ SearchClient.init( serverMessages );
 		
 		Node state = SearchClient.state;
 		
+//		System.out.println(state);
+//		System.out.println("hallo");
+//		assertEquals("\n\n", state);
+//		fail();
+	}
+	
+	@Test
+	public void importance() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/SAboxesOfHanoi.lvl")) );
+		
+		SearchClient.init( serverMessages );
+		
+		Node state = SearchClient.state;
+		int[][] imp= Node.getLevel().analyse();
+
+		for (int i = 0; i < imp.length; i++) {
+			for (int j = 0; j < imp[0].length; j++) {
+				System.out.print(imp[i][j]);
+			}
+			System.out.println();
+		}
 		System.out.println(state);
-		System.out.println("hallo");
-		assertEquals("\n\n", state);
-		fail();
+	}
+	
+	@Test
+	public void importance2() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/SACrunch.lvl")) );
+		
+		SearchClient.init( serverMessages );
+		
+		Node state = SearchClient.state;
+		int[][] imp= Node.getLevel().analyse();
+
+		for (int i = 0; i < imp.length; i++) {
+			for (int j = 0; j < imp[0].length; j++) {
+				System.out.print(imp[i][j]);
+			}
+			System.out.println();
+		}
+		System.out.println(state);
+		
+		
 	}
 }

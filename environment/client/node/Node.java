@@ -644,5 +644,7 @@ public class Node implements NodeInterface, LevelInterface{
 
 		return true;
 	}
-
+	public static Level getLevel() {
+		return level;
+	}
 }
