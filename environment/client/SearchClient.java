@@ -263,6 +263,10 @@ public class SearchClient {
 					goals.add(subgoal);
 					relaxedResult = agent.Search(relaxedStrategy, goals);
 				}
+				if (!relaxedResult.equals(null)||!relaxedResult.expStatus.equals(null)){
+					expStatus.add(relaxedResult.expStatus);
+					System.err.println(expStatus.toString());
+				}
 				System.gc();
 				
 				

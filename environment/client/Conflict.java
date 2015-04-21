@@ -150,7 +150,12 @@ public class Conflict{
 					SearchAgent sa = agents.get(a.id);
 
 					sa.status = SearchAgent.Status.HELPING;
-					Node getOut		= node.getExpandedNodes(sa.id).get(0);
+					ArrayList<Node> possibleMoves = node.getExpandedNodes(sa.id);
+					if( possibleMoves.size() == 0 ){
+						//sa.status = SearchAgent.Status.STUCK;
+						continue;
+					}
+					Node getOut		= possibleMoves.get(0);
 					Node noOpt		= getOut.ChildNode();
 					noOpt.action 	= new Command(); // NoOP command
 					Node getBack	= noOpt.ChildNode();
