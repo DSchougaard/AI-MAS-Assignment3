@@ -3,6 +3,7 @@ package client.node.level;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import client.node.Color;
 import client.node.storage.Base;
@@ -10,6 +11,7 @@ import client.node.storage.Goal;
 import client.node.storage.LogicalAgent;
 
 
+import client.node.level.clustering.KClusteringGoals;
 import client.node.level.distancemap.DistanceMap;
 
 /*
@@ -24,6 +26,8 @@ public class Level implements LevelInterface{
 	private int maxCol;
 	private static DistanceMap dm;
 
+	private KClusteringGoals kcg;
+	
 	public class Cell{
 		private Type type;
 		private char letter;
@@ -163,7 +167,7 @@ public class Level implements LevelInterface{
 
 	public void calculateCluster(LogicalAgent[] agents){
 
-		//this.kcg = new KClusteringGoals(agents, this);
+		this.kcg = new KClusteringGoals(agents, this);
 		for( int i = 0 ; i < agents.length ; i++ ){
 			if( agents[i] != null )
 				this.clusters.put( agents[i].id, this.goalTypeByColor.get(agents[i].color) );
@@ -171,8 +175,8 @@ public class Level implements LevelInterface{
 	}
 
 	public HashMap<Integer, ArrayList<Goal>> getClusters(){
-		return this.clusters;
-		//return this.kcg.getClusters();
+//		return this.clusters;
+		return this.kcg.getClusters();
 	}
 
 	public ArrayList<Goal> getCluster(LogicalAgent agent){
@@ -201,4 +205,154 @@ public class Level implements LevelInterface{
 		}
 		return result;
 	}
+	
+	public int[][] analyse() throws Exception{
+		int importance[][] = new int[maxRow][maxCol];
+		
+		HashSet<Base> explored= new HashSet<>();
+		
+		ArrayList<Base> deadends= new ArrayList<>();
+		ArrayList<Base> cornores= new ArrayList<>();
+		ArrayList<Base> onewall= new ArrayList<>();
+		ArrayList<Base> nowalls= new ArrayList<>();
+		ArrayList<Base> twowalls= new ArrayList<>();
+		for (int i = 1; i < map.length-1; i++) {
+			for (int j = 1; j < map[0].length-1; j++) {
+				if(map[i][j].type==Level.Type.WALL){
+					continue;
+				}
+				int wallsCount=0;
+				if(map[i][j-1].type == Type.WALL){
+					wallsCount++;
+				}
+				if(map[i][j+1].type == Type.WALL){
+					wallsCount++;
+				}
+				
+				if(map[i-1][j].type == Type.WALL){
+					wallsCount++;
+				}
+				
+				if(map[i+1][j].type == Type.WALL){
+					wallsCount++;
+				}
+				switch (wallsCount) {
+				case 0:
+					nowalls.add(new Base(i,j));
+					break;
+				case 1:
+					onewall.add(new Base(i,j));
+					break;
+				case 2:
+					if((map[i][j-1].type == Type.WALL && map[i][j+1].type == Type.WALL) || (map[i-1][j].type == Type.WALL && map[i+1][j].type == Type.WALL) ){
+						twowalls.add(new Base(i,j));
+					}else{
+						if((map[i-1][j-1].type == Type.WALL && map[i][j+1].type == Type.WALL && map[i+1][j].type == Type.WALL) 
+								|| (map[i+1][j-1].type == Type.WALL && map[i][j+1].type == Type.WALL && map[i-1][j].type == Type.WALL) 
+								|| (map[i-1][j+1].type == Type.WALL && map[i][j-1].type == Type.WALL && map[i+1][j].type == Type.WALL) 
+								|| (map[i+1][j+1].type == Type.WALL && map[i][j-1].type == Type.WALL && map[i-1][j].type == Type.WALL)){
+							twowalls.add(new Base(i,j));
+						}else{
+							cornores.add(new Base(i,j));
+						}
+					}
+					break;
+				case 3:
+					deadends.add(new Base(i,j));
+					break;
+				default:
+					throw new Exception("unkown field");
+				}
+
+			}
+		}
+		int max=0;
+		for (int i = 0; i < deadends.size(); i++) {
+			Base base=deadends.get(i);
+			int wallCount;
+			int imp=1;
+			do{
+				wallCount=0;
+				importance[base.row][base.col]=imp;
+				explored.add(base);
+				imp++;
+				max=Math.max(imp, max);
+				Base tmpBase = null;
+				if(map[base.row][base.col-1].type == Type.WALL){
+					wallCount++;
+				}else{
+					Base b = new Base(base.row, base.col-1);
+					if(!explored.contains(b)){
+						tmpBase=b;
+					}
+				}
+				if(map[base.row][base.col+1].type == Type.WALL){
+					wallCount++;
+				}else{
+					Base b = new Base(base.row, base.col+1);
+					if(!explored.contains(b)){
+						tmpBase=b;
+					}
+				}
+				
+				if(map[base.row-1][base.col].type == Type.WALL){
+					wallCount++;
+				}else{
+					Base b = new Base(base.row-1, base.col);
+					if(!explored.contains(b)){
+						tmpBase=b;
+					}
+				}
+				
+				if(map[base.row+1][base.col].type == Type.WALL){
+					wallCount++;
+				}else{
+					Base b = new Base(base.row+1, base.col);
+					if(!explored.contains(b)){
+						tmpBase=b;
+					}
+				}
+				if(base.equals(new Base(2,4))){
+					System.err.println("hej");
+				}
+				base=tmpBase;
+			}while(base != null && wallCount>=2 && !explored.contains(base) );
+		}
+		
+
+		
+		for (Base base :cornores) {
+			
+			if(!explored.contains(base)){
+				importance[base.row][base.col]=max;
+			}
+		}
+		max++;
+		for (Base base :onewall) {
+			
+			if(!explored.contains(base)){
+				importance[base.row][base.col]=max;
+			}
+		}
+		max++;
+		
+		for (Base base :nowalls) {
+			
+			if(!explored.contains(base)){
+				importance[base.row][base.col]=max;
+			}
+		}
+		max++;
+		
+		for (Base base :twowalls) {
+			
+			if(!explored.contains(base)){
+				importance[base.row][base.col]=max;
+			}
+		}
+		max++;
+		return importance;
+	}
+	
+
 }
