@@ -70,6 +70,7 @@ public class LevelParser{
 		// I really don't know how to achieve this better? Any suggestions?
 		settings.dm.initialize(level);
 		level.calculateCluster(node.agents);
+		level.analyse();
 		return node;
 	}
 }
