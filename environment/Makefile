@@ -30,3 +30,6 @@ run:
 
 clean:	
 	rm -f *.class
+	rm -f */*.class
+	rm -f */*/*.class
+	rm -f */*/*/*.class

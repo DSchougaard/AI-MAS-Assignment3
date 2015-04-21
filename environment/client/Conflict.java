@@ -38,11 +38,10 @@ public class Conflict{
 		}
 	}
 
-	private final int AGENT_IN_THE_ROUTE_THRESHOLD 	= 10;
-	private final int BOX_IN_THE_ROUTE_THRESHOLD 	= 15;
-	private final int DISTANCE_PLAN_THRESHOLD 		= 3;
-	private final int COMPLETE_CURRENT_PLAN_THRESHOLD = 5;
-
+	private final int AGENT_IN_THE_ROUTE_THRESHOLD 				= 10;
+	private final int BOX_IN_THE_ROUTE_THRESHOLD 				= 15;
+	private final int DISTANCE_PLAN_THRESHOLD 					= 3;
+	private final int COMPLETE_CURRENT_PLAN_THRESHOLD 			= 5;
 
 	public static ArrayList< LinkedList< Node > > solve(Node node, ArrayList< LinkedList< Node > > solutions, List< SearchAgent > agents) throws IOException{
 		
@@ -89,10 +88,10 @@ public class Conflict{
 
 		while( !needs_help.isEmpty() ){
 			System.err.println("Dowop");
-
 			SearchAgent sa = needs_help.pollFirst();
 
 			for( LogicalAgent la : needs_agents_moved.get(sa) ){
+				System.err.println("Conflict :: Moving agent " + la.id + " out of agent " + sa.id + "'s route.");
 				resolveAgentConflict(solutions, node, sa, agents.get(la.id), RouteParser.parse(solutions.get(sa.id), sa.id), needs_help, needs_agents_moved, needs_boxes_moved);
 			}
 
@@ -115,13 +114,13 @@ public class Conflict{
 		for( Base b : route ){
 			Object o = node.objectAt(b);
 			if( o instanceof LogicalAgent ){
-				System.err.println("Conflict :: Agent found in route for agent " + sa.id + "!");
+				System.err.println("Conflict :: ExamineRoute :: Agent found in route for agent " + sa.id + "!");
 				// I know, I know. Ugly syntax. Get ID of LogicalAgent in the way
 				// and insert corrosponding SearchAgent into list.
 				agentsInTheWay.add( (LogicalAgent)o );	
 
 			}else if( o instanceof Box ){
-				System.err.println("Conflict :: Box found in route for agent " + sa.id + "!");
+				System.err.println("Conflict :: ExamineRoute :: Box found in route for agent " + sa.id + "!");
 				if( sa.color != ((Box)o).color || numBoxes < 1 ){
 					System.err.println("            Color of box: " + ((Box)o).color + ".");
 					boxesInTheWay.add( (Box)o );
@@ -135,12 +134,14 @@ public class Conflict{
 	}
 
 	private static void resolveAgentConflict(ArrayList< LinkedList< Node > > solutions, Node node, SearchAgent sa, SearchAgent saInTheWay, ArrayList<Base> route, Deque<SearchAgent> needs_help, HashMap<SearchAgent, ArrayList<LogicalAgent>> needs_agents_moved, HashMap<SearchAgent, ArrayList<Box>> needs_boxes_moved ) throws IOException{
+		System.err.println("Conflict :: ResolveAgentConflict :: Initated.");
 		int inject_help_at = 0;
 
 		// Metrics for current plan
 		int estimate = node.distance(node.agents[sa.id], node.agents[saInTheWay.id]);
 
-		if( solutions.get(saInTheWay.id).size() < 5 ){
+		if( solutions.get(saInTheWay.id).size() < 5 && solutions.get(saInTheWay.id).size() > 0 ){
+			System.err.println("Conflict :: ResolveAgentConflict :: Skipping agent, because its plan is short.");
 			return;
 		}
 		int row, col;
@@ -154,6 +155,7 @@ public class Conflict{
 		SearchResult outOfTheWayResult 		= saInTheWay.CustomSearch(outOfTheWayStrategy, outOfTheWayGS);
 
 		if( outOfTheWayResult.reason == Result.STUCK ){
+			System.err.println("Conflict :: ResolveAgentConflict :: Was unable to find a route out of harms way.");
 			saInTheWay.status = SearchAgent.Status.STUCK_HELPING;
 
 			Node relaxed = node.subdomain(saInTheWay.id);
@@ -164,6 +166,7 @@ public class Conflict{
 				ArrayList<Base> saInTheWayRoute = RouteParser.parse(outOfTheWayResult.solution, saInTheWay.id);
 				examineRoute(saInTheWay, node, saInTheWayRoute, needs_agents_moved, needs_boxes_moved);
 			}else{
+				System.err.println("Conflict :: ResolveAgentConflict :: Eeehhhhh....");
 				// Eeehhh.......
 			}
 			needs_help.addFirst(saInTheWay);

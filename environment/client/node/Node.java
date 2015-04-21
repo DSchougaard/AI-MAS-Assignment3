@@ -205,6 +205,8 @@ public class Node implements NodeInterface, LevelInterface{
 
 	@Override
 	public boolean isGoalState(ArrayList<Goal> goals){
+		if( goals == null ) return true;
+		
 		for( int i = 0 ; i < goals.size() ; i++ ){
 			Point p = goals.get(i).getPoint();
 			Box b = this.boxesByPoint.get(p);
