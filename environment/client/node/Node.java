@@ -320,14 +320,14 @@ public class Node implements NodeInterface, LevelInterface{
 		return Node.level.distance(from, to);
 	}
 
-	public void calculateCluster(LogicalAgent[] agents){
-		Node.level.calculateCluster(agents);
+	public void calculateCluster(LogicalAgent[] agents, boolean b){
+		Node.level.calculateCluster(agents, b);
 	}
 	public HashMap<Integer, ArrayList<Goal>> getClusters(){
 		return Node.level.getClusters();
 	}
-	public ArrayList<Goal> getCluster(LogicalAgent agent){
-		ArrayList<Goal> cluster 	= Node.level.getCluster(agent);
+	public ArrayList<Goal> getCluster(int agentID){
+		ArrayList<Goal> cluster 	= Node.level.getCluster(agentID);
 		ArrayList<Goal> filtered 	= new ArrayList<Goal>();
 
 		// Bypass filtering

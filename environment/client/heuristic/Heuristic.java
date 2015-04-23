@@ -78,7 +78,7 @@ public abstract class Heuristic implements Comparator< Node > {
 	@SuppressWarnings("unused")
 	private Goal selectGoal_goalDist(Node node){
 		LogicalAgent agent = node.agents[this.agent.id];
-		ArrayList<Goal> goals = node.getCluster(agent);
+		ArrayList<Goal> goals = node.getCluster(agent.id);
 		Goal selectedGoal = goals.get(0);
 		
 		for( Goal goal : goals ){
@@ -93,7 +93,7 @@ public abstract class Heuristic implements Comparator< Node > {
 
 	private Goal selectGoal_boxGoalDist(Node node){
 		LogicalAgent agent = node.agents[this.agent.id];
-		ArrayList<Goal> goals = node.getCluster(agent);
+		ArrayList<Goal> goals = node.getCluster(agent.id);
 
 		// Selected Values
 		Goal selectedGoal = null;

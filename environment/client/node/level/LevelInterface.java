@@ -23,8 +23,8 @@ public interface LevelInterface {
 	public Integer distance(Base from, Base to);
 
 	// Clusters
-	public void calculateCluster(LogicalAgent[] agents);
+	public void calculateCluster(LogicalAgent[] agents, boolean kcluster);
 	public HashMap<Integer, ArrayList<Goal>> getClusters();
-	public ArrayList<Goal> getCluster(LogicalAgent agent);
+	public ArrayList<Goal> getCluster(int agentID);
 
 }

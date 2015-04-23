@@ -94,16 +94,11 @@ public class KClusteringGoals{
 			}
 
 			ArrayList<Goal> clusterGoals = new ArrayList<Goal>();
-			clusterGoals.add(g);
+//			clusterGoals.add(g);
 			clusterGoals.addAll( clustersByCenter.get(g) );
 			this.clusters.put(selectedAgent, clusterGoals );
 			agents.remove(selectedAgent);
 		}
-	}
-
-
-	public ArrayList<Goal> getCluster(Integer agent){
-		return this.clusters.get(agent);
 	}
 
 	public ArrayList<Goal> getCluster(int agentID){
@@ -115,10 +110,11 @@ public class KClusteringGoals{
 	}
 
 	public void printCluster(){
-		for( Integer i : this.clusters.keySet() ){
-			System.err.print("[ " + i.intValue() + " ]: ");
+		for( int i : this.clusters.keySet() ){
+			System.err.print("[ " + i + " ]: ");
 			for( Goal g : this.clusters.get(i) )
-				System.err.print(" {" + g.row + "," + g.col + "} ");
+				System.err.println(g);
+//				System.err.print(" {" + g.row + "," + g.col + "} ");
 			System.err.println("");
 		}
 	}

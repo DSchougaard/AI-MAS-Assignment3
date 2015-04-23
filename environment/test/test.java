@@ -32,11 +32,14 @@ import client.SearchClient;
 import client.Strategy;
 import client.Strategy.StrategyBestFirst;
 import client.heuristic.AStar;
+import client.heuristic.Greedy;
+import client.heuristic.Heuristic;
 import client.node.Color;
 import client.node.Node;
 import client.node.level.distancemap.FloydWarshallDistanceMap;
 import client.node.storage.Base;
 import client.node.storage.Box;
+import client.node.storage.Goal;
 import client.parser.SettingsContainer;
 
 //I am a horrible person
@@ -633,32 +636,35 @@ SearchClient.init( serverMessages );
 		assertNull(state.distance(new Base(1, 1), new Base(2, 5)));
 	}
 	
-	@Test
-	public void AllInOne() throws Exception{
-		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAallInOne.lvl")) );
-		
-		SearchClient.init( serverMessages );
-		
-		Node state = SearchClient.state;
-		
-//		System.out.println(state);
-//		System.out.println("hallo");
-//		assertEquals("\n\n", state);
-//		fail();
-	}
 	
 	@Test
 	public void clusters() throws Exception{
-		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAallInOne.lvl")) );
-		
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAallInOne1.lvl")) );
+
 		SearchClient.init( serverMessages );
-		
+
 		Node state = SearchClient.state;
-		
-//		System.out.println(state);
-//		System.out.println("hallo");
-//		assertEquals("\n\n", state);
-//		fail();
+		assertEquals(2, state.getGoals().size());
+		assertNotEquals(state.getCluster(SearchClient.agents.get(0).id), state.getCluster(SearchClient.agents.get(1).id));
+		System.out.println(state.getCluster(SearchClient.agents.get(0).id));
+		assertEquals(1, state.getCluster(SearchClient.agents.get(0).id).size());
+		assertEquals(1, state.getCluster(SearchClient.agents.get(1).id).size());
+
+	}
+	
+	@Test
+	public void clusters2() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAsimple4.lvl")) );
+
+		SearchClient.init( serverMessages );
+
+		Node state = SearchClient.state;
+		assertEquals(3, state.getGoals().size());
+		assertNotEquals(state.getCluster(SearchClient.agents.get(0).id), state.getCluster(SearchClient.agents.get(1).id));
+		System.out.println(state.getCluster(SearchClient.agents.get(0).id));
+		assertEquals(1, state.getCluster(SearchClient.agents.get(0).id).size());
+		assertEquals(2, state.getCluster(SearchClient.agents.get(1).id).size());
+
 	}
 	
 	@Test
@@ -695,6 +701,36 @@ SearchClient.init( serverMessages );
 			System.out.println();
 		}
 		System.out.println(state);
+		
+		
+	}
+	
+	
+	@Test
+	public void allInOne1() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAallInOne1.lvl")) );
+
+		SearchClient.init( serverMessages );
+
+		Node state = SearchClient.state;
+
+		for(SearchAgent agent: SearchClient.agents){
+			Heuristic heuristic = new Greedy(agent);
+
+			Goal subgoal = null;
+			do{
+				// find a subgoal(s) which should be solved
+					subgoal = heuristic.selectGoal(state);
+					if(subgoal!=null){
+						agent.subgoals.add(subgoal);
+						System.err.println("new subgoal "+subgoal);
+					}
+			}while(subgoal!=null);
+		}
+		assertEquals(2, SearchClient.agents.size());
+		for(SearchAgent agent: SearchClient.agents){
+			assertEquals(1, agent.subgoals.size());
+		}
 		
 		
 	}

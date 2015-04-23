@@ -37,6 +37,6 @@ public class Base{
 	
 	@Override
 	public String toString(){
-		return "["+row+","+col+"]";
+		return "("+row+","+col+")";
 	}
 }

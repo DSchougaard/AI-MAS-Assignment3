@@ -24,7 +24,6 @@ public class Level implements LevelInterface{
 	private int maxCol;
 	private static DistanceMap dm;
 
-	private KClusteringGoals kcg;
 	
 	public class Cell{
 		private Type type;
@@ -164,22 +163,27 @@ public class Level implements LevelInterface{
 		return distance(from.row, from.col, to.row, to.col);
 	}
 
-	public void calculateCluster(LogicalAgent[] agents){
+	public void calculateCluster(LogicalAgent[] agents, boolean kcluster){
 
-		this.kcg = new KClusteringGoals(agents, this);
-		for( int i = 0 ; i < agents.length ; i++ ){
-			if( agents[i] != null )
-				this.clusters.put( agents[i].id, this.goalsByColor.get(agents[i].color) );
+		if(kcluster){
+			KClusteringGoals kcg = new KClusteringGoals(agents, this);
+			this.clusters=kcg.getClusters();
+		}else{
+			for( int i = 0 ; i < agents.length ; i++ ){
+				if( agents[i] != null )
+					this.clusters.put( agents[i].id, this.goalsByColor.get(agents[i].color) );
+			}
 		}
+
 	}
 
 	public HashMap<Integer, ArrayList<Goal>> getClusters(){
-//		return this.clusters;
-		return this.kcg.getClusters();
+		return this.clusters;
+
 	}
 
-	public ArrayList<Goal> getCluster(LogicalAgent agent){
-		return clusters.get( agent.id );
+	public ArrayList<Goal> getCluster(int agentID){
+		return clusters.get( agentID );
 	}
 
 	public Character[][] toArray(){
