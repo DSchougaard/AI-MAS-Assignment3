@@ -2,7 +2,7 @@ package client.heuristic;
 
 import java.util.ArrayList;
 
-import client.Heuristic;
+import client.heuristic.*;
 
 import client.node.storage.Base;
 import client.node.storage.Box;

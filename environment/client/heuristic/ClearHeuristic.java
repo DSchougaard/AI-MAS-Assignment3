@@ -28,7 +28,6 @@ public class ClearHeuristic extends Heuristic{
 
 	@Override
 	public int h(Node n){
-		LogicalAgent a = n.agents[agent.id];
 
 		int f = 0;
 

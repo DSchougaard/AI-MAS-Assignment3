@@ -27,6 +27,7 @@ public class Node implements NodeInterface, LevelInterface{
 	// Box DS
 	private HashMap<Character, ArrayList<Box>> boxesByType;
 	private HashMap<Point, Box> boxesByPoint;
+	private HashMap<Integer, Box> boxesByID;
 
 	// Agents
 	public LogicalAgent[] agents;
@@ -41,6 +42,7 @@ public class Node implements NodeInterface, LevelInterface{
 	public Node(){
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
+		boxesByID		= new HashMap<Integer, Box>();
 		agents 			= new LogicalAgent[10];
 		g=0;
 
@@ -50,6 +52,7 @@ public class Node implements NodeInterface, LevelInterface{
 		Node.level = level;
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
+		boxesByID		= new HashMap<Integer, Box>();
 		agents 			= new LogicalAgent[10];
 		g=0;
 	}
@@ -74,6 +77,7 @@ public class Node implements NodeInterface, LevelInterface{
 		boxList.remove(box);
 	}
 	private void addBox(Box box){
+		this.boxesByID.put(box.id, box);
 		this.boxesByPoint.put(new Point(box.row, box.col), box);
 		
 		ArrayList<Box> boxList= boxesByType.get(box.getType());
@@ -83,6 +87,9 @@ public class Node implements NodeInterface, LevelInterface{
 		}
 		boxList.add(box);
 	}
+
+
+
 	
 	public void addBox(char type, Color color, int row, int col){
 		addBox(new Box(type, color, row, col));
@@ -90,9 +97,11 @@ public class Node implements NodeInterface, LevelInterface{
 	
 	private void moveBox(Box box, int row, int col){
 		boxesByPoint.remove(new Point(box.row, box.col));
+		boxesByID.get(box.id);
 		box.row=row;
 		box.col=col;
 		boxesByPoint.put(new Point(box.row, box.col),box);
+		boxesByID.put(box.id, box);
 	}
 
 	/*
@@ -119,7 +128,13 @@ public class Node implements NodeInterface, LevelInterface{
 	public Box[] getBoxes(){
 		return boxesByPoint.values().toArray(new Box[0]);
 	}
-	
+
+	public HashMap<Integer, Box> getBoxesByID(){
+		return new HashMap<Integer, Box>(this.boxesByID);
+	}
+
+
+
 	@Override
 	public boolean cellIsFree(int row, int col){
 		if( Node.level.isWall(row, col) )
@@ -188,7 +203,6 @@ public class Node implements NodeInterface, LevelInterface{
 	@Override
 	public boolean isGoalState(){
 		return isGoalState(Node.level.getGoals());
-	
 	}
 
 	/**

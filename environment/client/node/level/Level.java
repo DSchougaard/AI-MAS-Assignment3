@@ -144,8 +144,11 @@ public class Level implements LevelInterface{
 	}
 
 	public ArrayList<Goal> getGoals(){
-
-		return goals;
+		ArrayList<Goal> returnGoals = new ArrayList<Goal>();
+		for( Character c : goalsByType.keySet() ){
+			returnGoals.addAll(this.goalsByType.get(c));
+		}
+		return returnGoals;
 	}
 
 	public ArrayList<Goal> getGoals(Color color){

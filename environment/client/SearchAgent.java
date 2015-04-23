@@ -17,6 +17,8 @@ import client.node.storage.LogicalAgent;
 import client.node.storage.SearchResult;
 import client.node.GoalState;
 
+import client.heuristic.*;
+
 
 public class SearchAgent{
 	
@@ -74,7 +76,7 @@ public class SearchAgent{
 	}
 
 	public SearchResult CustomSearch(Strategy strategy, GoalState goal) throws IOException {
-		System.err.println("SearchClient :: Starting ProximitySearch.");
+		System.err.println("SearchClient :: Starting CustomSearch, using " + goal.toString() + ".");
 		strategy.addToFrontier(this.state);
 
 
@@ -201,7 +203,7 @@ public class SearchAgent{
 
 		while(true){
 			if (strategy.frontierIsEmpty()) {
-				if (state.isGoalState(id, route)) {
+				if (state.isGoalState(id, box)) {
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
 				} else {
 					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
@@ -210,7 +212,7 @@ public class SearchAgent{
 
 			Node leafNode = strategy.getAndRemoveLeaf();
 
-			if (leafNode.isGoalState(id, route)) {
+			if (state.isGoalState(id, box)) {
 				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
 			}
 
@@ -229,8 +231,8 @@ public class SearchAgent{
 		strategy.addToFrontier(this.state);
 		int count = 0;
 		while(true){
-			if( count >= 25 )
-				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+			//if( count >= 25 )
+			//	return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
 
 			if (strategy.frontierIsEmpty()) {
 				if (state.isGoalState(id, numObstructions, route)) {
@@ -242,42 +244,10 @@ public class SearchAgent{
 
 			Node leafNode = strategy.getAndRemoveLeaf();
 
-			if (leafNode.isGoalState(id, box)) {
+			if (leafNode.isGoalState(id, numObstructions, route) ) {
 				if(leafNode.isInitialState()){
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
 				}
-				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
-			}
-
-			strategy.addToExplored(leafNode);
-
-			for (Node n : leafNode.getExpandedNodes(id)) {
-				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
-					strategy.addToFrontier(n);
-				}
-			}
-			count++;
-		}
-	}
-
-	
-	public SearchResult ClearRouteSearch(Strategy strategy, int numObstructions, ArrayList<Base> route){
-		System.err.println("SearchClient :: Starting Route Clearing Search");
-		strategy.addToFrontier(this.state);
-
-		while(true){
-			if (strategy.frontierIsEmpty()) {
-				if (state.isGoalState(id, numObstructions, route)) {
-					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
-				} else {
-					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
-				}
-			}
-
-			Node leafNode = strategy.getAndRemoveLeaf();
-			System.err.println(leafNode);
-
-			if (leafNode.isGoalState(id, numObstructions, route)) {
 				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
 			}
 
@@ -288,8 +258,11 @@ public class SearchAgent{
 					strategy.addToFrontier(n);
 				}
 			}
+			count++;
 		}
 	}
+
+
 	
 	@Override
 	public boolean equals( Object obj ) {

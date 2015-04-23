@@ -18,6 +18,11 @@ public abstract class GoalState{
 		private int obstructionCount;
 		private ArrayList<Base> route;
 
+		@Override
+		public String toString(){
+			return "GoalState";
+		}
+
 		public ObstructionGoalState(int agentID, int obstructionCount, ArrayList<Base> route){
 			this.agentID = agentID;
 			this.obstructionCount = obstructionCount;
@@ -60,6 +65,11 @@ public abstract class GoalState{
 				( targetRow == a.row && targetCol == a.col-1 )
 				);
 		}
+
+		@Override
+		public String toString(){
+			return "Proximity Goal State";
+		}
 	}
 
 	public static class RouteClearOfAgentGoalState extends GoalState{
@@ -75,6 +85,37 @@ public abstract class GoalState{
 			LogicalAgent a = node.agents[agentID];
 			for( Base b : route ){
 				if( a.row == b.row && a.col == b.col )
+					return false;
+			}
+			return true;
+		}
+	}
+
+	public static class RouteClearGoalState extends GoalState{
+		private int agentID, boxID;
+		private ArrayList<Base> route;
+
+		public RouteClearGoalState(int agentID, int boxID, ArrayList<Base> route){
+			this.agentID = agentID;
+			this.boxID = boxID;
+			// Copy the route.
+			this.route = new ArrayList<>();
+			this.route.addAll(route);
+		}
+
+		public boolean eval(Node node){
+			LogicalAgent a = node.agents[this.agentID];
+			Box b = null;
+			if( this.boxID != -1 )
+				b = node.getBoxesByID().get(this.boxID);
+
+			for( Base base : route ){
+				// If agent is found on route, it's NOT a goalstate
+				if( a.row == base.row && a.col == base.col )
+					return false;
+
+				// If the box is found on the route, it's NOT a goalstate.
+				if( b != null && b.row == base.row && b.col == base.col )
 					return false;
 			}
 			return true;

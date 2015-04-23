@@ -2,38 +2,42 @@ package client.heuristic;
 
 import java.util.ArrayList;
 
-import client.heuristic.*;
+import client.heuristic.Heuristic;
+import client.SearchAgent;
 
 import client.node.storage.Base;
 import client.node.storage.Box;
 import client.node.storage.LogicalAgent;
 
-import client.SearchAgent;
-
 import client.node.Node;
 
 
 
-public class OutOfTheWayHeuristic extends Heuristic{
-
-	private final int OUT_OF_THE_WAY_THRESHOLD = 10;
-
+public class ClearRouteHeuristic extends Heuristic{
 	private ArrayList<Base> route;
-	//private Box box;
-	private int initRow, initCol;
+	private int boxID;
 
-	public OutOfTheWayHeuristic(SearchAgent agent, ArrayList<Base> route, int initRow, int initCol){
+	public ClearRouteHeuristic(SearchAgent agent, int boxID, ArrayList<Base> route){
 		super(agent);
-		this.initRow = initRow;
-		this.initCol = initCol;
+		this.boxID = boxID;
 		this.route = new ArrayList<Base>();
 		this.route.addAll(route);
 	}
 
 	@Override
 	public int h(Node n){
-		LogicalAgent a = n.agents[agent.id];
-		return OUT_OF_THE_WAY_THRESHOLD - n.distance(initRow, initCol, a.row, a.col);
+		int f = 0;
+
+		for( Base b : route ){
+			Object o = n.objectAt(b);
+			if( o instanceof LogicalAgent && ((LogicalAgent)o).id == agent.id ){
+				f++;
+			}else if( o instanceof Box && ((Box)o).id == this.boxID ){
+				f++;
+			}
+		}
+
+		return f;
 	}
 
 	public int f(Node n){
