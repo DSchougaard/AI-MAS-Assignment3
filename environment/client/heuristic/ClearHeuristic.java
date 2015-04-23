@@ -24,21 +24,23 @@ public class ClearHeuristic extends Heuristic{
 		this.numObstructions = numObstructions;
 		this.route = new ArrayList<Base>();
 		this.route.addAll(route);
+
 	}
 
 	@Override
 	public int h(Node n){
 
-		int f = 0;
+		int obstructions = 0;
 
 		for( Base b : route ){
 			Object o = n.objectAt(b);	
 			if( o instanceof Box || o instanceof LogicalAgent )
-				f++;
+				obstructions++;
 		}
 
-		return numObstructions - f;
+		return obstructions;
 	}
+	
 
 	public int f(Node n){
 		// A* Search
