@@ -26,40 +26,6 @@ public abstract class Heuristic implements Comparator< Node > {
 		return f( n1 ) - f( n2 );
 	}
 
-//	public int h ( Node n ) {
-//		//euclid distance from mover to box and from box to goal
-//		Integer tmpH=hs.get(n);
-//		if(tmpH==null){
-//
-//			int h=0;			
-//			for (Box box : n.getBoxes()) {				
-//				if(agent.subgoals.size() > 0){
-//					for (Goal goal : agent.subgoals){
-//						if(goal.getType() == box.getType()){
-//							if (n.distance(box, goal) > 0){						
-//								h+=n.distance(box, goal) +1 ;
-//							}
-//							h+=n.distance(n.agents[agent.id], goal);
-//						}					
-//					}
-//				}else{
-//					Goal goal = n.getGoals(box.getType()).get(0);
-//					if(goal.getType() == box.getType()){
-//						if (n.distance(box, goal) > 0){						
-//							h+=n.distance(box, goal) +1 ;
-//						}
-//						h+=n.distance(n.agents[agent.id], goal);
-//					}
-//				}
-//								
-//			}
-//			hs.put(n, h);
-//			return h;
-//		}else{
-//			return tmpH;
-//		}
-//		
-//	}
 	
 	public int h ( Node n ) {
 		//euclid distance from mover to box and from box to goal
@@ -151,12 +117,7 @@ public abstract class Heuristic implements Comparator< Node > {
 				}
 			}
 		}
-		/*
-		if( selectedGoal == null )
-			throw new NullPointerException("No more goals.");
-		if( selectedBox == null )
-			throw new NullPointerException("No available boxes for selected goal.");
-		*/
+
 		return selectedGoal;
 	}
 }
