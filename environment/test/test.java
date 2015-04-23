@@ -648,7 +648,6 @@ SearchClient.init( serverMessages );
 		Node state = SearchClient.state;
 		assertEquals(2, state.getGoals().size());
 		assertNotEquals(state.getCluster(SearchClient.agents.get(0).id), state.getCluster(SearchClient.agents.get(1).id));
-		System.out.println(state.getCluster(SearchClient.agents.get(0).id));
 		assertEquals(1, state.getCluster(SearchClient.agents.get(0).id).size());
 		assertEquals(1, state.getCluster(SearchClient.agents.get(1).id).size());
 
@@ -663,9 +662,8 @@ SearchClient.init( serverMessages );
 		Node state = SearchClient.state;
 		assertEquals(3, state.getGoals().size());
 		assertNotEquals(state.getCluster(SearchClient.agents.get(0).id), state.getCluster(SearchClient.agents.get(1).id));
-		System.out.println(state.getCluster(SearchClient.agents.get(0).id));
-		assertEquals(1, state.getCluster(SearchClient.agents.get(0).id).size());
-		assertEquals(2, state.getCluster(SearchClient.agents.get(1).id).size());
+		assertEquals(2, state.getCluster(SearchClient.agents.get(0).id).size());
+		assertEquals(1, state.getCluster(SearchClient.agents.get(1).id).size());
 
 	}
 	
@@ -676,7 +674,7 @@ SearchClient.init( serverMessages );
 		SearchClient.init( serverMessages );
 
 		Node state = SearchClient.state;
-		System.out.println(state.getClusters().toString());
+
 		Set<Integer> keys=new HashSet<Integer>(Arrays.asList(0,1,2,3,4,5,6,7,8,9));
 				
 		assertEquals(keys, state.getClusters().keySet());
@@ -695,16 +693,22 @@ SearchClient.init( serverMessages );
 		
 		SearchClient.init( serverMessages );
 		
-		Node state = SearchClient.state;
 		int[][] imp= Node.getLevel().analyse();
-
+		StringBuilder builder= new StringBuilder();
 		for (int i = 0; i < imp.length; i++) {
 			for (int j = 0; j < imp[0].length; j++) {
-				System.out.print(imp[i][j]);
+				builder.append(imp[i][j]);
 			}
-			System.out.println();
+			builder.append("\n");
 		}
-		System.out.println(state);
+		assertEquals("0000000\n"+
+			     "0678760\n"+
+			     "0505050\n"+
+			     "0404040\n"+
+		         "0303030\n"+
+			     "0202020\n"+
+			     "0101010\n"+
+			     "0000000\n", builder.toString());
 	}
 	
 	@Test
@@ -713,16 +717,23 @@ SearchClient.init( serverMessages );
 		
 		SearchClient.init( serverMessages );
 		
-		Node state = SearchClient.state;
 		int[][] imp= Node.getLevel().analyse();
-
+		StringBuilder builder= new StringBuilder();
 		for (int i = 0; i < imp.length; i++) {
 			for (int j = 0; j < imp[0].length; j++) {
-				System.out.print(imp[i][j]);
+				builder.append(imp[i][j]);
 			}
-			System.out.println();
+			builder.append("\n");
 		}
-		System.out.println(state);
+		assertEquals("00000000\n"+
+				     "01012430\n"+
+				     "02103540\n"+
+				     "06010340\n"+
+			         "04621060\n"+
+				     "06000060\n"+
+				     "06666660\n"+
+				     "00000000\n", builder.toString());
+
 		
 		
 	}

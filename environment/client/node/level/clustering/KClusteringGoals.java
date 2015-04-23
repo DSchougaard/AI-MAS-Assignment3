@@ -1,15 +1,13 @@
 package client.node.level.clustering;
 
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
-
-
-
 
 import client.node.Color;
 import client.node.level.Level;
-import client.node.storage.*;
+import client.node.storage.Goal;
+import client.node.storage.LogicalAgent;
 
 
 
@@ -66,9 +64,7 @@ public class KClusteringGoals{
 					maxDist = minDist;
 				}
 			}
-			if(nextGoal==null){
-				System.out.println(",,ds");
-			}
+
 			picked.add(nextGoal);
 			remaining.remove(nextGoal);
 
@@ -81,9 +77,7 @@ public class KClusteringGoals{
 			ArrayList<Goal> t = new ArrayList<Goal>();
 			t.add(g);
 			clustersByCenter.put(g, t);
-			if(g==null){
-				System.out.println(",,ds");
-			}
+
 		}
 
 		// For each of the remaining goals, deposit them into the CLOSEST cluster center's list.
@@ -97,9 +91,7 @@ public class KClusteringGoals{
 					distanceToCenter = level.distance(g, center);
 				}
 			}
-			if(g==null){
-				System.out.println("hej");
-			}
+
 			clustersByCenter.get(selectedCenter).add(g);
 		}
 
@@ -135,7 +127,6 @@ public class KClusteringGoals{
 			System.err.print("[ " + i + " ]: ");
 			for( Goal g : this.clusters.get(i) )
 				System.err.println(g);
-//				System.err.print(" {" + g.row + "," + g.col + "} ");
 			System.err.println("");
 		}
 	}
