@@ -18,8 +18,8 @@ import client.node.storage.SearchResult;
 
 public class SearchAgent{
 	
-	public int id;
-	public Color color;
+	public final int id;
+	public final Color color;
 	public enum Status{STUCK, PLAN, DONE, IDLE, HELPING}
 	public Status status = Status.IDLE;
 	public ArrayList<Goal> subgoals = new ArrayList<>();

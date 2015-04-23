@@ -148,6 +148,10 @@ public class Level implements LevelInterface{
 	public ArrayList<Goal> getGoals(Color color){
 		return this.goalsByColor.get(color);
 	}
+	
+	public ArrayList<Color> getColors(){
+		return new ArrayList<Color>( this.goalsByColor.keySet());
+	}
 
 	public Integer distance(int rowFrom, int colFrom, int rowTo, int colTo){
 		if(dm==null){
@@ -170,8 +174,16 @@ public class Level implements LevelInterface{
 			this.clusters=kcg.getClusters();
 		}else{
 			for( int i = 0 ; i < agents.length ; i++ ){
-				if( agents[i] != null )
-					this.clusters.put( agents[i].id, this.goalsByColor.get(agents[i].color) );
+				if( agents[i] != null ){
+					ArrayList<Goal> goals=new ArrayList<>();
+					for (Goal goal : this.goalsByColor.get(agents[i].color)) {
+						if (distance(agents[i], goal)!=null) {
+							goals.add(goal);
+						}
+					}
+					this.clusters.put( agents[i].id, goals );
+				}
+					
 			}
 		}
 

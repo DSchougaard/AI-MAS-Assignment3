@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
+
+
+import client.node.Color;
 import client.node.level.Level;
 import client.node.storage.*;
 
@@ -14,33 +17,45 @@ public class KClusteringGoals{
 		
 	private HashMap<Integer, ArrayList<Goal>> clusters;
 
-	public KClusteringGoals(LogicalAgent[] parsedAgents, Level level){
+	
+	public KClusteringGoals(LogicalAgent[] AgentIDs, Level level){
 		this.clusters = new HashMap<Integer, ArrayList<Goal>>();
 		// Pre load all active agents into the cluster
-		ArrayList<Integer> agents = new ArrayList<Integer>();
-		for( LogicalAgent a : parsedAgents ){
+		ArrayList<Integer> agentIDs = new ArrayList<Integer>();
+		for( LogicalAgent a : AgentIDs ){
 			if( a != null )
-				agents.add(a.id);
+				agentIDs.add(a.id);
 		}
 
 		// Preload goals. Takes time. Sorry.
-		ArrayList<Goal> allGoals = new ArrayList<Goal>(level.getGoals());
-		int agentCount = agents.size();
-		int goalCount = allGoals.size();
+		ArrayList<Color> colors=level.getColors();
+		
+		for (Color color : colors) {
+			ArrayList<LogicalAgent> agents = new ArrayList<>();
+			for (LogicalAgent logicalAgent : AgentIDs) {
+				if(logicalAgent!=null && logicalAgent.color==color){
+					agents.add(logicalAgent);
+				}
+			}
+			 KClusteringGoal(agents, level.getGoals(color), level);
+		}
+		
+	}
+	public void KClusteringGoal(ArrayList<LogicalAgent> agents, ArrayList<Goal> goals, Level level){
+		int startGoal = (new Random(System.nanoTime())).nextInt(goals.size());
 
-		int startGoal = (new Random(System.nanoTime())).nextInt(goalCount);
-
-		ArrayList<Goal> picked = new ArrayList<Goal>();
-		picked.add(allGoals.get(startGoal));
-		allGoals.remove(startGoal);
+		ArrayList<Goal> picked = new ArrayList<>();
+		ArrayList<Goal> remaining = new ArrayList<>(goals);
+		picked.add(remaining.get(startGoal));
+		remaining.remove(startGoal);
 
 		// Apply a greedy k-centering algorithm, with k = number of agents
-		int i = 1, minDist, maxDist;
-		while( i < agentCount ){
+		int minDist, maxDist;
+		for(int i =0; i<agents.size()-1;i++){
 			maxDist = 0;
 
 			Goal nextGoal = null;
-			for( Goal g1 : allGoals ){
+			for( Goal g1 : remaining ){
 				minDist = Integer.MAX_VALUE;
 				for( Goal g2 : picked ){
 					if(level.distance(g1, g2)!= null && minDist > level.distance(g1, g2) )
@@ -51,26 +66,29 @@ public class KClusteringGoals{
 					maxDist = minDist;
 				}
 			}
-
+			if(nextGoal==null){
+				System.out.println(",,ds");
+			}
 			picked.add(nextGoal);
-			allGoals.remove(nextGoal);
-			i++;
+			remaining.remove(nextGoal);
+
 		}
-
-		if( picked.size() != agentCount )
-			System.err.println("Something went wrong during cluseering");
-
+		
+		
 		// For each selected cluster center, we apply it to it's own list.
 		HashMap<Goal, ArrayList<Goal>> clustersByCenter = new HashMap<Goal, ArrayList<Goal>>();
 		for( Goal g : picked ){
 			ArrayList<Goal> t = new ArrayList<Goal>();
 			t.add(g);
 			clustersByCenter.put(g, t);
+			if(g==null){
+				System.out.println(",,ds");
+			}
 		}
 
 		// For each of the remaining goals, deposit them into the CLOSEST cluster center's list.
 		int distanceToCenter;
-		for( Goal g : allGoals ){
+		for( Goal g : remaining	 ){
 			distanceToCenter = Integer.MAX_VALUE;
 			Goal selectedCenter = null;
 			for( Goal center : picked){
@@ -79,30 +97,33 @@ public class KClusteringGoals{
 					distanceToCenter = level.distance(g, center);
 				}
 			}
+			if(g==null){
+				System.out.println("hej");
+			}
 			clustersByCenter.get(selectedCenter).add(g);
 		}
 
 		// Greedy pairing of agents and cluster centers
 		for( Goal g : clustersByCenter.keySet() ){
 			int centerToAgentDist = Integer.MAX_VALUE;
-			Integer selectedAgent = null;
-			for( Integer a : agents ){
-				if(level.distance(g, parsedAgents[a.intValue()])!= null &&  centerToAgentDist > level.distance(g, parsedAgents[a.intValue()]) ){
-					centerToAgentDist = level.distance(g, parsedAgents[a.intValue()]);
-					selectedAgent = a;
+			LogicalAgent selectedAgent = null;
+			for( LogicalAgent agent : agents ){
+				if(level.distance(g, agent)!= null &&  centerToAgentDist > level.distance(g, agent) ){
+					centerToAgentDist = level.distance(g, agent);
+					selectedAgent = agent;
 				}
 			}
 
 			ArrayList<Goal> clusterGoals = new ArrayList<Goal>();
-//			clusterGoals.add(g);
 			clusterGoals.addAll( clustersByCenter.get(g) );
-			this.clusters.put(selectedAgent, clusterGoals );
+			
+			this.clusters.put(selectedAgent.id, clusterGoals );
 			agents.remove(selectedAgent);
 		}
+		
 	}
-
 	public ArrayList<Goal> getCluster(int agentID){
-		return this.clusters.get(new Integer(agentID));
+		return this.clusters.get(agentID);
 	}
 
 	public HashMap<Integer, ArrayList<Goal>> getClusters(){

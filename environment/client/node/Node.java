@@ -21,7 +21,7 @@ import client.node.storage.Goal;
 
 public class Node implements NodeInterface, LevelInterface{
 
-	private static Random rnd = new Random( System.nanoTime());
+	private final static Random rnd = new Random( System.nanoTime());
 	private static Level level;
 
 	// Box DS

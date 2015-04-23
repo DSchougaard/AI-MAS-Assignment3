@@ -4,7 +4,7 @@ package client.node.storage;
 // Boxes have a color AND a type
 
 public class Goal extends Base{
-	private char type;
+	private final char type;
 	public int importance =0;
 	public static int maxImportance=0; 
 	

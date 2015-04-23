@@ -5,8 +5,8 @@ package client.node.storage;
 import client.node.Color;
 
 public class LogicalAgent extends Base{
-	public int id;
-	public Color color;
+	public final int id;
+	public final Color color;
 
 	
 	public LogicalAgent(int name, Color color, int row, int col){

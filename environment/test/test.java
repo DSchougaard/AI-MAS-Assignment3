@@ -16,7 +16,9 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
@@ -664,6 +666,26 @@ SearchClient.init( serverMessages );
 		System.out.println(state.getCluster(SearchClient.agents.get(0).id));
 		assertEquals(1, state.getCluster(SearchClient.agents.get(0).id).size());
 		assertEquals(2, state.getCluster(SearchClient.agents.get(1).id).size());
+
+	}
+	
+	@Test
+	public void clusters3() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAallInOne.lvl")) );
+
+		SearchClient.init( serverMessages );
+
+		Node state = SearchClient.state;
+		System.out.println(state.getClusters().toString());
+		Set<Integer> keys=new HashSet<Integer>(Arrays.asList(0,1,2,3,4,5,6,7,8,9));
+				
+		assertEquals(keys, state.getClusters().keySet());
+		assertEquals(3, state.getCluster(SearchClient.agents.get(4).id).size());
+		int size=0;
+		for(ArrayList<Goal> goals: state.getClusters().values()){
+			size+=goals.size();
+		}
+		assertEquals(13, size);
 
 	}
 	
