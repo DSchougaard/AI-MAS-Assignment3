@@ -44,9 +44,9 @@ public class ClearHeuristic extends Heuristic{
 
 	public int f(Node n){
 		// A* Search
-		//return n.g + h(n);
+		return n.g() + h(n);
 		// Greedy Search
-		return h(n);
+		// return h(n);
 	}
 
 	public String toString(){
