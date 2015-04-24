@@ -229,7 +229,7 @@ public class SearchClient {
 		for (SearchAgent agent : agents) {
 			// only plan if there is not already a plan
 			if (solutions.get(agent.id).isEmpty()) {
-				if(agent.status == Status.HELPING){
+				if( agent.status == Status.HELPING || agent.status == Status.STUCK_HELPING ){
 					Conflict.doneHelping(agent);
 					agent.status = Status.IDLE;
 				}

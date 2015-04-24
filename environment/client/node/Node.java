@@ -149,6 +149,7 @@ public class Node implements NodeInterface, LevelInterface{
 		return true;
 	}
 	
+
 	public ArrayList<Integer> getAgentIDs(Color color){
 		return colorMap.get(color);
 	}

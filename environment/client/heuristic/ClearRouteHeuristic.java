@@ -14,19 +14,24 @@ import client.node.Node;
 
 
 public class ClearRouteHeuristic extends Heuristic{
+	
+	private static final int RUN_AWAY_LITTLE_GIRL_RUN_AWAY = 12;
+
 	private ArrayList<Base> route;
 	private int boxID;
+	private Base origin;
 
-	public ClearRouteHeuristic(SearchAgent agent, int boxID, ArrayList<Base> route){
+	public ClearRouteHeuristic(SearchAgent agent, int boxID, ArrayList<Base> route, Base origin){
 		super(agent);
 		this.boxID = boxID;
 		this.route = new ArrayList<Base>();
 		this.route.addAll(route);
+		this.origin = origin;
 	}
 
 	@Override
 	public int h(Node n){
-		int f = 0;
+		/*int f = 0;
 
 		for( Base b : route ){
 			Object o = n.objectAt(b);
@@ -37,12 +42,22 @@ public class ClearRouteHeuristic extends Heuristic{
 			}
 		}
 
-		return f;
+		return f;*/
+		
+		int d = 0;
+		if(  n.distance(origin, n.agents[agent.id]) < n.distance(origin, n.getBoxesByID().get(this.boxID))){
+			d = n.distance(origin, n.agents[agent.id]);
+		}else{
+			d = n.distance(origin, n.getBoxesByID().get(this.boxID));
+		}
+
+
+		return RUN_AWAY_LITTLE_GIRL_RUN_AWAY - d;
 	}
 
 	public int f(Node n){
 		// A* Search
-		//return n.g + h(n);
+		//return n.g() + h(n);
 		// Greedy Search
 		return h(n);
 	}
