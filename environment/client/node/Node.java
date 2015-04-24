@@ -149,6 +149,15 @@ public class Node implements NodeInterface, LevelInterface{
 		return true;
 	}
 	
+	public ArrayList<Integer> getAgentIDsLoop(Color color){
+		ArrayList<Integer> _agents = new ArrayList<>();
+		for( LogicalAgent la : agents ){
+			if( la.color == color )
+				_agents.add(la.id);
+		}
+		return _agents;
+	}
+
 	public ArrayList<Integer> getAgentIDs(Color color){
 		return colorMap.get(color);
 	}
