@@ -60,13 +60,22 @@ public class Conflict{
 
 	public static ArrayList< LinkedList< Node > > solve(Node node, ArrayList< LinkedList< Node > > solutions, List< SearchAgent > agents) throws IOException{
 		
+		System.err.println("\n\n\n\n");
+		System.err.println("Invoking Conflict Resolution.");
+		System.err.println("\n\n\n\n");
+		
+
 		Deque<SearchAgent> needs_help = new LinkedList<>();
 		HashMap<SearchAgent, ArrayList<LogicalAgent>> needs_agents_moved = new HashMap<SearchAgent, ArrayList<LogicalAgent>>();
 		HashMap<SearchAgent, ArrayList<Box>> needs_boxes_moved = new HashMap<SearchAgent, ArrayList<Box>>();
 
 		for( SearchAgent sa : agents ){
 			if( sa.status == SearchAgent.Status.STUCK || sa.status == SearchAgent.Status.STUCK_HELPING ){
+				//examineRoute( SearchAgent sa, Node node, ArrayList<Base> route, HashMap<SearchAgent, ArrayList<LogicalAgent>> needs_agents_moved, HashMap<SearchAgent, ArrayList<Box>> needs_boxes_moved ){
 				needs_help.addFirst(sa);
+				examineRoute(sa, node, RouteParser.parse(solutions, sa.id), needs_agents_moved, needs_boxes_moved);
+
+				/*needs_help.addFirst(sa);
 
 				// Get the stuck agents route
 				ArrayList<Base> route = RouteParser.parse(solutions.get(sa.id), sa.id);
@@ -79,7 +88,7 @@ public class Conflict{
 				// Loop over route, identifying obstructions in the route
 				for( Base b : route ){
 					Object o = node.objectAt(b);
-					if( o instanceof LogicalAgent ){
+					if( o instanceof LogicalAgent  ){
 						System.err.println("Conflict :: Agent found in route for agent " + sa.id + "!");
 						// I know, I know. Ugly syntax. Get ID of LogicalAgent in the way
 						// and insert corrosponding SearchAgent into list.
@@ -96,13 +105,13 @@ public class Conflict{
 					}
 				}
 				needs_agents_moved.put(sa, agentsInTheWay);
-				needs_boxes_moved.put(sa, boxesInTheWay);
+				needs_boxes_moved.put(sa, boxesInTheWay);*/
 			}
 		}		
 
-
+		int i = 0;
 		while( !needs_help.isEmpty() ){
-			System.err.println("Dowop");
+			System.err.println(needs_help.size() + " agents needing help! Itteration = " + ++i + ".");
 			SearchAgent sa = needs_help.pollFirst();
 			
 			ArrayList<Box> move_boxes = needs_boxes_moved.get(sa);
@@ -163,10 +172,22 @@ public class Conflict{
 
 	private static void resolveBoxConflict(SearchAgent needingHelp, Box box, int obstructions, Node node, List<SearchAgent> agents,ArrayList< LinkedList< Node > > solutions, Deque<SearchAgent> needs_help, HashMap<SearchAgent, ArrayList<LogicalAgent>> needs_agents_moved, HashMap<SearchAgent, ArrayList<Box>> needs_boxes_moved) throws IOException{
 		
+		System.err.println("Conflict :: ResolveBoxConflict :: Attempting to resolve.");
+
 		// PLUG AND PLAY AGENT SELECT
 
 		// First we select the agent best suited for the job
-		ArrayList<Integer> possibleAgents = node.getAgentIDs(box.color);
+		ArrayList<Integer> possibleAgents = node.getAgentIDsLoop(box.color);
+
+		if( box == null ){
+			System.err.println("Conflict :: ResolveBoxConflict :: Box was NULL.");
+		}
+
+		if( possibleAgents == null ){
+			System.err.println("Conflict :: ResolveBoxConflict :: Somehow a possible agent was not found");
+			needs_help.addLast(needingHelp);
+		}
+
 		int distanceClosest = Integer.MAX_VALUE, selectedAgent = -1;
 		for( int i : possibleAgents ){
 			if( node.distance(box, node.agents[i]) < distanceClosest ){
@@ -237,8 +258,8 @@ public class Conflict{
 		System.err.println("Route:");
 		System.err.println(routeToClear);
 
-		//Heuristic clearHeuristic = new ClearHeuristic(sa, obstructions, routeToClear);
-		Heuristic clearHeuristic = new ClearRouteHeuristic(sa, box.id, routeToClear);
+		Heuristic clearHeuristic = new ClearHeuristic(sa, obstructions, routeToClear);
+		//Heuristic clearHeuristic = new ClearRouteHeuristic(sa, box.id, routeToClear, box);
 		Strategy clearStrategy = new StrategyBestFirst(clearHeuristic);
 		sa.setState(moveStart);
 		//SearchResult moveBoxResult = sa.ClearRouteSearch(clearStrategy, obstructions, routeToClear);
@@ -295,7 +316,7 @@ public class Conflict{
 		for( Base b : route ){
 			Object o = node.objectAt(b);
 			if( o instanceof LogicalAgent && ((LogicalAgent)o).id != sa.id ){
-				System.err.println("Conflict :: ExamineRoute :: Agent found in route for agent " + sa.id + "!");
+				System.err.println("Conflict :: ExamineRoute :: Agent " + ((LogicalAgent)o).id + " found in route for Agent " + sa.id + "!");
 				// I know, I know. Ugly syntax. Get ID of LogicalAgent in the way
 				// and insert corrosponding SearchAgent into list.
 				agentsInTheWay.add( (LogicalAgent)o );	
@@ -358,14 +379,15 @@ public class Conflict{
 
 			System.err.println("Conflict :: ResolveAgentConflict :: Agent " + saInTheWay.id + " found a route, using the relaxed domain.");
 			solutions.get(saInTheWay.id).clear();
-			solutions.get(saInTheWay.id).addAll( outOfTheWayResult.solution );
+			solutions.get(saInTheWay.id).addAll( relaxedResult.solution );
 			examineRoute(saInTheWay, node, RouteParser.parse(solutions, saInTheWay.id), needs_agents_moved, needs_boxes_moved);
-			
+
 			return;
 		}else{
 			solutions.get(saInTheWay.id).clear();
 			solutions.get(saInTheWay.id).addAll( outOfTheWayResult.solution );
 			injectNoOp(node, solutions.get(saInTheWay.id), outOfTheWayResult.solution.size() + 1,  -1);
+			//injectNoOp(node, solutions.get(saInTheWay.id), route.size() + 1, -1);
 			needingHelp.status 	= SearchAgent.Status.PLAN;
 			saInTheWay.status 	= SearchAgent.Status.PLAN;
 		}
