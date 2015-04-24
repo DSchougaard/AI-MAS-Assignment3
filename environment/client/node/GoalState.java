@@ -120,6 +120,10 @@ public abstract class GoalState{
 			}
 			return true;
 		}
+		
+		public String toString(){
+			return "RouteClearGoalState: "+agentID+":"+boxID;
+		}
 	}
 
 	public static class MoveToGoalState extends GoalState{
