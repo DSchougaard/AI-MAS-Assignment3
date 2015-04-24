@@ -79,8 +79,22 @@ public class SearchAgent{
 		System.err.println("SearchClient :: Starting CustomSearch, using " + goal.toString() + ".");
 		strategy.addToFrontier(this.state);
 
-
+		int iterations = 0;
 		while(true){
+
+			if (iterations % 2000 == 0) {
+				System.err.println(strategy.searchStatus());
+			}
+			if (Memory.shouldEnd()) {
+				System.err.format("Memory limit almost reached, terminating search %s\n", Memory.stringRep());
+				return new SearchResult(SearchResult.Result.MEMMORY, new LinkedList<>());
+			}
+			if (strategy.timeSpent() > Memory.timeLimit) { // Minutes timeout
+				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep());
+				return new SearchResult(SearchResult.Result.TIME,
+						new LinkedList<>());
+			}
+
 			if (strategy.frontierIsEmpty()) {
 				if ( goal.eval(state) ) {
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
@@ -102,6 +116,7 @@ public class SearchAgent{
 					strategy.addToFrontier(n);
 				}
 			}
+			iterations++;
 		}
 	}
 
