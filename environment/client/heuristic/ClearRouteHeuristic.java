@@ -40,9 +40,10 @@ public class ClearRouteHeuristic extends Heuristic{
 			}else if( o instanceof Box && ((Box)o).id == this.boxID ){
 				f++;
 			}
-		}*/
+		}
 
-		//return f;
+		return f;*/
+		
 		int d = 0;
 		if(  n.distance(origin, n.agents[agent.id]) < n.distance(origin, n.getBoxesByID().get(this.boxID))){
 			d = n.distance(origin, n.agents[agent.id]);
@@ -56,9 +57,9 @@ public class ClearRouteHeuristic extends Heuristic{
 
 	public int f(Node n){
 		// A* Search
-		return n.g() + h(n);
+		//return n.g() + h(n);
 		// Greedy Search
-		//return h(n);
+		return h(n);
 	}
 
 	public String toString(){
