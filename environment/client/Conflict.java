@@ -177,7 +177,7 @@ public class Conflict{
 		// PLUG AND PLAY AGENT SELECT
 
 		// First we select the agent best suited for the job
-		ArrayList<Integer> possibleAgents = node.getAgentIDsLoop(box.color);
+		ArrayList<Integer> possibleAgents = node.getAgentIDs(box.color);
 
 		if( box == null ){
 			System.err.println("Conflict :: ResolveBoxConflict :: Box was NULL.");
