@@ -144,7 +144,7 @@ public class SearchAgent{
 			if (strategy.frontierIsEmpty()) {
 				if (state.isGoalState(goals)) {
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
-				} else if (preResult != null) {
+				} else if (preResult == null) {
 					return new SearchResult(SearchResult.Result.IMPOSIBLE, new LinkedList<>());
 				} else {
 					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());

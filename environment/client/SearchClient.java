@@ -222,7 +222,7 @@ public class SearchClient {
 		solution.get(agent.id).addAll(result.solution);
 	}
 
-	private static void MultiAgentPlaning( ArrayList<LinkedList<Node>> solutions) throws IOException {
+	private static void MultiAgentPlaning( ArrayList<LinkedList<Node>> solutions) throws Exception {
 		boolean stuck = false;
 		Strategy strategy = null;
 		Strategy relaxedStrategy = null;
@@ -283,8 +283,9 @@ public class SearchClient {
 				
 				switch (result.reason) {
 				case STUCK:
+					
 					agent.status = Status.STUCK;
-
+					System.err.println("STUCK!!!");
 					System.err.println("MA Planning :: Agent " + agent.id + " is stuck.");
 					System.err.println("\nSummary for " + relaxedStrategy);
 					System.err.println("Found solution of length " + relaxedResult.solution.size());
@@ -296,6 +297,8 @@ public class SearchClient {
 					agent.status=Status.DONE;
 					System.err.println("done");
 					break;
+				case IMPOSIBLE:
+					throw new Exception("Imposible");
 				default:
 					agent.status=Status.PLAN;
 					System.err.println("\nSummary for " + strategy);
