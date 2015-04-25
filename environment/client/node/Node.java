@@ -1,6 +1,7 @@
 package client.node;
 
 import java.awt.Point;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,11 +60,15 @@ public class Node implements NodeInterface, LevelInterface{
 
 
 	// Add'ers for the setup
-	public void addAgent(char name, Color color, int row, int col){
+	public void addAgent(char name, Color color, int row, int col) throws IOException{
 		int i = (int)name - 48;
 		if( agents[i] != null  ) return;
 		agents[i] = new LogicalAgent(i, color, row, col);
 
+		if(color==null){
+			color=Color.blue;
+		}
+		
 		if( !colorMap.containsKey(color) )
 			colorMap.put(color, new ArrayList<Integer>());
 
