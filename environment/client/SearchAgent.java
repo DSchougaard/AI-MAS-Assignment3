@@ -8,16 +8,13 @@ import client.SearchClient.Memory;
 // Agents have a color
 // Boxes have a color AND a type
 import client.node.Color;
+import client.node.GoalState;
+import client.node.GoalState.GoalGoalState;
 import client.node.Node;
-import client.node.storage.Base;
-import client.node.storage.Box;
 import client.node.storage.ExpansionStatus;
 import client.node.storage.Goal;
 import client.node.storage.LogicalAgent;
 import client.node.storage.SearchResult;
-import client.node.GoalState;
-
-import client.heuristic.*;
 
 
 public class SearchAgent{
@@ -30,7 +27,7 @@ public class SearchAgent{
 	
 	public Node state;
 	public static int searchMaxOffset = 2;
-	
+	int startG;
 	
 	public SearchAgent(int name, Color color, int row, int col){
 		this.id 	= name;
@@ -60,71 +57,31 @@ public class SearchAgent{
 	public void setState(Node state){
 		Node n = state.CopyNode();
 		n.parent = null;
+		startG= n.g();
 		this.state = n;
 	}
 	
 	public SearchResult Search(Strategy strategy) throws IOException {
-		return Search(strategy,  this.state.getGoals(state.agents[id].color), null);
+		return Search(strategy,  new GoalGoalState( this.state.getGoals(state.agents[id].color)), null);
 	}
 
 	public SearchResult Search(Strategy strategy, ArrayList<Goal> goals) throws IOException {
-		return Search(strategy, goals, null);
+		return Search(strategy, new GoalGoalState(goals), null);
 	}
-
+	public SearchResult Search(Strategy strategy, ArrayList<Goal> goals, SearchResult preResult ) throws IOException {
+		return Search(strategy, new GoalGoalState(goals), preResult);
+	}
 	public SearchResult Search(Strategy strategy, SearchResult preResult) throws IOException {
-		return Search(strategy, this.state.getGoals(state.agents[id].color), preResult);
+		return Search(strategy, new GoalGoalState( this.state.getGoals(state.agents[id].color)), preResult);
 	}
-
-	public SearchResult CustomSearch(Strategy strategy, GoalState goal) throws IOException {
-		System.err.println("SearchClient :: Starting CustomSearch, using " + goal.toString() + ".");
-		strategy.addToFrontier(this.state);
-
-		int iterations = 0;
-		while(true){
-
-			if (iterations % 2000 == 0) {
-				System.err.println(strategy.searchStatus());
-			}
-			if (Memory.shouldEnd()) {
-				System.err.format("Memory limit almost reached, terminating search %s\n", Memory.stringRep());
-				return new SearchResult(SearchResult.Result.MEMMORY, new LinkedList<>());
-			}
-			if (strategy.timeSpent() > Memory.timeLimit) { // Minutes timeout
-				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep());
-				return new SearchResult(SearchResult.Result.TIME,
-						new LinkedList<>());
-			}
-
-			if (strategy.frontierIsEmpty()) {
-				if ( goal.eval(state) ) {
-					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
-				} else {
-					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
-				}
-			}
-
-			Node leafNode = strategy.getAndRemoveLeaf();
-
-			if ( goal.eval(leafNode) ) {
-				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
-			}
-
-			strategy.addToExplored(leafNode);
-
-			for (Node n : leafNode.getExpandedNodes(id)) {
-				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
-					strategy.addToFrontier(n);
-				}
-			}
-			iterations++;
-		}
+	public SearchResult Search(Strategy strategy, GoalState goal) throws IOException {
+		return Search(strategy, goal, null);
 	}
-
-
-	public SearchResult Search(Strategy strategy, ArrayList<Goal> goals, SearchResult preResult) throws IOException {
+	
+	public SearchResult Search(Strategy strategy, GoalState goal, SearchResult preResult) throws IOException {
 		System.err.format("Search starting with strategy %s\n", strategy);
 		strategy.addToFrontier(this.state);
-
+		
 		int iterations = 0;
 		while (true) {
 
@@ -140,9 +97,13 @@ public class SearchAgent{
 				return new SearchResult(SearchResult.Result.TIME,
 						new LinkedList<>());
 			}
-
+			//fail safe
+			if(strategy.countExplored()>150000){
+				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+			}
+			
 			if (strategy.frontierIsEmpty()) {
-				if (state.isGoalState(goals)) {
+				if (goal.eval(state)) {
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
 				} else if (preResult == null) {
 					return new SearchResult(SearchResult.Result.IMPOSIBLE, new LinkedList<>());
@@ -153,7 +114,7 @@ public class SearchAgent{
 
 			Node leafNode = strategy.getAndRemoveLeaf();
 
-			if (preResult != null && leafNode.g() > (preResult.solution.size() * searchMaxOffset)) {
+			if (leafNode.g()>(20+startG) && preResult != null && leafNode.g() > (startG+preResult.solution.size() * searchMaxOffset)) {
 				if(preResult.reason==SearchResult.Result.DONE){
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
 					
@@ -161,7 +122,7 @@ public class SearchAgent{
 				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
 			}
 
-			if (leafNode.isGoalState(goals)) {
+			if (goal.eval(leafNode)) {
 				ExpansionStatus expStatus = new ExpansionStatus(strategy);
 				System.err.println(strategy.searchStatus());
 				if(leafNode.isInitialState()){
@@ -182,101 +143,6 @@ public class SearchAgent{
 		}
 		
 	}
-
-	public SearchResult LeaveRouteSearch(Strategy strategy, ArrayList<Base> route){
-		System.err.println("SearchClient :: Agent " + id + " leaving route.");
-		strategy.addToFrontier(this.state);
-
-		while(true){
-			if (strategy.frontierIsEmpty()) {
-				if (state.isGoalState(id, route)) {
-					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
-				} else {
-					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
-				}
-			}
-
-			Node leafNode = strategy.getAndRemoveLeaf();
-
-			if (leafNode.isGoalState(id, route)) {
-				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
-			}
-
-			strategy.addToExplored(leafNode);
-
-			for (Node n : leafNode.getExpandedBoxNodes(id)) {
-				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
-					strategy.addToFrontier(n);
-				}
-			}
-		}
-	}
-	
-	public SearchResult ProximitySearch(Strategy strategy, Box box) throws IOException {
-		System.err.println("SearchClient :: Starting ProximitySearch.");
-		strategy.addToFrontier(this.state);
-
-		while(true){
-			if (strategy.frontierIsEmpty()) {
-				if (state.isGoalState(id, box)) {
-					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
-				} else {
-					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
-				}
-			}
-
-			Node leafNode = strategy.getAndRemoveLeaf();
-
-			if (state.isGoalState(id, box)) {
-				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
-			}
-
-			strategy.addToExplored(leafNode);
-
-			for (Node n : leafNode.getExpandedBoxNodes(id)) {
-				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
-					strategy.addToFrontier(n);
-				}
-			}
-		}
-	}
-
-	public SearchResult ClearRouteSearch(Strategy strategy, int numObstructions, ArrayList<Base> route){
-		System.err.println("SearchAgent :: Starting Route Clearing Search");
-		strategy.addToFrontier(this.state);
-		int count = 0;
-		while(true){
-			//if( count >= 25 )
-			//	return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
-
-			if (strategy.frontierIsEmpty()) {
-				if (state.isGoalState(id, numObstructions, route)) {
-					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
-				} else {
-					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
-				}
-			}
-
-			Node leafNode = strategy.getAndRemoveLeaf();
-
-			if (leafNode.isGoalState(id, numObstructions, route) ) {
-				if(leafNode.isInitialState()){
-					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
-				}
-				return new SearchResult(SearchResult.Result.PLAN, leafNode.extractPlan());
-			}
-
-			strategy.addToExplored(leafNode);
-
-			for (Node n : leafNode.getExpandedBoxNodes(id)) {
-				if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
-					strategy.addToFrontier(n);
-				}
-			}
-			count++;
-		}
-	}
-
 
 	
 	@Override

@@ -109,6 +109,9 @@ public class SearchClient {
 			builder.append('[');
 			for (int i = 0; i < solutions.size(); i++) {
 				if (solutions.get(i).isEmpty()) {
+					if(agents.get(i).status != SearchAgent.Status.STUCK_HELPING && agents.get(i).status != SearchAgent.Status.STUCK){
+						agents.get(i).status=SearchAgent.Status.IDLE;
+					}
 					builder.append("NoOp");
 				} else {
 					builder.append(solutions.get(i).peek().action);
@@ -230,7 +233,6 @@ public class SearchClient {
 			// only plan if there is not already a plan
 			if (solutions.get(agent.id).isEmpty()) {
 				if( agent.status == Status.HELPING || agent.status == Status.STUCK_HELPING ){
-					Conflict.doneHelping(agent);
 					agent.status = Status.IDLE;
 				}
 

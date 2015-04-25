@@ -3,7 +3,6 @@ package test;
 
 import static org.junit.Assert.*;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -12,6 +11,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -22,7 +22,9 @@ import org.junit.runners.MethodSorters;
 import client.Command;
 import client.Command.dir;
 import client.Command.type;
-import client.Heuristic.AStar;
+import client.heuristic.AStar;
+import client.heuristic.Greedy;
+import client.heuristic.Heuristic;
 import client.SearchAgent;
 import client.SearchClient;
 import client.Strategy;
@@ -32,6 +34,8 @@ import client.node.Node;
 import client.node.level.distancemap.FloydWarshallDistanceMap;
 import client.node.storage.Base;
 import client.node.storage.Box;
+import client.node.storage.Goal;
+import client.node.storage.SearchResult;
 import client.parser.SettingsContainer;
 
 //I am a horrible person
@@ -691,6 +695,57 @@ SearchClient.init( serverMessages );
 		}
 		System.out.println(state);
 		
+		
+	}
+	
+	
+	@Test
+	public void resolveBoxConflict() throws Exception{
+		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAcollision2.lvl")) );
+		
+		SearchClient.init( serverMessages );
+		
+		Node state = SearchClient.state;
+		
+		List<SearchAgent> agents=SearchClient.agents;
+		SearchAgent agent=agents.get(0);
+		Heuristic heuristic = new Greedy(agent);
+
+		Goal subgoal = null;
+		// find a subgoal(s) which should be solved
+		if(state.isGoalState(agent.subgoals)){
+			subgoal = heuristic.selectGoal(state);
+			if(subgoal!=null){
+				agent.subgoals.add(subgoal);
+				System.err.println("new subgoal "+subgoal);
+			}
+		}
+		
+		// relaxed search setup
+		System.err.println("MA Planning :: Performing relaxed search");
+		Node relaxed = state.subdomain(agent.id);
+		Heuristic relaxedHeuristic = new Greedy(agent);
+		Strategy relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
+		agent.setState(relaxed);
+		SearchResult relaxedResult;
+		if(subgoal==null){
+			relaxedResult = agent.Search(relaxedStrategy, agent.subgoals);
+		}else{
+			ArrayList<Goal> goals = new ArrayList<>();
+			goals.add(subgoal);
+			relaxedResult = agent.Search(relaxedStrategy, goals);
+		}
+
+		System.gc();
+		
+		
+		// normal search setup
+		System.err.println("MA Planning :: Performing normal search");
+		agent.setState(state);
+		Strategy strategy = new StrategyBestFirst(heuristic);
+		SearchResult result = agent.Search(strategy, agent.subgoals, relaxedResult);
+
+		assertEquals(SearchResult.Result.STUCK, result.reason);
 		
 	}
 }

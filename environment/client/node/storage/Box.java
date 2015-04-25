@@ -58,4 +58,8 @@ public class Box extends Base{
 	public void setType(char type) {
 		this.type = Character.toLowerCase(type);
 	}
+	
+	public String toString(){
+		return type+" "+super.toString();
+	}
 }

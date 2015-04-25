@@ -10,8 +10,28 @@ import client.node.Node;
 
 public abstract class GoalState{
 
+	
+	
 	abstract public boolean eval(Node node);
+	
+	public static class GoalGoalState extends GoalState{
+		ArrayList<Goal> goals;
+		
+		public GoalGoalState(ArrayList<Goal> goals) {
+			this.goals=goals;
+		}
 
+		@Override
+		public boolean eval(Node node) {
+			return node.isGoalState(goals);
+		}
+		
+		@Override
+		public String toString(){
+			return "GoalGoalState";
+		}
+		
+	}
 	public static class ObstructionGoalState extends GoalState{
 		
 		private int agentID;
@@ -20,7 +40,7 @@ public abstract class GoalState{
 
 		@Override
 		public String toString(){
-			return "GoalState";
+			return "ObstructionGoalState";
 		}
 
 		public ObstructionGoalState(int agentID, int obstructionCount, ArrayList<Base> route){
@@ -123,6 +143,28 @@ public abstract class GoalState{
 		
 		public String toString(){
 			return "RouteClearGoalState: "+agentID+":"+boxID;
+		}
+	}
+	
+	//TODO: should this one exist?
+	public static class RouteClearGoalState2 extends GoalState{
+		private int agentID, numObstructions;
+		private ArrayList<Base> route;
+
+		public RouteClearGoalState2(int agentID, int numObstructions, ArrayList<Base> route){
+			this.agentID = agentID;
+			this.numObstructions = numObstructions;
+			// Copy the route.
+			this.route = new ArrayList<>();
+			this.route.addAll(route);
+		}
+
+		public boolean eval(Node node){
+			return node.isGoalState(agentID, numObstructions, route);
+		}
+		
+		public String toString(){
+			return "RouteClearGoalState2: "+agentID+":"+numObstructions;
 		}
 	}
 
