@@ -152,7 +152,7 @@ public class Conflict{
 			moveStart = node;
 		}
 
-		System.err.println(solutions.get(needingHelp.id));
+		
 		ArrayList<Base> routeToClear = RouteParser.parse(solutions, needingHelp.id);
 		System.err.println("Route:"+routeToClear);
 
