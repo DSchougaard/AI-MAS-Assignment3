@@ -140,9 +140,9 @@ public class Level implements LevelInterface{
 		return this.goalsByType;
 	}
 
-	public ArrayList<Goal> getGoals(){
-		
+	public ArrayList<Goal> getGoals(){	
 		return goals;
+
 	}
 
 	public ArrayList<Goal> getGoals(Color color){

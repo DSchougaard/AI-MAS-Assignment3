@@ -5,12 +5,16 @@ package client.node.storage;
 import client.node.Color;
 
 public class Box extends Base{
+	private static int globalID = 0;
+
 	private char type;
 	public Color color;
+	public final int id;
 
 	public Box(char t, Color color, int row, int col){ 
 		super(row, col);
 		this.setType(t);
+		this.id = globalID++;
 		if(color==null){
 			this.color = Color.blue;
 		}else{
@@ -20,6 +24,7 @@ public class Box extends Base{
 
 	public Box(Box box) {
 		super(box.row, box.col);
+		this.id = box.id;
 		this.color=box.color;
 		this.setType(box.getType());
 	}
@@ -34,7 +39,7 @@ public class Box extends Base{
 		}
 
 		Box b = (Box)obj;
-		return ( this.getType() == b.getType() && this.color ==b.color );
+		return ( this.id == b.id && this.getType() == b.getType() && this.color ==b.color );
 	}
 	
 	@Override
@@ -52,5 +57,9 @@ public class Box extends Base{
 
 	public void setType(char type) {
 		this.type = Character.toLowerCase(type);
+	}
+	
+	public String toString(){
+		return type+" "+super.toString();
 	}
 }

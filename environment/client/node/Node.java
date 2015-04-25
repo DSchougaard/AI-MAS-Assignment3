@@ -1,6 +1,7 @@
 package client.node;
 
 import java.awt.Point;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,6 +28,7 @@ public class Node implements NodeInterface, LevelInterface{
 	// Box DS
 	private HashMap<Character, ArrayList<Box>> boxesByType;
 	private HashMap<Point, Box> boxesByPoint;
+	private HashMap<Integer, Box> boxesByID;
 
 	// Agents
 	public LogicalAgent[] agents;
@@ -41,6 +43,7 @@ public class Node implements NodeInterface, LevelInterface{
 	public Node(){
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
+		boxesByID		= new HashMap<Integer, Box>();
 		agents 			= new LogicalAgent[10];
 		g=0;
 
@@ -50,17 +53,22 @@ public class Node implements NodeInterface, LevelInterface{
 		Node.level = level;
 		boxesByType 	= new HashMap<Character, ArrayList<Box>>();
 		boxesByPoint 	= new HashMap<Point, Box>();
+		boxesByID		= new HashMap<Integer, Box>();
 		agents 			= new LogicalAgent[10];
 		g=0;
 	}
 
 
 	// Add'ers for the setup
-	public void addAgent(char name, Color color, int row, int col){
+	public void addAgent(char name, Color color, int row, int col) throws IOException{
 		int i = (int)name - 48;
 		if( agents[i] != null  ) return;
 		agents[i] = new LogicalAgent(i, color, row, col);
 
+		if(color==null){
+			color=Color.blue;
+		}
+		
 		if( !colorMap.containsKey(color) )
 			colorMap.put(color, new ArrayList<Integer>());
 
@@ -74,6 +82,7 @@ public class Node implements NodeInterface, LevelInterface{
 		boxList.remove(box);
 	}
 	private void addBox(Box box){
+		this.boxesByID.put(box.id, box);
 		this.boxesByPoint.put(new Point(box.row, box.col), box);
 		
 		ArrayList<Box> boxList= boxesByType.get(box.getType());
@@ -83,6 +92,9 @@ public class Node implements NodeInterface, LevelInterface{
 		}
 		boxList.add(box);
 	}
+
+
+
 	
 	public void addBox(char type, Color color, int row, int col){
 		addBox(new Box(type, color, row, col));
@@ -90,9 +102,11 @@ public class Node implements NodeInterface, LevelInterface{
 	
 	private void moveBox(Box box, int row, int col){
 		boxesByPoint.remove(new Point(box.row, box.col));
+		boxesByID.get(box.id);
 		box.row=row;
 		box.col=col;
 		boxesByPoint.put(new Point(box.row, box.col),box);
+		boxesByID.put(box.id, box);
 	}
 
 	/*
@@ -119,7 +133,13 @@ public class Node implements NodeInterface, LevelInterface{
 	public Box[] getBoxes(){
 		return boxesByPoint.values().toArray(new Box[0]);
 	}
-	
+
+	public HashMap<Integer, Box> getBoxesByID(){
+		return new HashMap<Integer, Box>(this.boxesByID);
+	}
+
+
+
 	@Override
 	public boolean cellIsFree(int row, int col){
 		if( Node.level.isWall(row, col) )
@@ -134,6 +154,7 @@ public class Node implements NodeInterface, LevelInterface{
 		return true;
 	}
 	
+
 	public ArrayList<Integer> getAgentIDs(Color color){
 		return colorMap.get(color);
 	}
@@ -188,7 +209,6 @@ public class Node implements NodeInterface, LevelInterface{
 	@Override
 	public boolean isGoalState(){
 		return isGoalState(Node.level.getGoals());
-	
 	}
 
 	/**
@@ -205,6 +225,8 @@ public class Node implements NodeInterface, LevelInterface{
 
 	@Override
 	public boolean isGoalState(ArrayList<Goal> goals){
+		if( goals == null ) return true;
+		
 		for( int i = 0 ; i < goals.size() ; i++ ){
 			Point p = goals.get(i).getPoint();
 			Box b = this.boxesByPoint.get(p);
@@ -228,6 +250,15 @@ public class Node implements NodeInterface, LevelInterface{
 			( box.row == a.row && box.col == a.col+1 ) ||
 			( box.row == a.row && box.col == a.col-1 )
 			);
+	}
+
+	public boolean isGoalState(int agentID, ArrayList<Base> route){
+		LogicalAgent a = agents[agentID];
+		for( Base b : route ){
+			if( a.row == b. row && a.col == b.col )
+				return false;
+		}
+		return true;
 	}
 
 	public boolean isGoalState(int agentID, int obstructionCount, ArrayList<Base> route){
@@ -333,6 +364,10 @@ public class Node implements NodeInterface, LevelInterface{
 		// Bypass filtering
 		// return t;
 		// Filter
+
+		if( cluster == null )
+			return new ArrayList<Goal>();
+
 		for( Goal goal : cluster ){
 			Box box=this.boxesByPoint.get(goal.getPoint());
 			if(box == null || (box.getType() != goal.getType())){

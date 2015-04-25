@@ -109,6 +109,9 @@ public class SearchClient {
 			builder.append('[');
 			for (int i = 0; i < solutions.size(); i++) {
 				if (solutions.get(i).isEmpty()) {
+					if(agents.get(i).status != SearchAgent.Status.STUCK_HELPING && agents.get(i).status != SearchAgent.Status.STUCK){
+						agents.get(i).status=SearchAgent.Status.IDLE;
+					}
 					builder.append("NoOp");
 				} else {
 					builder.append(solutions.get(i).peek().action);
@@ -222,15 +225,14 @@ public class SearchClient {
 		solution.get(agent.id).addAll(result.solution);
 	}
 
-	private static void MultiAgentPlaning( ArrayList<LinkedList<Node>> solutions) throws IOException {
+	private static void MultiAgentPlaning( ArrayList<LinkedList<Node>> solutions) throws Exception {
 		boolean stuck = false;
 		Strategy strategy = null;
 		Strategy relaxedStrategy = null;
 		for (SearchAgent agent : agents) {
 			// only plan if there is not already a plan
 			if (solutions.get(agent.id).isEmpty()) {
-				if(agent.status == Status.HELPING){
-					Conflict.doneHelping(agent);
+				if( agent.status == Status.HELPING || agent.status == Status.STUCK_HELPING ){
 					agent.status = Status.IDLE;
 				}
 
@@ -283,8 +285,9 @@ public class SearchClient {
 				
 				switch (result.reason) {
 				case STUCK:
+					
 					agent.status = Status.STUCK;
-
+					System.err.println("STUCK!!!");
 					System.err.println("MA Planning :: Agent " + agent.id + " is stuck.");
 					System.err.println("\nSummary for " + relaxedStrategy);
 					System.err.println("Found solution of length " + relaxedResult.solution.size());
@@ -296,6 +299,8 @@ public class SearchClient {
 					agent.status=Status.DONE;
 					System.err.println("done");
 					break;
+				case IMPOSIBLE:
+					throw new Exception("Imposible");
 				default:
 					agent.status=Status.PLAN;
 					System.err.println("\nSummary for " + strategy);

@@ -54,4 +54,9 @@ public class LogicalAgent extends Base{
 		result = prime * result + this.id;
 		return result;
 	}
+	
+	@Override
+	public String toString(){
+		return id+" "+color+" "+super.toString();
+	}
 }
