@@ -1,11 +1,8 @@
 package client.node;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import client.node.storage.*;
-
-
 import client.node.Node;
 
 public abstract class GoalState{
@@ -34,6 +31,7 @@ public abstract class GoalState{
 	}
 	public static class ObstructionGoalState extends GoalState{
 		
+		@SuppressWarnings("unused")
 		private int agentID;
 		private int obstructionCount;
 		private ArrayList<Base> route;
@@ -144,28 +142,7 @@ public abstract class GoalState{
 			return "RouteClearGoalState: "+agentID+":"+boxID;
 		}
 	}
-	
-	//TODO: should this one exist?
-	public static class RouteClearGoalState2 extends GoalState{
-		private int agentID, numObstructions;
-		private ArrayList<Base> route;
 
-		public RouteClearGoalState2(int agentID, int numObstructions, ArrayList<Base> route){
-			this.agentID = agentID;
-			this.numObstructions = numObstructions;
-			// Copy the route.
-			this.route = new ArrayList<>();
-			this.route.addAll(route);
-		}
-
-		public boolean eval(Node node){
-			return node.isGoalState(agentID, numObstructions, route);
-		}
-		
-		public String toString(){
-			return "RouteClearGoalState2: "+agentID+":"+numObstructions;
-		}
-	}
 
 	public static class MoveToGoalState extends GoalState{
 		private int agentID;

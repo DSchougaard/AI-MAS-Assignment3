@@ -237,14 +237,14 @@ public class Conflict{
 	private static void clearRoute(SearchAgent needingHelp, SearchAgent helperAgent, Box box, Node node, Node moveStart, ArrayList<Base> routeToClear, ArrayList< LinkedList< Node > > solutions, LinkedList<Node> helpSolution, Deque<SearchAgent> needs_help, HashMap<SearchAgent, ArrayList<LogicalAgent>> needs_agents_moved, HashMap<SearchAgent, ArrayList<Box>> needs_boxes_moved) throws IOException{
 		//relaxed 
 		//Heuristic clearHeuristicRelaxed = new ClearHeuristic(helperAgent, routeToClear);
-		Heuristic clearHeuristicRelaxed = new ClearRouteHeuristic(helperAgent, box.id, routeToClear, box);
+		Heuristic clearHeuristicRelaxed = new ClearRouteHeuristic(helperAgent, box.id, routeToClear);
 		Strategy clearStrategyRelaxed = new StrategyBestFirst(clearHeuristicRelaxed);
 		helperAgent.setState(moveStart.subdomain(helperAgent.id));
 		SearchResult moveBoxResultRelaxed = helperAgent.Search(clearStrategyRelaxed, new RouteClearGoalState(helperAgent.id, box.id, routeToClear));
 
 		//normal
 //		Heuristic clearHeuristic = new ClearHeuristic(helperAgent, routeToClear);
-		Heuristic clearHeuristic = new ClearRouteHeuristic(helperAgent, box.id, routeToClear, box);
+		Heuristic clearHeuristic = new ClearRouteHeuristic(helperAgent, box.id, routeToClear);
 		Strategy clearStrategy = new StrategyBestFirst(clearHeuristic);
 		helperAgent.setState(moveStart);
 		SearchResult moveBoxResult = helperAgent.Search(clearStrategy, new RouteClearGoalState(helperAgent.id, box.id, routeToClear), moveBoxResultRelaxed);

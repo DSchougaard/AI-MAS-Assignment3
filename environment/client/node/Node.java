@@ -206,14 +206,16 @@ public class Node implements NodeInterface, LevelInterface{
 		return level.isGoal(row, col);
 	}
 	
-	@Override
-	public boolean isGoalState(){
-		return isGoalState(Node.level.getGoals());
-	}
+
 
 	/**
 	 * GoalEval on the reduced subset of goals
 	 */
+	@Override
+	public boolean isGoalState(){
+		return isGoalState(Node.level.getGoals());
+	}
+	
 	@Override
 	public boolean isGoalState(Color color){
 		return isGoalState( this.getGoals(color) );
@@ -241,38 +243,9 @@ public class Node implements NodeInterface, LevelInterface{
 		return true;
 	}
 
-	public boolean isGoalState(int agentID, Box box){
-		LogicalAgent a = agents[agentID];
 
-		return (
-			( box.row == a.row+1 && box.col == a.col ) ||
-			( box.row == a.row-1 && box.col == a.col ) ||
-			( box.row == a.row && box.col == a.col+1 ) ||
-			( box.row == a.row && box.col == a.col-1 )
-			);
-	}
 
-	public boolean isGoalState(int agentID, ArrayList<Base> route){
-		LogicalAgent a = agents[agentID];
-		for( Base b : route ){
-			if( a.row == b. row && a.col == b.col )
-				return false;
-		}
-		return true;
-	}
 
-	public boolean isGoalState(int agentID, int obstructionCount, ArrayList<Base> route){
-
-		int count = 0;
-
-		for( Base b : route ){
-			Object o = objectAt(b);	
-			if( o instanceof Box || o instanceof LogicalAgent )
-				count++;
-		}
-
-		return (count == (obstructionCount - 1));
-	}
 
 
 	@Override

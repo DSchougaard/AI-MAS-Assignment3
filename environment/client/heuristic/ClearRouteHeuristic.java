@@ -14,19 +14,15 @@ import client.node.Node;
 
 
 public class ClearRouteHeuristic extends Heuristic{
-	
-	private static final int RUN_AWAY_LITTLE_GIRL_RUN_AWAY = 12;
 
 	private ArrayList<Base> route;
 	private int boxID;
-	private Base origin;
 
-	public ClearRouteHeuristic(SearchAgent agent, int boxID, ArrayList<Base> route, Base origin){
+	public ClearRouteHeuristic(SearchAgent agent, int boxID, ArrayList<Base> route){
 		super(agent);
 		this.boxID = boxID;
 		this.route = new ArrayList<Base>();
 		this.route.addAll(route);
-		this.origin = origin;
 	}
 
 	@Override
