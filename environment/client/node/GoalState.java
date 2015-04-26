@@ -50,7 +50,6 @@ public abstract class GoalState{
 		}
 
 		public boolean eval(Node node){
-		LogicalAgent agent = node.agents[agentID];
 
 		int count = 0;
 

@@ -1,20 +1,11 @@
 package client.heuristic;
 
-import java.util.ArrayList;
-
-import client.heuristic.*;
-
-import client.node.storage.Base;
-import client.node.storage.Box;
-import client.node.storage.LogicalAgent;
-
 import client.SearchAgent;
-
 import client.node.Node;
+import client.node.storage.LogicalAgent;
 
 
 public class MoveToHeuristic extends Heuristic{
-	private ArrayList<Base> route;
 	private int row, col;
 
 	public MoveToHeuristic(SearchAgent agent, int row, int col){

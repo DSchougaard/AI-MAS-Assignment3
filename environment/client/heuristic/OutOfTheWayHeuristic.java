@@ -2,15 +2,10 @@ package client.heuristic;
 
 import java.util.ArrayList;
 
-import client.heuristic.*;
-
-import client.node.storage.Base;
-import client.node.storage.Box;
-import client.node.storage.LogicalAgent;
-
 import client.SearchAgent;
-
 import client.node.Node;
+import client.node.storage.Base;
+import client.node.storage.LogicalAgent;
 
 
 
@@ -19,7 +14,6 @@ public class OutOfTheWayHeuristic extends Heuristic{
 	private final int OUT_OF_THE_WAY_THRESHOLD = 10;
 
 	private ArrayList<Base> route;
-	//private Box box;
 	private int initRow, initCol;
 
 	public OutOfTheWayHeuristic(SearchAgent agent, ArrayList<Base> route, int initRow, int initCol){

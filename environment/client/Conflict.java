@@ -75,11 +75,6 @@ public class Conflict{
 			if( needingHelp == null )
 				System.err.println("Conflict :: agent was NULL.");
 
-//			if( needs_boxes_moved == null )
-//				System.err.println("Conflict :: Needs_Boxes_Moved was NULL.");
-//
-//			if( needs_boxes_moved.size() == 0 )
-//				System.err.println("Conflict :: Needs_Boxes_Moved is empty.");
 
 			if( move_boxes.isEmpty() )
 				System.err.println("Conflict :: no boxes on route.");
@@ -103,7 +98,7 @@ public class Conflict{
 					System.err.println("oh dear2");
 					throw new Exception("box not on route");
 				}
-				resolveBoxConflict(needingHelp, box, needs_boxes_moved.size()+needs_agents_moved.size(), node, agents, solutions, needs_help, needs_agents_moved, needs_boxes_moved);
+				resolveBoxConflict(needingHelp, box, node, agents, solutions, needs_help, needs_agents_moved, needs_boxes_moved);
 			}
 
 			for( LogicalAgent la : move_agents ){
@@ -121,12 +116,12 @@ public class Conflict{
 	}
 
 
-	private static void resolveBoxConflict(SearchAgent needingHelp, Box box, int obstructions, Node node, List<SearchAgent> agents,ArrayList< LinkedList< Node > > solutions, Deque<SearchAgent> needs_help, HashMap<SearchAgent, ArrayList<LogicalAgent>> needs_agents_moved, HashMap<SearchAgent, ArrayList<Box>> needs_boxes_moved) throws IOException{
+	private static void resolveBoxConflict(SearchAgent needingHelp, Box box, Node node, List<SearchAgent> agents,ArrayList< LinkedList< Node > > solutions, Deque<SearchAgent> needs_help, HashMap<SearchAgent, ArrayList<LogicalAgent>> needs_agents_moved, HashMap<SearchAgent, ArrayList<Box>> needs_boxes_moved) throws IOException{
 
 		System.err.println("Conflict :: ResolveBoxConflict :: Attempting to resolve.");
 
 
-		SearchAgent helperAgent = findHelperAgent(needingHelp, box, node, agents, needs_help);
+		SearchAgent helperAgent = findHelperAgent(needingHelp, box, node, agents);
 		helperAgent.status = Status.HELPING;
 		needs_boxes_moved.remove(helperAgent);
 		System.err.println("Conflict :: Agent "+helperAgent.id+" is helping");
@@ -156,13 +151,13 @@ public class Conflict{
 		ArrayList<Base> routeToClear = RouteParser.parse(solutions, needingHelp.id);
 		System.err.println("Route:"+routeToClear);
 
-		clearRoute(needingHelp, helperAgent, box, node, obstructions, moveStart, routeToClear, solutions, helpSolution, needs_help, needs_agents_moved, needs_boxes_moved);
+		clearRoute(needingHelp, helperAgent, box, node, moveStart, routeToClear, solutions, helpSolution, needs_help, needs_agents_moved, needs_boxes_moved);
 
 		
 	}
 
 
-	private static SearchAgent findHelperAgent(SearchAgent needingHelp, Box box, Node node, List<SearchAgent> agents, Deque<SearchAgent> needs_help){
+	private static SearchAgent findHelperAgent(SearchAgent needingHelp, Box box, Node node, List<SearchAgent> agents){
 		// PLUG AND PLAY AGENT SELECT
 
 		// First we select the agent best suited for the job
@@ -239,16 +234,16 @@ public class Conflict{
 
 	}
 
-	private static void clearRoute(SearchAgent needingHelp, SearchAgent helperAgent, Box box, Node node, int obstructions, Node moveStart, ArrayList<Base> routeToClear, ArrayList< LinkedList< Node > > solutions, LinkedList<Node> helpSolution, Deque<SearchAgent> needs_help, HashMap<SearchAgent, ArrayList<LogicalAgent>> needs_agents_moved, HashMap<SearchAgent, ArrayList<Box>> needs_boxes_moved) throws IOException{
+	private static void clearRoute(SearchAgent needingHelp, SearchAgent helperAgent, Box box, Node node, Node moveStart, ArrayList<Base> routeToClear, ArrayList< LinkedList< Node > > solutions, LinkedList<Node> helpSolution, Deque<SearchAgent> needs_help, HashMap<SearchAgent, ArrayList<LogicalAgent>> needs_agents_moved, HashMap<SearchAgent, ArrayList<Box>> needs_boxes_moved) throws IOException{
 		//relaxed 
-		//Heuristic clearHeuristicRelaxed = new ClearHeuristic(helperAgent, obstructions, routeToClear);
+		//Heuristic clearHeuristicRelaxed = new ClearHeuristic(helperAgent, routeToClear);
 		Heuristic clearHeuristicRelaxed = new ClearRouteHeuristic(helperAgent, box.id, routeToClear, box);
 		Strategy clearStrategyRelaxed = new StrategyBestFirst(clearHeuristicRelaxed);
 		helperAgent.setState(moveStart.subdomain(helperAgent.id));
 		SearchResult moveBoxResultRelaxed = helperAgent.Search(clearStrategyRelaxed, new RouteClearGoalState(helperAgent.id, box.id, routeToClear));
 
 		//normal
-//		Heuristic clearHeuristic = new ClearHeuristic(helperAgent, obstructions, routeToClear);
+//		Heuristic clearHeuristic = new ClearHeuristic(helperAgent, routeToClear);
 		Heuristic clearHeuristic = new ClearRouteHeuristic(helperAgent, box.id, routeToClear, box);
 		Strategy clearStrategy = new StrategyBestFirst(clearHeuristic);
 		helperAgent.setState(moveStart);
@@ -342,7 +337,7 @@ public class Conflict{
 		needs_boxes_moved.remove(saInTheWay);
 		
 		// Metrics for current plan
-		int estimate = node.distance(node.agents[needingHelp.id], node.agents[saInTheWay.id]);
+		//int estimate = node.distance(node.agents[needingHelp.id], node.agents[saInTheWay.id]);
 
 		int row, col;
 		row = node.agents[saInTheWay.id].row;
