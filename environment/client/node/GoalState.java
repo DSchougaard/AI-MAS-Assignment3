@@ -29,6 +29,7 @@ public abstract class GoalState{
 		}
 		
 	}
+
 	public static class ObstructionGoalState extends GoalState{
 		
 		@SuppressWarnings("unused")
@@ -142,7 +143,6 @@ public abstract class GoalState{
 			return "RouteClearGoalState: "+agentID+":"+boxID;
 		}
 	}
-
 
 	public static class MoveToGoalState extends GoalState{
 		private int agentID;

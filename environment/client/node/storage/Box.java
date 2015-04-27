@@ -29,6 +29,14 @@ public class Box extends Base{
 		this.setType(box.getType());
 	}
 
+	public char getType() {
+		return type;
+	}
+
+	public void setType(char type) {
+		this.type = Character.toLowerCase(type);
+	}
+	
 	@Override
 	public boolean equals( Object obj ) {
 		if( getClass() != obj.getClass() )
@@ -50,15 +58,8 @@ public class Box extends Base{
 		result = prime * result + this.type;
 		return result;
 	}
-
-	public char getType() {
-		return type;
-	}
-
-	public void setType(char type) {
-		this.type = Character.toLowerCase(type);
-	}
 	
+	@Override
 	public String toString(){
 		return type+" "+super.toString();
 	}

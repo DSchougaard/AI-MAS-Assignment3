@@ -351,6 +351,13 @@ public class Node implements NodeInterface, LevelInterface{
 		return filtered;
 	}
 
+
+	/**
+	 * possible states/nodes to reach from current node. when the agent only is allow to do action involving a box
+	 * 
+	 * @param agentID
+	 * @return list of reachable states
+	 */
 	public ArrayList< Node > getExpandedBoxNodes(int agentID) {
 		ArrayList< Node > expandedNodes = new ArrayList< Node >( Command.every.length );
 		for ( Command c : Command.every ) {
@@ -401,6 +408,13 @@ public class Node implements NodeInterface, LevelInterface{
 		return expandedNodes;
 	}
 	
+
+	/**
+	 * possible states/nodes to reach from current node.
+	 * 
+	 * @param agentID
+	 * @return list of reachable states
+	 */
 	@Override
 	public ArrayList< Node > getExpandedNodes(int agentID) {
 		ArrayList< Node > expandedNodes = new ArrayList< Node >( Command.every.length );
@@ -572,6 +586,10 @@ public class Node implements NodeInterface, LevelInterface{
 		return copy;
 	}
 	
+	public static Level getLevel() {
+		return level;
+	}
+	
 	@Override
 	public String toString(){
 		Character[][] map=level.toArray();
@@ -595,6 +613,8 @@ public class Node implements NodeInterface, LevelInterface{
 		}
 		return s.toString();
 	}
+	
+	
 	
 	public String toStringDistance(int row, int col){
 		Character[][] map=level.toArray();
@@ -651,7 +671,5 @@ public class Node implements NodeInterface, LevelInterface{
 
 		return true;
 	}
-	public static Level getLevel() {
-		return level;
-	}
+
 }
