@@ -109,7 +109,7 @@ public class SearchAgent{
 						new LinkedList<>());
 			}
 			//fail safe
-			if(strategy.countExplored()>150000){
+			if(strategy.countExplored()>180000){
 				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
 			}
 			
