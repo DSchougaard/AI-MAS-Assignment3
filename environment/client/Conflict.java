@@ -7,10 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Deque;
 
-
-
-
-
 import client.heuristic.*;
 import client.SearchAgent.Status;
 import client.Strategy.StrategyBestFirst;
@@ -24,17 +20,12 @@ import client.parser.RouteParser;
 import client.node.GoalState;
 import client.node.GoalState.*;
 
-// Searches
-
-
-
 
 public class Conflict{
 
-
 	public static ArrayList< LinkedList< Node > > solve(Node node, ArrayList< LinkedList< Node > > solutions, List< SearchAgent > agents) throws Exception{
 		System.err.println("\n\n\n\n");
-		System.err.println("Invoking Conflict Resolution.");
+		System.err.println("Conflict :: Invoking Conflict Resolution.");
 		System.err.println("\n\n\n\n");
 
 
@@ -69,15 +60,13 @@ public class Conflict{
 			if( move_agents == null ){
 				move_agents = new ArrayList<LogicalAgent>();
 			}
-
 			
-
 			if( needingHelp == null )
-				System.err.println("Conflict :: agent was NULL.");
+				System.err.println("Conflict :: Agent was NULL.");
 
 
 			if( move_boxes.isEmpty() )
-				System.err.println("Conflict :: no boxes on route.");
+				System.err.println("Conflict ::No boxes on route.");
 
 
 			for( Box box : move_boxes ){
@@ -95,7 +84,7 @@ public class Conflict{
 				if(!exists){
 					System.err.println(routeToClear);
 					System.err.println(box);
-					System.err.println("oh dear2");
+					System.err.println("Conflict :: <C-3PO Voice> Oh dear... Twice. </C-3PO Voice>");
 					throw new Exception("box not on route");
 				}
 				resolveBoxConflict(needingHelp, box, node, agents, solutions, needs_help, needs_agents_moved, needs_boxes_moved);
@@ -117,9 +106,7 @@ public class Conflict{
 
 
 	private static void resolveBoxConflict(SearchAgent needingHelp, Box box, Node node, List<SearchAgent> agents,ArrayList< LinkedList< Node > > solutions, Deque<SearchAgent> needs_help, HashMap<SearchAgent, ArrayList<LogicalAgent>> needs_agents_moved, HashMap<SearchAgent, ArrayList<Box>> needs_boxes_moved) throws IOException{
-
 		System.err.println("Conflict :: ResolveBoxConflict :: Attempting to resolve.");
-
 
 		SearchAgent helperAgent = findHelperAgent(needingHelp, box, node, agents);
 		helperAgent.status = Status.HELPING;
@@ -149,7 +136,7 @@ public class Conflict{
 
 		
 		ArrayList<Base> routeToClear = RouteParser.parse(solutions, needingHelp.id);
-		System.err.println("Route:"+routeToClear);
+		System.err.println("Conflict :: Route:"+routeToClear);
 
 		clearRoute(needingHelp, helperAgent, box, node, moveStart, routeToClear, solutions, helpSolution, needs_help, needs_agents_moved, needs_boxes_moved);
 
@@ -167,13 +154,13 @@ public class Conflict{
 				possibleAgentIDs.add(id);
 			}
 		}
+
 		if (possibleAgentIDs.isEmpty()) {
 			for (int id : node.getAgentIDs(box.color)) {
 				if(node.distance(box, node.agents[id]) != null){
 					possibleAgentIDs.add(id);
 				}
 			}
-
 		}
 
 		int distanceClosest = Integer.MAX_VALUE, selectedAgent = -1;
@@ -183,7 +170,7 @@ public class Conflict{
 				distanceClosest = node.distance(box, node.agents[id]);
 			}
 		}
-		System.err.println("Conflict :: ResolveBoxConflict :: Selected Agent " + selectedAgent);
+		System.err.println("Conflict :: ResolveBoxConflict :: FindHelperAgent :: Selected Agent " + selectedAgent);
 
 		return agents.get(selectedAgent);
 	}
@@ -251,7 +238,7 @@ public class Conflict{
 		
 		// Path with box, was found.
 		if( moveBoxResult.reason == Result.PLAN ){
-			System.err.println("succesfully moved box");
+			System.err.println("Conflict :: ResolveBoxConflict :: ClearRoute :: Succesfully moved box.");
 
 			// Apply the route of moving the box AWAY to the helping solution
 			helpSolution.addAll(moveBoxResult.solution);
@@ -268,11 +255,11 @@ public class Conflict{
 			injectNoOp(node, solutions.get(helperAgent.id),  Math.abs(routeToClear.size()-moveBoxResult.solution.size()) + 2 , -1);
 
 		}else{
-			System.err.println("Conflict :: ResolveBoxConflict :: Had to relax domain, to move box.");
+			System.err.println("Conflict :: ResolveBoxConflict :: ClearRoute :: Had to relax domain, to move box.");
 
 			if( moveBoxResultRelaxed.reason == Result.STUCK ){
 				// No way to move the box, in the relaxed subdomain.
-				System.err.println("Conflict :: ResolveBoxConflict :: Stuck on moving box.");
+				System.err.println("Conflict :: ResolveBoxConflict :: ClearRoute :: Stuck on moving box.");
 				
 				return;
 			}else{
@@ -321,7 +308,7 @@ public class Conflict{
 					boxesInTheWay.add( (Box)o );
 				}
 
-
+				// Why is this outcommented?..
 				//				if( sa.color != ((Box)o).color || numBoxes > 0 ){
 				//					System.err.println("            Color of box: " + ((Box)o).color + ".");
 				//					boxesInTheWay.add( (Box)o );
@@ -338,9 +325,6 @@ public class Conflict{
 		System.err.println("Conflict :: ResolveAgentConflict :: Initated.");
 
 		needs_boxes_moved.remove(saInTheWay);
-		
-		// Metrics for current plan
-		//int estimate = node.distance(node.agents[needingHelp.id], node.agents[saInTheWay.id]);
 
 		int row, col;
 		row = node.agents[saInTheWay.id].row;
@@ -381,15 +365,11 @@ public class Conflict{
 			solutions.get(saInTheWay.id).clear();
 			solutions.get(saInTheWay.id).addAll( outOfTheWayResult.solution );
 			injectNoOp(node, solutions.get(saInTheWay.id), outOfTheWayResult.solution.size() + 1,  -1);
-			//injectNoOp(node, solutions.get(saInTheWay.id), route.size() + 1, -1);
+
 			needingHelp.status 	= SearchAgent.Status.PLAN;
 			saInTheWay.status 	= SearchAgent.Status.PLAN;
 		}
 	}
-
-
-
-
 
 	private static void injectNoOp(Node node, LinkedList<Node> target, int count, int at){
 		// target.size()-1
@@ -409,6 +389,4 @@ public class Conflict{
 			noOptParent = noOpt;
 		}
 	}
-
-
 }
