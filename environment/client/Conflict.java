@@ -189,14 +189,14 @@ public class Conflict{
 	}
 
 	private static SearchResult moveToBox(SearchAgent needingHelp, SearchAgent helperAgent, Box box, Node node, ArrayList< LinkedList< Node > > solutions, Deque<SearchAgent> needs_help, HashMap<SearchAgent, ArrayList<LogicalAgent>> needs_agents_moved, HashMap<SearchAgent, ArrayList<Box>> needs_boxes_moved) throws IOException{
-		//relaxed
+		// Relaxed search
 		Heuristic moveToBoxHeuristicRelaxed		= new Proximity(helperAgent, box);
 		GoalState moveToBoxGSRelaxed	 		= new ProximityGoalState(helperAgent.id, box.row, box.col);
 		Strategy moveToBoxStrategyRelaxed	 	= new StrategyBestFirst(moveToBoxHeuristicRelaxed);
 		helperAgent.setState(node.subdomain(helperAgent.id));
 		SearchResult moveToBoxResultRelaxed	 	= helperAgent.Search(moveToBoxStrategyRelaxed , moveToBoxGSRelaxed);
 
-		//normal
+		// Normal search
 		Heuristic moveToBoxHeuristic		= new Proximity(helperAgent, box);
 		GoalState moveToBoxGS 				= new ProximityGoalState(helperAgent.id, box.row, box.col);
 		Strategy moveToBoxStrategy 			= new StrategyBestFirst(moveToBoxHeuristic);
@@ -243,7 +243,7 @@ public class Conflict{
 		SearchResult moveBoxResultRelaxed = helperAgent.Search(clearStrategyRelaxed, new RouteClearGoalState(helperAgent.id, box.id, routeToClear));
 
 		//normal
-//		Heuristic clearHeuristic = new ClearHeuristic(helperAgent, routeToClear);
+		//Heuristic clearHeuristic = new ClearHeuristic(helperAgent, routeToClear);
 		Heuristic clearHeuristic = new ClearRouteHeuristic(helperAgent, box.id, routeToClear);
 		Strategy clearStrategy = new StrategyBestFirst(clearHeuristic);
 		helperAgent.setState(moveStart);
@@ -278,7 +278,10 @@ public class Conflict{
 			}else{
 
 				// Apply the route of moving the box AWAY to the helping solution
-				helpSolution.addAll(moveBoxResult.solution);
+				//helpSolution.addAll(moveBoxResult.solution);
+				// Pretty sure you're supposed to insert the relaxed solution here?
+				helpSolution.addAll(moveBoxResultRelaxed.solution);
+
 
 				// Since we found a solution to helping, we clear the current plan and apply the new one.
 				solutions.get(helperAgent.id).clear();
@@ -407,175 +410,5 @@ public class Conflict{
 		}
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-	/*
-	public static ArrayList< LinkedList< Node > > _solve(Node node, ArrayList< LinkedList< Node > > solutions, List< SearchAgent > agents) throws IOException{
-
-		for (SearchAgent agent : agents) {
-			if(agent.status == SearchAgent.Status.STUCK){
-
-				//  find reason
-
-
-				ArrayList<Base> route = RouteParser.parse(solutions, agent.id);
-
-				ArrayList<LogicalAgent> agentsInTheWay = new ArrayList<>();
-				ArrayList<Box> boxesInTheWay = new ArrayList<>();
-
-				int dirty_test_count = 0;
-				boolean dirty_test_flag = true;
-
-				// Parse the route, storing what might be in the way
-				// Sanity check on route!
-				if( route.size() < 1 ){
-					System.err.println("Conflict :: Route is empty.");
-				}
-
-				for( Base b : route ){
-					Object o = node.objectAt(b);
-					if(dirty_test_flag)dirty_test_count++;
-					if( o instanceof LogicalAgent ){
-						dirty_test_flag = false;
-						System.err.println("Conflict :: Agent found in route for agent " + agent.id + "!");
-						agentsInTheWay.add( (LogicalAgent)o );
-					}else if( o instanceof Box ){
-						dirty_test_flag = false;
-						System.err.println("Conflict :: Box found in route for agent " + agent.id + "!");
-						System.err.println("            Color of box: " + ((Box)o).color + ".");
-						if( agent.color != ((Box)o).color )
-							boxesInTheWay.add( (Box)o );
-					}
-				}
-
-
-				 // find some one to solve the problem
-
-
-				// Call an agent that can move the box, and MOVE the fucking box.
-				for( Box b : boxesInTheWay ){
-					SearchAgent helpingAgent = agents.get( Node.colorMap.get(b.color).get(0) );
-
-					System.err.println("Conflict:: Found agent to help. Asking Agent " + helpingAgent.id);
-
-					Heuristic proximityHeuristic 	= new Proximity(agent, b);
-					GoalState proxGoal 				= new ProximityGoalState(agent.id, b.row, b.col);
-					Strategy helpingStrategy 		= new StrategyBestFirst(proximityHeuristic);
-					helpingAgent.setState(node);
-					SearchResult result = helpingAgent.CustomSearch(helpingStrategy, proxGoal);
-
-
-
-
-
-
-
-
-					// Clear the Helping Agents plan
-					if( result.reason != Result.STUCK ){
-						solutions.get(helpingAgent.id).clear();
-						solutions.get(helpingAgent.id).addAll(result.solution);
-						helpingAgent.status = Status.HELPING;
-						helping.put(helpingAgent, agent);
-
-
-						// Figure out what to do
-						Node moveStart = null;
-						if( !result.solution.isEmpty() ){
-							moveStart = result.solution.get(result.solution.size()-1) ;
-						}else{
-							moveStart = node;
-						}
-
-						Heuristic clearHeuristic = new ClearHeuristic(agent, agentsInTheWay.size()+boxesInTheWay.size(), route);
-						Strategy clearStrategy = new StrategyBestFirst(clearHeuristic);
-						helpingAgent.setState(moveStart);
-						SearchResult result2 = helpingAgent.ClearRouteSearch(clearStrategy, agentsInTheWay.size()+boxesInTheWay.size(), route);
-
-						if( result2.reason != Result.STUCK ){
-							solutions.get(helpingAgent.id).clear();
-							solutions.get(helpingAgent.id).addAll(result2.solution);
-
-							// Remove stuck flag from invoking agent. Makes it move instantly. 
-							agent.status = SearchAgent.Status.PLAN;
-
-							// Inject dirty NoOpts into helping agent.
-							Node noOptParent = null;
-							if( !result2.solution.isEmpty() ){
-								noOptParent = result2.solution.get(result2.solution.size()-1) ;
-							}else{
-								noOptParent = node;
-							}
-
-							for( int i = 0 ; i < dirty_test_count ; i++ ){
-								Node noOpt = noOptParent.ChildNode();
-								noOpt.action = new Command();
-								solutions.get(helpingAgent.id).addLast(noOpt);
-								noOptParent = noOpt;
-							}
-
-						}else{
-							// Impossible to help?!
-						}
-
-						System.err.println("Conflict :: Agent " + helpingAgent.id + " moving to help.");
-					}else{
-						System.err.println("Conflict :: No path to help was found.");
-						System.err.println(node);
-					}
-				}
-
-				// Assumption: The agent can move out of the way.
-				// Make any agents in route move out of the way.
-				for( LogicalAgent a : agentsInTheWay ){
-
-					if( agents.get(a.id).status == Status.HELPING )
-						continue;
-
-					System.err.println("Agent " + a.id + " was found to be in the way. Attempting to move.");
-
-					SearchAgent sa = agents.get(a.id);
-
-					sa.status = SearchAgent.Status.HELPING;
-					ArrayList< Node > moves = node.getExpandedNodes(sa.id);
-					if( moves.size() == 0 ){
-						// If there's no possible moves available, report stuck and skip
-						agents.get(a.id).status = Status.STUCK;
-						continue;
-					}
-
-					Node getOut		= moves.get(0);
-
-					Node noOpt		= getOut.ChildNode();
-					noOpt.action 	= new Command(); // NoOP command
-					Node getBack	= noOpt.ChildNode();
-					getBack.action 	= getOut.action.reverseCommand( getOut.action );
-					getBack.excecuteCommand(getBack.action, sa.id);
-
-					if( !solutions.get(sa.id).isEmpty() ) {
-						solutions.get(sa.id).peek().parent = getBack;
-					}
-
-					solutions.get(sa.id).addFirst(getBack);
-					solutions.get(sa.id).addFirst(noOpt);
-					solutions.get(sa.id).addFirst(getOut);
-				}
-
-
-			}
-		}
-		return solutions;
-	}
-	 */
 
 }
