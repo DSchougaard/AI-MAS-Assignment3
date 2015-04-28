@@ -20,6 +20,7 @@ import client.node.storage.SearchResult;
 
 // Includes necessary for detecting running in circles
 import client.utils.*;
+
 import java.util.LinkedList;
 import java.util.Deque;
 
@@ -174,5 +175,10 @@ public class SearchAgent{
 		int result = 5;
 		result = prime * result + this.id;
 		return result;
+	}
+	
+	@Override
+	public String toString(){
+		return id+" "+color;
 	}
 }
