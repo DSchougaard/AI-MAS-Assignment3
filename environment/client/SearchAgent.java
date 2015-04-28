@@ -9,7 +9,7 @@ import client.SearchClient.Memory;
 // Boxes have a color AND a type
 import client.node.Color;
 import client.node.GoalState;
-import client.node.GoalState.GoalGoalState;
+import client.node.GoalState.GlobalGoldGoalState;
 import client.node.Node;
 import client.node.storage.ExpansionStatus;
 import client.node.storage.Goal;
@@ -70,17 +70,17 @@ public class SearchAgent{
 	}
 	
 	public SearchResult Search(Strategy strategy) throws IOException {
-		return Search(strategy,  new GoalGoalState( this.state.getGoals(state.agents[id].color)), null);
+		return Search(strategy,  new GlobalGoldGoalState( this.state.getGoals(state.agents[id].color)), null);
 	}
 
 	public SearchResult Search(Strategy strategy, ArrayList<Goal> goals) throws IOException {
-		return Search(strategy, new GoalGoalState(goals), null);
+		return Search(strategy, new GlobalGoldGoalState(goals), null);
 	}
 	public SearchResult Search(Strategy strategy, ArrayList<Goal> goals, SearchResult preResult ) throws IOException {
-		return Search(strategy, new GoalGoalState(goals), preResult);
+		return Search(strategy, new GlobalGoldGoalState(goals), preResult);
 	}
 	public SearchResult Search(Strategy strategy, SearchResult preResult) throws IOException {
-		return Search(strategy, new GoalGoalState( this.state.getGoals(state.agents[id].color)), preResult);
+		return Search(strategy, new GlobalGoldGoalState( this.state.getGoals(state.agents[id].color)), preResult);
 	}
 	public SearchResult Search(Strategy strategy, GoalState goal) throws IOException {
 		return Search(strategy, goal, null);
