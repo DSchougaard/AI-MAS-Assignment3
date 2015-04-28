@@ -25,7 +25,6 @@ import java.util.Deque;
 
 
 public class SearchAgent{
-	
 
 	public int id;
 	public Color color;
@@ -88,7 +87,7 @@ public class SearchAgent{
 	}
 	
 	public SearchResult Search(Strategy strategy, GoalState goal, SearchResult preResult) throws IOException {
-		System.err.format("Search starting with strategy %s\n", strategy);
+		System.err.format("SearchAgent :: Search :: Search starting with strategy %s\n", strategy);
 		strategy.addToFrontier(this.state);
 
 		Deque<Base> history = new FiniteQueue<>(10);
@@ -97,7 +96,7 @@ public class SearchAgent{
 		while (true) {
 
 			if (iterations % 2000 == 0) {
-				System.err.println(strategy.searchStatus());
+				if(SearchClient.EXPANDED_DEBUG) System.err.println(strategy.searchStatus());
 			}
 			if (Memory.shouldEnd()) {
 				System.err.format("Memory limit almost reached, terminating search %s\n", Memory.stringRep());
@@ -135,7 +134,9 @@ public class SearchAgent{
 
 			if (goal.eval(leafNode)) {
 				ExpansionStatus expStatus = new ExpansionStatus(strategy);
-				System.err.println(strategy.searchStatus());
+
+				if(SearchClient.EXPANDED_DEBUG)System.err.println(strategy.searchStatus());
+				
 				if(leafNode.isInitialState()){
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>(),expStatus);
 				}
