@@ -13,8 +13,15 @@ import client.node.GoalState.GoalGoalState;
 import client.node.Node;
 import client.node.storage.ExpansionStatus;
 import client.node.storage.Goal;
+import client.node.storage.Base;
 import client.node.storage.LogicalAgent;
 import client.node.storage.SearchResult;
+
+
+// Includes necessary for detecting running in circles
+import client.utils.*;
+import java.util.LinkedList;
+import java.util.Deque;
 
 
 public class SearchAgent{
@@ -83,6 +90,8 @@ public class SearchAgent{
 	public SearchResult Search(Strategy strategy, GoalState goal, SearchResult preResult) throws IOException {
 		System.err.format("Search starting with strategy %s\n", strategy);
 		strategy.addToFrontier(this.state);
+
+		Deque<Base> history = new FiniteQueue<>(10);
 		
 		int iterations = 0;
 		while (true) {
