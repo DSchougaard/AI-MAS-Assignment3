@@ -26,6 +26,7 @@ public class Conflict{
 	public static ArrayList< LinkedList< Node > > solve(Node node, ArrayList< LinkedList< Node > > solutions, List< SearchAgent > agents) throws Exception{
 		System.err.println("\n\n\n\n");
 		System.err.println("Conflict :: Invoking Conflict Resolution.");
+		System.err.println("            May the force be with you, young padawan.");
 		System.err.println("\n\n\n\n");
 
 
@@ -66,7 +67,7 @@ public class Conflict{
 
 
 			if( move_boxes.isEmpty() )
-				System.err.println("Conflict ::No boxes on route.");
+				System.err.println("Conflict :: No boxes on route.");
 
 
 			for( Box box : move_boxes ){
@@ -111,7 +112,7 @@ public class Conflict{
 		SearchAgent helperAgent = findHelperAgent(needingHelp, box, node, agents);
 		helperAgent.status = Status.HELPING;
 		needs_boxes_moved.remove(helperAgent);
-		System.err.println("Conflict :: Agent "+helperAgent.id+" is helping");
+		System.err.println("Conflict :: ResolveBoxConflict :: Agent "+helperAgent.id+" is helping");
 		// Agent Select end.
 
 
@@ -136,7 +137,7 @@ public class Conflict{
 
 		
 		ArrayList<Base> routeToClear = RouteParser.parse(solutions, needingHelp.id);
-		System.err.println("Conflict :: Route:"+routeToClear);
+		System.err.println("Conflict :: ResolveBoxConflict :: Route:"+routeToClear);
 
 		clearRoute(needingHelp, helperAgent, box, node, moveStart, routeToClear, solutions, helpSolution, needs_help, needs_agents_moved, needs_boxes_moved);
 
@@ -291,6 +292,7 @@ public class Conflict{
 		ArrayList<Box> boxesInTheWay = new ArrayList<>();
 
 		// Loop over route, identifying obstructions in the route
+		int numBoxes = 0;
 		for( Base b : route ){
 			Object o = node.objectAt(b);
 			if( o instanceof LogicalAgent && ((LogicalAgent)o).id != agent.id ){
@@ -302,19 +304,19 @@ public class Conflict{
 			}else if( o instanceof Box ){
 
 
-				if( agent.color != ((Box)o).color ){
-					System.err.println("Conflict :: ExamineRoute :: Box found in route for agent " + agent.id + "!");
-					System.err.println("            Color of box: " + ((Box)o).color + ".");
-					boxesInTheWay.add( (Box)o );
-				}
+				//if( agent.color != ((Box)o).color ){
+				//	System.err.println("Conflict :: ExamineRoute :: Box found in route for agent " + agent.id + "!");
+				//	System.err.println("            Color of box: " + ((Box)o).color + ".");
+				//	boxesInTheWay.add( (Box)o );
+				//}
 
 				// Why is this outcommented?..
-				//				if( sa.color != ((Box)o).color || numBoxes > 0 ){
-				//					System.err.println("            Color of box: " + ((Box)o).color + ".");
-				//					boxesInTheWay.add( (Box)o );
-				//				}else if( sa.color == ((Box)o).color && numBoxes == 0 ){
-				//					numBoxes++;
-				//				}
+				if( agent.color != ((Box)o).color || numBoxes > 0 ){
+					System.err.println("            Color of box: " + ((Box)o).color + ".");
+					boxesInTheWay.add( (Box)o );
+				}else if( agent.color == ((Box)o).color && numBoxes == 0 ){
+					numBoxes++;
+				}
 			}
 		}
 		needs_agents_moved.put(agent, agentsInTheWay);
@@ -323,8 +325,13 @@ public class Conflict{
 
 	private static void resolveAgentConflict(ArrayList< LinkedList< Node > > solutions, Node node, SearchAgent needingHelp, SearchAgent saInTheWay, ArrayList<Base> route, Deque<SearchAgent> needs_help, HashMap<SearchAgent, ArrayList<LogicalAgent>> needs_agents_moved, HashMap<SearchAgent, ArrayList<Box>> needs_boxes_moved ) throws IOException{
 		System.err.println("Conflict :: ResolveAgentConflict :: Initated.");
+		System.err.println("                                    Only a Sith deals in absolutes!");
 
+		// Take care of the SA in the way
+		saInTheWay.status 					= SearchAgent.Status.HELPING;
+		needs_help.remove(saInTheWay);
 		needs_boxes_moved.remove(saInTheWay);
+		needs_agents_moved.remove(saInTheWay);
 
 		int row, col;
 		row = node.agents[saInTheWay.id].row;
