@@ -45,10 +45,9 @@ public class Conflict{
 			}
 		}		
 
-		int i = 0;
+
 		while( !needs_help.isEmpty() ){
 			System.err.println("Conflict :: Size of help queue: " + needs_help.size() + "\n");
-			//System.err.println(needs_help.size() + " agents needing help! Itteration = " + ++i + ".");
 
 			SearchAgent needingHelp = needs_help.pollFirst();
 			System.err.println("Conflict :: Agent " + needingHelp.id + " receiving help.");

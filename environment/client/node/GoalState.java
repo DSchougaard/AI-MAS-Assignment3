@@ -12,7 +12,7 @@ public abstract class GoalState{
 	abstract public boolean eval(Node node);
 	
 	public static class GlobalGoldGoalState extends GoalState{
-		ArrayList<Goal> goals;
+		private ArrayList<Goal> goals;
 		
 		public GlobalGoldGoalState(ArrayList<Goal> goals) {
 			this.goals=goals;

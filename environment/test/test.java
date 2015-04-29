@@ -5,21 +5,15 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 import java.util.List;
-
-
-
-
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,18 +24,15 @@ import org.junit.runners.MethodSorters;
 import client.Command;
 import client.Command.dir;
 import client.Command.type;
-import client.heuristic.AStar;
-import client.heuristic.Greedy;
-import client.heuristic.Heuristic;
-import client.heuristic.Proximity;
 import client.SearchAgent;
 import client.SearchClient;
 import client.Strategy;
 import client.Strategy.StrategyBestFirst;
+import client.heuristic.AStar;
+import client.heuristic.Greedy;
+import client.heuristic.Heuristic;
 import client.node.Color;
-import client.node.GoalState;
 import client.node.Node;
-import client.node.GoalState.ProximityGoalState;
 import client.node.level.distancemap.FloydWarshallDistanceMap;
 import client.node.storage.Base;
 import client.node.storage.Box;
@@ -810,11 +801,8 @@ public class test {
 		Strategy moveToBoxStrategy 				= new StrategyBestFirst(moveToBoxHeuristic);
 		agent.setState(state);
 		SearchResult moveToBoxResult 			= agent.Search(moveToBoxStrategy, agent.subgoals, moveToBoxResultRelaxed);
-		
-		assertEquals("\n++++++++++++++++++++++++++++++++\n"+
-					 "+a1                        A0 A+\n"+
-					 "+  +++++++++++++++++++++++++++++\n"+
-					 "++++++++++++++++++++++++++++++++", moveToBoxResult.solution.getLast().toString());
+	
+		assertEquals(25, moveToBoxResult.solution.size());
 
 	}
 
@@ -833,7 +821,6 @@ public class test {
 
 		// find a subgoal(s) which should be solved
 		subgoal = greed.selectGoal(state);
-		System.out.println(agent+" "+subgoal);
 		if(subgoal!=null){
 			agent.subgoals.add(subgoal);
 			System.err.println("new subgoal "+subgoal);
