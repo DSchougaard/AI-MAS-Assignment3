@@ -1,6 +1,7 @@
 package client;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.LinkedList;
 
 import client.SearchClient.Memory;
@@ -9,19 +10,15 @@ import client.SearchClient.Memory;
 // Boxes have a color AND a type
 import client.node.Color;
 import client.node.GoalState;
-import client.node.GoalState.GoalGoalState;
+import client.node.GoalState.GlobalGoldGoalState;
 import client.node.Node;
+import client.node.storage.Base;
 import client.node.storage.ExpansionStatus;
 import client.node.storage.Goal;
-import client.node.storage.Base;
 import client.node.storage.LogicalAgent;
 import client.node.storage.SearchResult;
-
-
 // Includes necessary for detecting running in circles
-import client.utils.*;
-import java.util.LinkedList;
-import java.util.Deque;
+import client.utils.FiniteQueue;
 
 
 public class SearchAgent{
@@ -70,17 +67,17 @@ public class SearchAgent{
 	}
 	
 	public SearchResult Search(Strategy strategy) throws IOException {
-		return Search(strategy,  new GoalGoalState( this.state.getGoals(state.agents[id].color)), null);
+		return Search(strategy,  new GlobalGoldGoalState( this.state.getGoals(state.agents[id].color)), null);
 	}
 
 	public SearchResult Search(Strategy strategy, ArrayList<Goal> goals) throws IOException {
-		return Search(strategy, new GoalGoalState(goals), null);
+		return Search(strategy, new GlobalGoldGoalState(goals), null);
 	}
 	public SearchResult Search(Strategy strategy, ArrayList<Goal> goals, SearchResult preResult ) throws IOException {
-		return Search(strategy, new GoalGoalState(goals), preResult);
+		return Search(strategy, new GlobalGoldGoalState(goals), preResult);
 	}
 	public SearchResult Search(Strategy strategy, SearchResult preResult) throws IOException {
-		return Search(strategy, new GoalGoalState( this.state.getGoals(state.agents[id].color)), preResult);
+		return Search(strategy, new GlobalGoldGoalState( this.state.getGoals(state.agents[id].color)), preResult);
 	}
 	public SearchResult Search(Strategy strategy, GoalState goal) throws IOException {
 		return Search(strategy, goal, null);
@@ -174,5 +171,10 @@ public class SearchAgent{
 		int result = 5;
 		result = prime * result + this.id;
 		return result;
+	}
+	
+	@Override
+	public String toString(){
+		return id+" "+color;
 	}
 }

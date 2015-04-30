@@ -24,14 +24,7 @@ public class SearchClient {
 	public static boolean EXPANDED_DEBUG = false;
 
 
-	static BufferedReader serverMessages = new BufferedReader(
-			new InputStreamReader(System.in));
-
-	// Auxiliary static classes
-	public static void error(String msg) throws Exception {
-		throw new Exception("GSCError: " + msg);
-	}
-
+	static BufferedReader serverMessages = new BufferedReader( new InputStreamReader(System.in) );
 
 	public static class Memory {
 		public static Runtime runtime = Runtime.getRuntime();
@@ -324,7 +317,6 @@ public class SearchClient {
 		if (stuck) {
 			// solve stuck agents
 			solutions = Conflict.solve(state, solutions, agents);
-			// System.err.println("!!!!!!!!!!!"+solutions.size());
 		}
 	}
 }

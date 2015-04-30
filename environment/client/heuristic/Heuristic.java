@@ -36,12 +36,13 @@ public abstract class Heuristic implements Comparator< Node > {
 			for (Goal subgoal : agent.subgoals) {
 				int tmp=Integer.MAX_VALUE;
 				for (Box box : n.getBoxes(subgoal.getType())) {
-					if(n.isGoal(box.row, box.col)!= box.getType()&& n.distance(n.agents[agent.id], box)!=null){
-//					if(!box.isAt(subgoal.row, subgoal.col) && n.distance(n.agents[agent.id], box)!=null){
-						tmp= Math.min(tmp,(int)( n.distance(n.agents[agent.id], box)+n.distance(box, subgoal)));
+					if(!n.isGoalState(subgoal) && n.isGoal(box.row, box.col)!= box.getType() && n.distance(n.agents[agent.id], box)!=null){
+//					if(!n.isGoalState(subgoal) && n.distance(n.agents[agent.id], box)!=null){
+						tmp= Math.min(tmp,n.distance(n.agents[agent.id], box)-1+n.distance(box, subgoal)*2);
 					}
 				}
 				if(tmp==Integer.MAX_VALUE){
+					
 					tmp=0;
 				}
 				h+=tmp;
@@ -110,8 +111,8 @@ public abstract class Heuristic implements Comparator< Node > {
 			}
 			
 			for( Box box : node.getBoxes(goal.getType()) ){
-				if(node.distance(agent, box) != null && ( node.distance(agent, box) + node.distance(box, goal)*goal.importance ) < dist ){
-					dist = node.distance(agent, box) + node.distance(box, goal)*goal.importance;
+				if(node.distance(agent, box) != null && ( node.distance(agent, box)-1 + node.distance(box, goal)*goal.importance ) < dist ){
+					dist = node.distance(agent, box)-1 + node.distance(box, goal)*goal.importance;
 					// Set the selects
 					selectedGoal = goal;
 					selectedBox = box;
@@ -120,5 +121,10 @@ public abstract class Heuristic implements Comparator< Node > {
 		}
 
 		return selectedGoal;
+	}
+
+	public static void reset() {
+		agent_goal_bookkeeping=new HashMap<>();
+		
 	}
 }

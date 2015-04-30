@@ -11,10 +11,10 @@ public abstract class GoalState{
 	
 	abstract public boolean eval(Node node);
 	
-	public static class GoalGoalState extends GoalState{
-		ArrayList<Goal> goals;
+	public static class GlobalGoldGoalState extends GoalState{
+		private ArrayList<Goal> goals;
 		
-		public GoalGoalState(ArrayList<Goal> goals) {
+		public GlobalGoldGoalState(ArrayList<Goal> goals) {
 			this.goals=goals;
 		}
 
