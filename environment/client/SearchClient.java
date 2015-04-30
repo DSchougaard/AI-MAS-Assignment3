@@ -271,8 +271,7 @@ public class SearchClient {
 				}
 				if (!relaxedResult.equals(null)||!relaxedResult.expStatus.equals(null)){
 					expStatus.add(relaxedResult.expStatus);
-					// TODO: Fix toggle
-					//System.err.println(expStatus.toString());
+					if(SearchClient.EXPANDED_DEBUG)System.err.println(expStatus.toString());
 				}
 				System.gc();
 				
