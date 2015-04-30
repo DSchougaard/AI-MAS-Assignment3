@@ -12,10 +12,10 @@ import client.node.storage.LogicalAgent;
 
 
 public class KClusteringGoals{
-		
+
 	private HashMap<Integer, ArrayList<Goal>> clusters;
 
-	
+
 	public KClusteringGoals(LogicalAgent[] AgentIDs, Level level){
 		this.clusters = new HashMap<Integer, ArrayList<Goal>>();
 		// Pre load all active agents into the cluster
@@ -27,7 +27,7 @@ public class KClusteringGoals{
 
 		// Preload goals. Takes time. Sorry.
 		ArrayList<Color> colors=level.getColors();
-		
+
 		for (Color color : colors) {
 			ArrayList<LogicalAgent> agents = new ArrayList<>();
 			for (LogicalAgent logicalAgent : AgentIDs) {
@@ -35,11 +35,14 @@ public class KClusteringGoals{
 					agents.add(logicalAgent);
 				}
 			}
-			 KClusteringGoal(agents, level.getGoals(color), level);
+			KClusteringGoal(agents, level.getGoals(color), level);
 		}
-		
+
 	}
 	public void KClusteringGoal(ArrayList<LogicalAgent> agents, ArrayList<Goal> goals, Level level){
+
+		int centers=numberOfCenters(agents, goals, level);
+		
 		int startGoal = (new Random(System.nanoTime())).nextInt(goals.size());
 
 		ArrayList<Goal> picked = new ArrayList<>();
@@ -49,7 +52,7 @@ public class KClusteringGoals{
 
 		// Apply a greedy k-centering algorithm, with k = number of agents
 		int minDist, maxDist;
-		for(int i =0; i<agents.size()-1;i++){
+		for(int i =0; i<centers-1;i++){
 			maxDist = 0;
 
 			Goal nextGoal = null;
@@ -69,8 +72,8 @@ public class KClusteringGoals{
 			remaining.remove(nextGoal);
 
 		}
-		
-		
+
+
 		// For each selected cluster center, we apply it to it's own list.
 		HashMap<Goal, ArrayList<Goal>> clustersByCenter = new HashMap<Goal, ArrayList<Goal>>();
 		for( Goal g : picked ){
@@ -108,12 +111,49 @@ public class KClusteringGoals{
 
 			ArrayList<Goal> clusterGoals = new ArrayList<Goal>();
 			clusterGoals.addAll( clustersByCenter.get(g) );
-			
+
 			this.clusters.put(selectedAgent.id, clusterGoals );
 			agents.remove(selectedAgent);
+
+
 		}
-		
+
 	}
+	
+	private int numberOfCenters(ArrayList<LogicalAgent> agents, ArrayList<Goal> goals, Level level){
+		
+		ArrayList<Goal> regions= new ArrayList<>();
+
+		for (Goal goal : goals) {
+			boolean reachable =false;
+			for (Goal goal2 : regions) {
+				if(level.distance(goal, goal2)!=null){
+					reachable=true;
+					break;
+				}
+			}
+			if(!reachable){
+
+				regions.add(goal);
+			}
+		}
+		int centers=agents.size();
+		for (LogicalAgent agent : agents) {
+			boolean isolated=true;
+			for (Goal goal : regions) {
+				if (level.distance(agent, goal)!=null) {
+					isolated=false;
+					break;
+				}
+			}
+			if (isolated) {
+				centers--;
+			}
+		}
+
+		return centers;
+	}
+	
 	public ArrayList<Goal> getCluster(int agentID){
 		return this.clusters.get(agentID);
 	}
