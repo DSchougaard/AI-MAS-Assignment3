@@ -33,8 +33,15 @@ public abstract class Heuristic implements Comparator< Node > {
 		//euclid distance from mover to box and from box to goal
 		Integer tmpH=hs.get(n);
 		if(tmpH==null){
-
-			int h=0;
+			int gc=n.getGoals().size();
+			for (Goal goal : n.getGoals()) {
+				if(n.isGoalState(goal)){
+					gc--;
+				}
+			}
+			
+//			int h=0;
+			int h=gc*5;
 			for (Goal subgoal : agent.subgoals) {
 				int tmp=Integer.MAX_VALUE;
 				for (Box box : n.getBoxes(subgoal.getType())) {

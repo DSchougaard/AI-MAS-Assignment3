@@ -17,7 +17,8 @@ public class GoalHeuristic {
 	
 	private HashMap<Goal, ArrayList<Integer>> goalAgentsGrouping= new HashMap<>();
 	private HashMap<Integer, ArrayList<Goal>> agentGoalsGrouping= new HashMap<>();
-
+	private HashMap<Integer, Goal> agentGoalscenter= new HashMap<>();
+	
 	private HashMap<Goal, Integer> agent_goal_bookkeeping = new HashMap<>();
 	
 	// Clusters
