@@ -827,13 +827,14 @@ public class test {
 			agent.subgoals.add(subgoal);
 			System.err.println("new subgoal "+subgoal);
 		}
-		int f=28;
+		int f=38;
 		for (int i = 0; i < 21; i++) {
 			state.excecuteCommand(new Command(type.Pull, dir.E, dir.W), 0);
 			assertTrue(f>greed.f(state));
 			f=greed.f(state);
 		}
-		assertEquals(0, greed.f(state));
+		System.out.println(state);
+		assertEquals(5, greed.f(state));
 
 
 	}
