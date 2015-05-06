@@ -21,8 +21,8 @@ import client.SearchAgent.Status;
 
 public class SearchClient {
 
-	public static boolean EXPANDED_DEBUG = false;
-
+	public static boolean EXPANDED_DEBUG = true;
+	public static GoalHeuristic goalHeuristic;
 
 	static BufferedReader serverMessages = new BufferedReader( new InputStreamReader(System.in) );
 
@@ -72,6 +72,7 @@ public class SearchClient {
 				agents.add(new SearchAgent( state.agents[i]));
 			}
 		}
+		goalHeuristic=new GoalHeuristic(state.getAgents(), Node.getLevel());
 	}
 
 	public static void init(BufferedReader serverMessages) throws Exception {
@@ -84,6 +85,7 @@ public class SearchClient {
 				agents.add(new SearchAgent( state.agents[i]));
 			}
 		}
+		goalHeuristic=new GoalHeuristic(state.getAgents(), Node.getLevel());
 	}
 
 
@@ -206,7 +208,7 @@ public class SearchClient {
 		Strategy strategy = new StrategyBestFirst(heuristic);
 
 		// find a subgoal(s) which should be solved
-		Goal subgoal = heuristic.selectGoal(agent.state);
+		Goal subgoal = goalHeuristic.selectGoal(agent,state);
 		if(subgoal!=null){
 			agent.subgoals.add(subgoal);
 			System.err.println("new subgoal "+subgoal);
@@ -236,12 +238,12 @@ public class SearchClient {
 				System.err.println("SearchClient :: MultiAgentPlanning :: Agent " + agent.id + " planing,");
 				System.err.println("SearchClient :: MultiAgentPlanning :: Subgoals "+ agent.subgoals);
 
-				Heuristic heuristic = new Greedy(agent);
+				
 
 				Goal subgoal = null;
 				// find a subgoal(s) which should be solved
 				if(state.isGoalState(agent.subgoals)){
-					subgoal = heuristic.selectGoal(state);
+					subgoal = goalHeuristic.selectGoal(agent,state);
 					if(subgoal!=null){
 						agent.subgoals.add(subgoal);
 						System.err.println("SearchClient :: MultiAgentPlanning :: New subgoal " + subgoal + ".");
@@ -272,6 +274,7 @@ public class SearchClient {
 				// normal search setup
 				System.err.println("SearchClient :: MultiAgentPlanning :: Performing normal search");
 				agent.setState(state);
+				Heuristic heuristic = new Greedy(agent);
 				strategy = new StrategyBestFirst(heuristic);
 				SearchResult result = agent.Search(strategy, agent.subgoals, relaxedResult);
 				if (!result.equals(null)||!result.expStatus.equals(null)){
