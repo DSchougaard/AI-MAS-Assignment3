@@ -324,33 +324,6 @@ public class Node implements NodeInterface, LevelInterface{
 		return Node.level.distance(from, to);
 	}
 
-	public void calculateCluster(LogicalAgent[] agents, boolean b){
-		Node.level.calculateCluster(agents, b);
-	}
-	public HashMap<Integer, ArrayList<Goal>> getClusters(){
-		return Node.level.getClusters();
-	}
-	public ArrayList<Goal> getCluster(int agentID){
-		ArrayList<Goal> cluster 	= Node.level.getCluster(agentID);
-		ArrayList<Goal> filtered 	= new ArrayList<Goal>();
-
-		// Bypass filtering
-		// return t;
-		// Filter
-
-		if( cluster == null )
-			return new ArrayList<Goal>();
-
-		for( Goal goal : cluster ){
-			Box box=this.boxesByPoint.get(goal.getPoint());
-			if(box == null || (box.getType() != goal.getType())){
-				filtered.add(goal);
-			}
-		}
-
-		return filtered;
-	}
-
 
 	/**
 	 * possible states/nodes to reach from current node. when the agent only is allow to do action involving a box

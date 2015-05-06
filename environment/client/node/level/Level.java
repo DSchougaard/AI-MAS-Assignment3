@@ -48,8 +48,7 @@ public class Level implements LevelInterface{
 	
 	private ArrayList<Goal> goals;
 
-	// Clusters
-	private HashMap<Integer, ArrayList<Goal>> clusters;
+
 
 	// Constructor
 	public Level(int maxRow, int maxCol, DistanceMap dm){
@@ -64,7 +63,6 @@ public class Level implements LevelInterface{
 		this.goalsByType 		= new HashMap<Character, ArrayList<Goal>>();
 		this.goalsByColor 		= new HashMap<Color, ArrayList<Goal>>();
 		Level.dm 				= dm;
-		this.clusters 			= new HashMap<Integer, ArrayList<Goal>>();
 		this.goals= new ArrayList<>();
 	}	
 
@@ -167,36 +165,6 @@ public class Level implements LevelInterface{
 		return distance(from.row, from.col, to.row, to.col);
 	}
 
-	public void calculateCluster(LogicalAgent[] agents, boolean kcluster){
-
-		if(kcluster){
-			KClusteringGoals kcg = new KClusteringGoals(agents, this);
-			this.clusters=kcg.getClusters();
-		}else{
-			for( int i = 0 ; i < agents.length ; i++ ){
-				if( agents[i] != null ){
-					ArrayList<Goal> goals=new ArrayList<>();
-					for (Goal goal : this.goalsByColor.get(agents[i].color)) {
-						if (distance(agents[i], goal)!=null) {
-							goals.add(goal);
-						}
-					}
-					this.clusters.put( agents[i].id, goals );
-				}
-					
-			}
-		}
-
-	}
-
-	public HashMap<Integer, ArrayList<Goal>> getClusters(){
-		return this.clusters;
-
-	}
-
-	public ArrayList<Goal> getCluster(int agentID){
-		return clusters.get( agentID );
-	}
 
 	public Character[][] toArray(){
 		Character[][] result= new Character[maxRow][maxCol];
@@ -275,9 +243,14 @@ public class Level implements LevelInterface{
 				case 3:
 					deadends.add(new Base(i,j));
 					break;
+				case 4:
+					deadends.add(new Base(i,j));
+					break;
 				default:
 					while(true){
 						System.err.println("unknown field type");
+						System.err.println(new Base(i,j));
+						System.err.println(wallsCount);
 						System.out.println("unknown field type");
 					}
 				}
