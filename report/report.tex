@@ -1,0 +1,115 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[nottoc,numbib]{tocbibind}
+\usepackage{titlesec}
+\usepackage[toc,page]{appendix}
+
+
+\author{
+    Daniel Schougaard \\ \textit{s103446} \\
+    Kasper Reindahl Rasmussen\\ \textit{s103476}\\ 
+    Martin V. Ottesen\\ \textit{-} 
+}
+\title{ 
+    \Huge{02285 - Artificial Intelligence and Multi-Agent Systems}
+}
+
+\begin{document}
+
+%Macro File
+\input{macro.tex}
+
+\lstset{
+	language=Java, 
+	keywordstyle=\color[rgb]{0.5216, 0.05098, 0.3569}\textbf,
+	commentstyle=\color[rgb]{0.133,0.545,0.133},
+	stringstyle=\color[rgb]{0,0,1},
+	tabsize=2
+}
+
+% Clears title page for TOC
+\clearpage\maketitle
+\thispagestyle{empty}
+\pagebreak
+\pagestyle{plain}
+\tableofcontents
+\pagebreak
+%TOC and Title page done report begins here!
+
+
+\section{Introduction}
+    \input{sections/introduction.tex}
+\section{Analysis}
+    \input{sections/analysis/somefile.tex}
+\section{Design}
+    \input{sections/design/somefile.tex}
+\section{Implementation}
+    \input{sections/implementation/somefile.tex}
+\section{Conclusion}
+    \input{sections/conclusion.tex}
+
+
+
+
+
+\begin{appendices}
+    \input{appendices/a.tex}
+\end{appendices}
+
+
+
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
