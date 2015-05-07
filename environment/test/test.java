@@ -1,7 +1,13 @@
 package test;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,7 +33,6 @@ import client.Command.type;
 import client.SearchAgent;
 import client.SearchClient;
 import client.Strategy;
-import client.Strategy.StrategyBestFirst;
 import client.heuristic.AStar;
 import client.heuristic.Greedy;
 import client.heuristic.Heuristic;
@@ -422,7 +427,7 @@ public class test {
 		SearchAgent agent= SearchClient.agents.get(0);
 		agent.setState( SearchClient.state );
 
-		Strategy strategy1 = new StrategyBestFirst( new AStar(agent) );
+		Strategy strategy1 = new AStar(new Heuristic(agent)) ;
 		assertTrue( strategy1.frontierIsEmpty());
 		strategy1.addToFrontier(agent.state);
 		assertEquals(SearchClient.state, agent.state);
@@ -477,13 +482,13 @@ public class test {
 
 		SearchAgent agent1 = SearchClient.agents.get(0);
 		agent1.setState( SearchClient.state );
-		Strategy strategy1 = new StrategyBestFirst( new AStar(agent1 ) );
+		Strategy strategy1 = new AStar(new Heuristic(agent1 ) );
 		LinkedList<Node> sol1=agent1.Search(strategy1).solution;
 		assertEquals(9, sol1.size());
 		//		System.err.println(SearchClient.state.agents[0].color);
 		SearchAgent agent2 = SearchClient.agents.get(1);
 		agent2.setState(SearchClient.state);
-		Strategy strategy2 = new StrategyBestFirst( new AStar(SearchClient.agents.get(1)) );
+		Strategy strategy2 = new AStar(new Heuristic(SearchClient.agents.get(1)) );
 		LinkedList<Node> sol2=agent2.Search(strategy2).solution;
 		assertEquals(17, sol2.size());
 
@@ -502,13 +507,13 @@ public class test {
 
 		SearchAgent agent1 = SearchClient.agents.get(0);
 		agent1.setState( SearchClient.state );
-		Strategy strategy1 = new StrategyBestFirst( new AStar(agent1 ) );
+		Strategy strategy1 = new AStar(new Heuristic(agent1) );
 		LinkedList<Node> sol1=agent1.Search(strategy1).solution;
 		assertEquals(9, sol1.size());
 		//		System.err.println(SearchClient.state.agents[0].color);
 		SearchAgent agent2 = SearchClient.agents.get(1);
 		agent2.setState(SearchClient.state);
-		Strategy strategy2 = new StrategyBestFirst( new AStar(agent2) );
+		Strategy strategy2 = new AStar(new Heuristic(agent2) );
 		LinkedList<Node> sol2=agent2.Search(strategy2).solution;
 		assertEquals(17, sol2.size());
 
@@ -745,7 +750,7 @@ public class test {
 		Node state = SearchClient.state;
 
 		for(SearchAgent agent: SearchClient.agents){
-			Heuristic heuristic = new Greedy(agent);
+			Heuristic heuristic = new Heuristic(agent);
 
 			Goal subgoal = null;
 			do{
@@ -773,7 +778,7 @@ public class test {
 
 		Node state = SearchClient.state;
 		for(SearchAgent agent: SearchClient.agents){
-			Heuristic heuristic = new Greedy(agent);
+			Heuristic heuristic = new Heuristic(agent);
 
 			Goal subgoal = null;
 
@@ -791,14 +796,14 @@ public class test {
 
 		SearchAgent agent = SearchClient.agents.get(0);
 		// Relaxed search
-		Heuristic moveToBoxHeuristicRelaxed		= new Greedy(agent);
-		Strategy moveToBoxStrategyRelaxed	 	= new StrategyBestFirst(moveToBoxHeuristicRelaxed);
+		Heuristic moveToBoxHeuristicRelaxed		= new Heuristic(agent);
+		Strategy moveToBoxStrategyRelaxed	 	= new Greedy(moveToBoxHeuristicRelaxed);
 		agent.setState(state.subdomain(agent.id));
 		SearchResult moveToBoxResultRelaxed	 	= agent.Search(moveToBoxStrategyRelaxed, agent.subgoals);
 
 		// Normal search
-		Heuristic moveToBoxHeuristic			= new Greedy(agent);
-		Strategy moveToBoxStrategy 				= new StrategyBestFirst(moveToBoxHeuristic);
+		Heuristic moveToBoxHeuristic			= new Heuristic(agent);
+		Strategy moveToBoxStrategy 				= new Greedy(moveToBoxHeuristic);
 		agent.setState(state);
 		SearchResult moveToBoxResult 			= agent.Search(moveToBoxStrategy, agent.subgoals, moveToBoxResultRelaxed);
 	
@@ -814,13 +819,14 @@ public class test {
 		SearchClient.init( serverMessages );
 
 		Node state = SearchClient.state;
-		Heuristic greed = new Greedy(SearchClient.agents.get(0));
+		Heuristic heuristic= new Heuristic(SearchClient.agents.get(0));
+		Strategy greed = new Greedy(heuristic);
 		
 		SearchAgent agent = SearchClient.agents.get(0);
 		Goal subgoal = null;
 
 		// find a subgoal(s) which should be solved
-		subgoal = greed.selectGoal(state);
+		subgoal = heuristic.selectGoal(state);
 		if(subgoal!=null){
 			agent.subgoals.add(subgoal);
 			System.err.println("new subgoal "+subgoal);
@@ -848,7 +854,7 @@ public class test {
 
 		List<SearchAgent> agents=SearchClient.agents;
 		SearchAgent agent=agents.get(0);
-		Heuristic heuristic = new Greedy(agent);
+		Heuristic heuristic = new Heuristic(agent);
 
 		Goal subgoal = null;
 		// find a subgoal(s) which should be solved
@@ -863,8 +869,8 @@ public class test {
 		// relaxed search setup
 		System.err.println("MA Planning :: Performing relaxed search");
 		Node relaxed = state.subdomain(agent.id);
-		Heuristic relaxedHeuristic = new Greedy(agent);
-		Strategy relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
+		Heuristic relaxedHeuristic = new Heuristic(agent);
+		Strategy relaxedStrategy = new Greedy(relaxedHeuristic);
 		agent.setState(relaxed);
 		SearchResult relaxedResult;
 		if(subgoal==null){
@@ -881,7 +887,7 @@ public class test {
 		// normal search setup
 		System.err.println("MA Planning :: Performing normal search");
 		agent.setState(state);
-		Strategy strategy = new StrategyBestFirst(heuristic);
+		Strategy strategy = new Greedy(heuristic);
 		SearchResult result = agent.Search(strategy, agent.subgoals, relaxedResult);
 
 		assertEquals(SearchResult.Result.STUCK, result.reason);
