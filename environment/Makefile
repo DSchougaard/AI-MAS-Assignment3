@@ -18,7 +18,6 @@ all:
 	javac client/*/*/*.java
 	javac client/*/*/*/*.java
 
-
 map:
 	javac client/node/map/*.java
 	javac client/node/*.java
@@ -27,6 +26,9 @@ map:
 
 run:
 	java $(JAVA) -jar server.jar -l $(LEVEL_PREFIX)$(level) -g 200 -c "java -Xmx2048m client.SearchClient -dm FloydWarshallDistanceMap"
+
+count:
+	sloc --details --format cli-table .
 
 clean:	
 	rm -f *.class
