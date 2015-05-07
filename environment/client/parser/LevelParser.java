@@ -69,7 +69,7 @@ public class LevelParser{
 		}
 
 		settings.dm.initialize(level);
-//		level.calculateCluster(node.agents,settings.kcluster);
+		level.calculateCluster(node.agents,settings.kcluster);
 		level.analyse();
 		return node;
 	}
