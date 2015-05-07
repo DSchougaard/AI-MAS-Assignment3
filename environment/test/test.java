@@ -1,13 +1,7 @@
 package test;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -62,6 +56,7 @@ public class test {
 	public void tearDown(){
 		SearchClient.state=null;
 		SearchClient.agents=new ArrayList<>();
+		Heuristic.reset();
 	}
 	@Test
 	public void addBoxes(){
@@ -649,9 +644,9 @@ public class test {
 
 		Node state = SearchClient.state;
 		assertEquals(2, state.getGoals().size());
-		assertNotEquals(SearchClient.goalHeuristic.getCluster(SearchClient.agents.get(0).id), SearchClient.goalHeuristic.getCluster(SearchClient.agents.get(1).id));
-		assertEquals(1, SearchClient.goalHeuristic.getCluster(SearchClient.agents.get(0).id).size());
-		assertEquals(1, SearchClient.goalHeuristic.getCluster(SearchClient.agents.get(1).id).size());
+		assertNotEquals(state.getCluster(SearchClient.agents.get(0).id), state.getCluster(SearchClient.agents.get(1).id));
+		assertEquals(1, state.getCluster(SearchClient.agents.get(0).id).size());
+		assertEquals(1, state.getCluster(SearchClient.agents.get(1).id).size());
 
 	}
 
@@ -663,9 +658,9 @@ public class test {
 
 		Node state = SearchClient.state;
 		assertEquals(3, state.getGoals().size());
-		assertNotEquals(SearchClient.goalHeuristic.getCluster(SearchClient.agents.get(0).id), SearchClient.goalHeuristic.getCluster(SearchClient.agents.get(1).id));
-		assertEquals(2, SearchClient.goalHeuristic.getCluster(SearchClient.agents.get(0).id).size());
-		assertEquals(1, SearchClient.goalHeuristic.getCluster(SearchClient.agents.get(1).id).size());
+		assertNotEquals(state.getCluster(SearchClient.agents.get(0).id), state.getCluster(SearchClient.agents.get(1).id));
+		assertEquals(2, state.getCluster(SearchClient.agents.get(0).id).size());
+		assertEquals(1, state.getCluster(SearchClient.agents.get(1).id).size());
 
 	}
 
@@ -675,12 +670,14 @@ public class test {
 
 		SearchClient.init( serverMessages );
 
+		Node state = SearchClient.state;
+
 		Set<Integer> keys=new HashSet<Integer>(Arrays.asList(0,1,2,3,4,5,6,7,8,9));
 
-		assertEquals(keys, SearchClient.goalHeuristic.getClusters().keySet());
-		assertEquals(3, SearchClient.goalHeuristic.getCluster(SearchClient.agents.get(4).id).size());
+		assertEquals(keys, state.getClusters().keySet());
+		assertEquals(3, state.getCluster(SearchClient.agents.get(4).id).size());
 		int size=0;
-		for(ArrayList<Goal> goals: SearchClient.goalHeuristic.getClusters().values()){
+		for(ArrayList<Goal> goals: state.getClusters().values()){
 			size+=goals.size();
 		}
 		assertEquals(13, size);
@@ -746,20 +743,20 @@ public class test {
 		SearchClient.init( serverMessages );
 
 		Node state = SearchClient.state;
-		Goal subgoal = null;
-		do{
-			for(SearchAgent agent: SearchClient.agents){
 
+		for(SearchAgent agent: SearchClient.agents){
+			Heuristic heuristic = new Greedy(agent);
 
+			Goal subgoal = null;
+			do{
 				// find a subgoal(s) which should be solved
-				subgoal = SearchClient.goalHeuristic.selectGoal(agent,state);
+				subgoal = heuristic.selectGoal(state);
 				if(subgoal!=null){
 					agent.subgoals.add(subgoal);
 					System.err.println("new subgoal "+subgoal);
 				}
-
-			}
-		}while(subgoal!=null);
+			}while(subgoal!=null);
+		}
 		assertEquals(2, SearchClient.agents.size());
 		for(SearchAgent agent: SearchClient.agents){
 			assertEquals(1, agent.subgoals.size());
@@ -776,11 +773,12 @@ public class test {
 
 		Node state = SearchClient.state;
 		for(SearchAgent agent: SearchClient.agents){
+			Heuristic heuristic = new Greedy(agent);
 
 			Goal subgoal = null;
 
 			// find a subgoal(s) which should be solved
-			subgoal = SearchClient.goalHeuristic.selectGoal(agent,state);
+			subgoal = heuristic.selectGoal(state);
 			if(subgoal!=null){
 				agent.subgoals.add(subgoal);
 				System.err.println("new subgoal "+subgoal);
@@ -803,7 +801,7 @@ public class test {
 		Strategy moveToBoxStrategy 				= new StrategyBestFirst(moveToBoxHeuristic);
 		agent.setState(state);
 		SearchResult moveToBoxResult 			= agent.Search(moveToBoxStrategy, agent.subgoals, moveToBoxResultRelaxed);
-
+	
 		assertEquals(25, moveToBoxResult.solution.size());
 
 	}
@@ -817,12 +815,12 @@ public class test {
 
 		Node state = SearchClient.state;
 		Heuristic greed = new Greedy(SearchClient.agents.get(0));
-
+		
 		SearchAgent agent = SearchClient.agents.get(0);
 		Goal subgoal = null;
 
 		// find a subgoal(s) which should be solved
-		subgoal = SearchClient.goalHeuristic.selectGoal(agent,state);
+		subgoal = greed.selectGoal(state);
 		if(subgoal!=null){
 			agent.subgoals.add(subgoal);
 			System.err.println("new subgoal "+subgoal);
@@ -833,12 +831,14 @@ public class test {
 			assertTrue(f>greed.f(state));
 			f=greed.f(state);
 		}
+
 		System.out.println(state);
 		assertEquals(5, greed.f(state));
 
 
-	}
 
+	}
+	
 	@Test
 	public void resolveBoxConflict() throws Exception{
 		BufferedReader serverMessages = new BufferedReader( new FileReader(new File("E:/GitHub/AI-MAS-Assignment3/environment/levels/MAcollision2.lvl")) );
@@ -846,6 +846,7 @@ public class test {
 		SearchClient.init( serverMessages );
 
 		Node state = SearchClient.state;
+
 		List<SearchAgent> agents=SearchClient.agents;
 		SearchAgent agent=agents.get(0);
 		Heuristic heuristic = new Greedy(agent);
@@ -853,7 +854,7 @@ public class test {
 		Goal subgoal = null;
 		// find a subgoal(s) which should be solved
 		if(state.isGoalState(agent.subgoals)){
-			subgoal = SearchClient.goalHeuristic.selectGoal(agent,state);
+			subgoal = heuristic.selectGoal(state);
 			if(subgoal!=null){
 				agent.subgoals.add(subgoal);
 				System.err.println("new subgoal "+subgoal);
