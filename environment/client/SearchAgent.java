@@ -96,34 +96,39 @@ public class SearchAgent{
 				if(SearchClient.EXPANDED_DEBUG) System.err.println(strategy.searchStatus());
 			}
 			if (Memory.shouldEnd()) {
+				ExpansionStatus expStatus = new ExpansionStatus(strategy);
 				System.err.format("Memory limit almost reached, terminating search %s\n", Memory.stringRep());
-				return new SearchResult(SearchResult.Result.MEMMORY, new LinkedList<>());
+				return new SearchResult(SearchResult.Result.MEMMORY, new LinkedList<>(),expStatus);
 			}
 			if (strategy.timeSpent() > Memory.timeLimit) { // Minutes timeout
+				ExpansionStatus expStatus = new ExpansionStatus(strategy);
 				System.err.format( "Time limit reached, terminating search %s\n", Memory.stringRep());
 				return new SearchResult(SearchResult.Result.TIME,
-						new LinkedList<>());
+						new LinkedList<>(),expStatus);
 			}
 			//fail safe
 			if(strategy.countExplored()>180000){
-				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+				ExpansionStatus expStatus = new ExpansionStatus(strategy);
+				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>(),expStatus);
 			}
 			
 			if (strategy.frontierIsEmpty()) {
+				ExpansionStatus expStatus = new ExpansionStatus(strategy);
 				if (goal.eval(state)) {
-					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>(),expStatus);
 				} else if (preResult == null) {
-					return new SearchResult(SearchResult.Result.IMPOSIBLE, new LinkedList<>());
+					return new SearchResult(SearchResult.Result.IMPOSIBLE, new LinkedList<>(),expStatus);
 				} else {
-					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
+					return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>(),expStatus);
 				}
 			}
 
 			Node leafNode = strategy.getAndRemoveLeaf();
 
 			if (leafNode.g()>(20+startG) && preResult != null && leafNode.g() > (startG+preResult.solution.size() * searchMaxOffset)) {
+				ExpansionStatus expStatus = new ExpansionStatus(strategy);
 				if(preResult.reason==SearchResult.Result.DONE){
-					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>());
+					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>(),expStatus);
 					
 				}
 				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
