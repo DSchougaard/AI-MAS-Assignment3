@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import client.parser.HeuristicParser;
 import client.parser.LevelParser;
 import client.parser.ArgumentParser;
 import client.parser.SettingsContainer;
@@ -204,7 +205,7 @@ public class SearchClient {
 		agent.setState(state);
 
 		// normal search setup
-		Heuristic heuristic = new AStar(agent);
+		Heuristic heuristic = HeuristicParser.parse(agent, "AStar");
 		Strategy strategy = new StrategyBestFirst(heuristic);
 
 		// find a subgoal(s) which should be solved
@@ -253,7 +254,7 @@ public class SearchClient {
 				// relaxed search setup
 				System.err.println("SearchClient :: MultiAgentPlanning :: Performing relaxed search");
 				Node relaxed = state.subdomain(agent.id);
-				Heuristic relaxedHeuristic = new Greedy(agent);
+				Heuristic relaxedHeuristic = HeuristicParser.parse(agent, "Greedy");
 				relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
 				agent.setState(relaxed);
 				SearchResult relaxedResult;
@@ -274,7 +275,7 @@ public class SearchClient {
 				// normal search setup
 				System.err.println("SearchClient :: MultiAgentPlanning :: Performing normal search");
 				agent.setState(state);
-				Heuristic heuristic = new Greedy(agent);
+				Heuristic heuristic = HeuristicParser.parse(agent, "Greedy");
 				strategy = new StrategyBestFirst(heuristic);
 				SearchResult result = agent.Search(strategy, agent.subgoals, relaxedResult);
 				if (!result.equals(null)||!result.expStatus.equals(null)){
