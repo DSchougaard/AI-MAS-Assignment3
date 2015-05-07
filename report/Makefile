@@ -1,4 +1,11 @@
 FILENAME=report
+
+ifeq ($(shell uname -s), Linux)
+	OPEN_UTIL = gnome-open
+else
+	OPEN_UTIL = open
+endif
+
 all: 
 	latexmk -pdf $(FILENAME).tex
 	texcount $(FILENAME).tex -inc -letter -total
@@ -9,4 +16,7 @@ clean:
 	mv _$(FILENAME).tex $(FILENAME).tex
 
 open:
-	open $(FILENAME).pdf
+	$(OPEN_UTIL) $(FILENAME).pdf
+
+
+
