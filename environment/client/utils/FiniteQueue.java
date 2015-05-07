@@ -26,6 +26,7 @@ public class FiniteQueue<E> extends LinkedList<E>{
 			if( o.equals(element) )
 				occurances++;
 		}
+		System.err.println("FiniteQueue:: Occurances = " + occurances + ".");
 		return occurances;
 	}
 }
