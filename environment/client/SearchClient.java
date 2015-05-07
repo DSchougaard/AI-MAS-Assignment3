@@ -237,7 +237,7 @@ public class SearchClient {
 				System.err.println("SearchClient :: MultiAgentPlanning :: Agent " + agent.id + " planing,");
 				System.err.println("SearchClient :: MultiAgentPlanning :: Subgoals "+ agent.subgoals);
 
-				Heuristic heuristic = new Greedy(agent);
+				Heuristic heuristic = HeuristicParser.parse(agent, "Greedy");
 
 				Goal subgoal = null;
 				// find a subgoal(s) which should be solved
@@ -274,7 +274,7 @@ public class SearchClient {
 				System.err.println("SearchClient :: MultiAgentPlanning :: Performing normal search");
 				agent.setState(state);
 
-				Heuristic heuristic = HeuristicParser.parse(agent, "Greedy");
+				
 				strategy = new StrategyBestFirst(heuristic);
 				SearchResult result = agent.Search(strategy, agent.subgoals, relaxedResult);
 				if (!result.equals(null)||!result.expStatus.equals(null)){
