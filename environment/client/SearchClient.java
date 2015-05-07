@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.awt.Point;
 
 import client.SearchAgent.Status;
 import client.heuristic.AStar;
@@ -15,12 +16,16 @@ import client.node.Node;
 import client.node.level.distancemap.FloydWarshallDistanceMap;
 import client.node.storage.ExpansionStatus;
 import client.node.storage.Goal;
+import client.node.storage.Base;
 import client.node.storage.SearchResult;
 import client.parser.ArgumentParser;
 import client.parser.LevelParser;
 import client.parser.SettingsContainer;
+import client.utils.FiniteQueue;
 
 public class SearchClient {
+
+	private static ArrayList<FiniteQueue<Point>> history = new ArrayList<FiniteQueue<Point>>();
 
 	public static boolean EXPANDED_DEBUG = false;
 
@@ -148,6 +153,22 @@ public class SearchClient {
 
 			state = state.excecuteCommands(commands);
 
+			// Dirty hack to determine whether or not it is multiagent
+			if( commands.size() > 1 ){
+				for( int i = 0 ; i < 2 ; i++ ){
+					history.get(i).add(new Point(state.agents[i].row, state.agents[i].col));
+					System.err.println("SearchClient::FiniteQueue:: [" + state.agents[i].row + ", " + state.agents[i].col + "].");
+					if( history.get(i).occurances(new Point(state.agents[i].row, state.agents[i].col)) > 4 ){
+						System.err.println("SearchClient::ExecutePlans:: Cycle!!");
+						System.exit(-1);
+					}
+					//finitstate.agents[i].row, state.agents[i].col
+				}
+
+
+
+			}
+
 			// evaluate if it should continue
 			for (int i = 0; i < solutions.size(); i++) {
 				if (solutions.get(i).isEmpty()) {
@@ -173,6 +194,10 @@ public class SearchClient {
 		// Read level and create the initial state of the problem
 		init(serverMessages, settings);
 		System.err.println("Level loaded");
+
+		for( int i = 0 ; i < 10 ; i++ ){
+			history.add( new FiniteQueue<Point>(10) );
+		}
 
 		// online planning loop
 		ArrayList<LinkedList<Node>> solutions = new ArrayList<LinkedList<Node>>();
