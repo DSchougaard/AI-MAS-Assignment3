@@ -127,7 +127,11 @@ public class Level implements LevelInterface{
 	}
 
 	public boolean isWall(int row, int col){
-		return ( Level.map[row][col].type == Type.WALL );
+		try{
+			return ( Level.map[row][col].type == Type.WALL );
+		}catch( Exception e ){
+			return false;
+		}
 	}
 
 

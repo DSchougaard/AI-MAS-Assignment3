@@ -75,16 +75,20 @@ public class Conflict{
 			}
 
 			for( LogicalAgent la : move_agents ){
-				if( agents.get(la.id).status == Status.HELPING )
+				if( agents.get(la.id).status == Status.HELPING ){
+					System.err.println("Agent " + la.id + " is status HELPING.");
+					continue;
+				}
+
+				if( solutions.get(la.id).size() < 5 && solutions.get(la.id).size() > 0)
 					continue;
 
 				System.err.println("Conflict :: Moving agent " + la.id + " out of agent " + needingHelp.id + "'s route.");
 				resolveAgentConflict(solutions, node, needingHelp, agents.get(la.id), RouteParser.parse(solutions.get(needingHelp.id), needingHelp.id), needs_help, needs_agents_moved, needs_boxes_moved);
 			}
+
 			needs_boxes_moved.remove(needingHelp);
 		}
-
-
 		return solutions;
 	}
 
@@ -202,7 +206,6 @@ public class Conflict{
 		}
 
 		return moveToBoxResult;
-
 	}
 
 	private static void clearRoute(SearchAgent needingHelp, SearchAgent helperAgent, Box box, Node node, Node moveStart, ArrayList<Base> routeToClear, ArrayList< LinkedList< Node > > solutions, LinkedList<Node> helpSolution, Deque<SearchAgent> needs_help, HashMap<SearchAgent, ArrayList<LogicalAgent>> needs_agents_moved, HashMap<SearchAgent, ArrayList<Box>> needs_boxes_moved) throws IOException{
@@ -294,11 +297,11 @@ public class Conflict{
 				//}
 
 				// Why is this outcommented?..
-				if( agent.color != ((Box)o).color || numBoxes > 0 ){
+				if( agent.color != ((Box)o).color /* || numBoxes > 0*/ ){
 					System.err.println("            Color of box: " + ((Box)o).color + ".");
 					boxesInTheWay.add( (Box)o );
-				}else if( agent.color == ((Box)o).color && numBoxes == 0 ){
-					numBoxes++;
+				/*}else if( agent.color == ((Box)o).color && numBoxes == 0 ){
+					numBoxes++;*/
 				}
 			}
 		}
