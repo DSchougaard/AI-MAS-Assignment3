@@ -832,7 +832,6 @@ public class test {
 			f=greed.f(state);
 		}
 
-		System.out.println(state);
 		assertEquals(5, greed.f(state));
 
 

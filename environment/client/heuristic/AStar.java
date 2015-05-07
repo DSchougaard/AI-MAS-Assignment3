@@ -1,19 +1,20 @@
 package client.heuristic;
 
-import client.heuristic.Heuristic;
-import client.SearchAgent;
+import client.Strategy;
 import client.node.Node;
 
-public class AStar extends Heuristic {
-	public AStar(SearchAgent agent) {
-		super(agent);
+public class AStar extends Strategy {
+	public Heuristic heuristic;
+	public AStar(Heuristic heuristic) {
+		super();
+		this.heuristic=heuristic;
 	}
 
 	public int f( Node n) {
-		return n.g() + h( n );
+		return n.g() + heuristic.h( n );
 	}
 
 	public String toString() {
-		return "A* evaluation";
+		return "A* Search using " + heuristic.toString();
 	}
 }

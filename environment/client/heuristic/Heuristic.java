@@ -1,16 +1,15 @@
 package client.heuristic;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 
 import client.SearchAgent;
 import client.node.Node;
-import client.node.storage.LogicalAgent;
 import client.node.storage.Box;
 import client.node.storage.Goal;
+import client.node.storage.LogicalAgent;
 
-public abstract class Heuristic implements Comparator< Node > {
+public class Heuristic {
 
 	public SearchAgent agent;
 	
@@ -20,10 +19,6 @@ public abstract class Heuristic implements Comparator< Node > {
 	
 	public Heuristic( SearchAgent agent ){
 		this.agent = agent;
-	}
-
-	public int compare( Node n1, Node n2 ) {
-		return f( n1 ) - f( n2 );
 	}
 
 	
@@ -62,8 +57,6 @@ public abstract class Heuristic implements Comparator< Node > {
 		
 	}
 
-
-	public abstract int f( Node n);
 
 
 

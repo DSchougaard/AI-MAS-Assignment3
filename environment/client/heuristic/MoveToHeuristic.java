@@ -23,12 +23,6 @@ public class MoveToHeuristic extends Heuristic{
 		return n.distance(a.row, a.col, this.row, this.col);
 	}
 
-	public int f(Node n){
-		// A* Search
-		//return n.g + h(n);
-		// Greedy Search
-		return h(n);
-	}
 
 	public String toString(){
 		return "Move To Heuristic";

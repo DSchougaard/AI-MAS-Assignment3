@@ -1,20 +1,20 @@
 package client.heuristic;
 
-import client.heuristic.Heuristic;
-import client.SearchAgent;
+import client.Strategy;
 import client.node.Node;
 
 
-public class WeightedAStar extends Heuristic {
+public class WeightedAStar extends Strategy {
 	private int W;
-
-	public WeightedAStar(SearchAgent agent) {
-		super(agent);
+	Heuristic heuristic;
+	public WeightedAStar(Heuristic heuristic) {
+		super();
+		this.heuristic=heuristic;
 		W = 5; // You're welcome to test this out with different values, but for the reporting part you must at least indicate benchmarks for W = 5
 	}
 
 	public int f( Node n ) {
-		return n.g() + W * h( n );
+		return n.g() + W * heuristic.h( n );
 	}
 
 	public String toString() {
