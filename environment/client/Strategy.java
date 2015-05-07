@@ -1,19 +1,22 @@
 package client;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
 import client.SearchClient.Memory;
-import client.heuristic.*;
 import client.node.Node;
 
-public abstract class Strategy {
-
+public abstract class Strategy  implements Comparator<Node> {
+	private PriorityQueue< Node > queue; 
+	private HashSet< Node > contains;
 	public HashSet< Node > explored;
 	public long startTime = System.currentTimeMillis();
 
 	public Strategy() {
 		explored = new HashSet< Node >();
+		queue = new PriorityQueue<>(this);
+		contains = new HashSet< Node >();
 	}
 
 	public void addToExplored( Node n ) {
@@ -36,56 +39,38 @@ public abstract class Strategy {
 		return ( System.currentTimeMillis() - startTime ) / 1000f;
 	}
 
-	public abstract Node getAndRemoveLeaf();
+	public Node getAndRemoveLeaf() {
+		Node n =queue.poll();
+		contains.remove(n);
+		return n;
+	}
 
-	public abstract void addToFrontier( Node n );
+	public void addToFrontier( Node n ) {
+		queue.add(n);
+		contains.add(n);
+	}
 
-	public abstract boolean inFrontier( Node n );
+	public int countFrontier() {
+		return queue.size();
+	}
 
-	public abstract int countFrontier();
+	public boolean frontierIsEmpty() {
+		return queue.isEmpty();
+	}
 
-	public abstract boolean frontierIsEmpty();
+	public boolean inFrontier( Node n ) {
+		return contains.contains(n);
+	}
 	
 	public abstract String toString();
-
-
-	public static class StrategyBestFirst extends Strategy {
-		public Heuristic heuristic;
-		private PriorityQueue< Node > queue; 
-		private HashSet< Node > contains;
-		
-		
-		public StrategyBestFirst( Heuristic heuristic ) {
-			super();
-			this.heuristic = heuristic;
-			queue = new PriorityQueue<>(heuristic);
-			contains = new HashSet< Node >();
-		}
-		public Node getAndRemoveLeaf() {
-			Node n =queue.poll();
-			contains.remove(n);
-			return n;
-		}
-
-		public void addToFrontier( Node n ) {
-			queue.add(n);
-			contains.add(n);
-		}
-
-		public int countFrontier() {
-			return queue.size();
-		}
-
-		public boolean frontierIsEmpty() {
-			return queue.isEmpty();
-		}
-
-		public boolean inFrontier( Node n ) {
-			return contains.contains(n);
-		}
-
-		public String toString() {
-			return "Best-first Search (PriorityQueue) using " + heuristic.toString();
-		}
+	
+	public abstract int f(Node n);
+	
+	public int compare( Node n1, Node n2 ) {
+		return f( n1 ) - f( n2 );
 	}
+
+
+
+	
 }

@@ -30,12 +30,6 @@ public class OutOfTheWayHeuristic extends Heuristic{
 		return OUT_OF_THE_WAY_THRESHOLD - n.distance(initRow, initCol, a.row, a.col);
 	}
 
-	public int f(Node n){
-		// A* Search
-		//return n.g + h(n);
-		// Greedy Search
-		return h(n);
-	}
 
 	public String toString(){
 		return "Clearing evaluation";

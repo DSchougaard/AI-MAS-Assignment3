@@ -2,14 +2,22 @@ package client;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Deque;
 
-import client.heuristic.*;
 import client.SearchAgent.Status;
-import client.Strategy.StrategyBestFirst;
+import client.heuristic.AStar;
+import client.heuristic.ClearRouteHeuristic;
+import client.heuristic.Greedy;
+import client.heuristic.Heuristic;
+import client.heuristic.OutOfTheWayHeuristic;
+import client.heuristic.Proximity;
+import client.node.GoalState;
+import client.node.GoalState.ProximityGoalState;
+import client.node.GoalState.RouteClearGoalState;
+import client.node.GoalState.RouteClearOfAgentGoalState;
 import client.node.Node;
 import client.node.storage.Base;
 import client.node.storage.Box;
@@ -17,8 +25,6 @@ import client.node.storage.LogicalAgent;
 import client.node.storage.SearchResult;
 import client.node.storage.SearchResult.Result;
 import client.parser.RouteParser;
-import client.node.GoalState;
-import client.node.GoalState.*;
 
 
 public class Conflict{
@@ -163,14 +169,14 @@ public class Conflict{
 		// Relaxed search
 		Heuristic moveToBoxHeuristicRelaxed		= new Proximity(helperAgent, box);
 		GoalState moveToBoxGSRelaxed	 		= new ProximityGoalState(helperAgent.id, box.row, box.col);
-		Strategy moveToBoxStrategyRelaxed	 	= new StrategyBestFirst(moveToBoxHeuristicRelaxed);
+		Strategy moveToBoxStrategyRelaxed	 	= new AStar(moveToBoxHeuristicRelaxed);
 		helperAgent.setState(node.subdomain(helperAgent.id));
 		SearchResult moveToBoxResultRelaxed	 	= helperAgent.Search(moveToBoxStrategyRelaxed , moveToBoxGSRelaxed);
 
 		// Normal search
 		Heuristic moveToBoxHeuristic			= new Proximity(helperAgent, box);
 		GoalState moveToBoxGS 					= new ProximityGoalState(helperAgent.id, box.row, box.col);
-		Strategy moveToBoxStrategy 				= new StrategyBestFirst(moveToBoxHeuristic);
+		Strategy moveToBoxStrategy 				= new AStar(moveToBoxHeuristic);
 		helperAgent.setState(node);
 		SearchResult moveToBoxResult 			= helperAgent.Search(moveToBoxStrategy, moveToBoxGS, moveToBoxResultRelaxed);
 
@@ -209,14 +215,14 @@ public class Conflict{
 		//relaxed 
 		//Heuristic clearHeuristicRelaxed = new ClearHeuristic(helperAgent, routeToClear);
 		Heuristic clearHeuristicRelaxed 	= new ClearRouteHeuristic(helperAgent, box.id, routeToClear);
-		Strategy clearStrategyRelaxed 		= new StrategyBestFirst(clearHeuristicRelaxed);
+		Strategy clearStrategyRelaxed 		= new AStar(clearHeuristicRelaxed);
 		helperAgent.setState(moveStart.subdomain(helperAgent.id));
 		SearchResult moveBoxResultRelaxed 	= helperAgent.Search(clearStrategyRelaxed, new RouteClearGoalState(helperAgent.id, box.id, routeToClear));
 
 		//normal
 		//Heuristic clearHeuristic = new ClearHeuristic(helperAgent, routeToClear);
 		Heuristic clearHeuristic 			= new ClearRouteHeuristic(helperAgent, box.id, routeToClear);
-		Strategy clearStrategy 				= new StrategyBestFirst(clearHeuristic);
+		Strategy clearStrategy 				= new AStar(clearHeuristic);
 		helperAgent.setState(moveStart);
 		SearchResult moveBoxResult 			= helperAgent.Search(clearStrategy, new RouteClearGoalState(helperAgent.id, box.id, routeToClear), moveBoxResultRelaxed);
 		
@@ -322,7 +328,7 @@ public class Conflict{
 
 		Heuristic outOfTheWayHeuristic 		= new OutOfTheWayHeuristic(saInTheWay, route, row, col);
 		GoalState outOfTheWayGS 			= new RouteClearOfAgentGoalState(saInTheWay.id, route);
-		Strategy outOfTheWayStrategy 		= new StrategyBestFirst(outOfTheWayHeuristic);
+		Strategy outOfTheWayStrategy 		= new Greedy(outOfTheWayHeuristic);
 		saInTheWay.setState(node);
 		SearchResult outOfTheWayResult 		= saInTheWay.Search(outOfTheWayStrategy, outOfTheWayGS);
 

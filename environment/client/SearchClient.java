@@ -7,18 +7,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import client.parser.HeuristicParser;
-import client.parser.LevelParser;
-import client.parser.ArgumentParser;
-import client.parser.SettingsContainer;
-import client.heuristic.*;
+import client.SearchAgent.Status;
+import client.heuristic.AStar;
+import client.heuristic.Greedy;
+import client.heuristic.Heuristic;
 import client.node.Node;
+import client.node.level.distancemap.FloydWarshallDistanceMap;
 import client.node.storage.ExpansionStatus;
 import client.node.storage.Goal;
 import client.node.storage.SearchResult;
-import client.node.level.distancemap.FloydWarshallDistanceMap;
-import client.Strategy.StrategyBestFirst;
-import client.SearchAgent.Status;
+import client.parser.ArgumentParser;
+import client.parser.LevelParser;
+import client.parser.SettingsContainer;
 
 public class SearchClient {
 
@@ -203,8 +203,9 @@ public class SearchClient {
 		agent.setState(state);
 
 		// normal search setup
-		Heuristic heuristic = HeuristicParser.parse(agent, "AStar");
-		Strategy strategy = new StrategyBestFirst(heuristic);
+//		Heuristic heuristic = HeuristicParser.parse(agent, "AStar");
+		Heuristic heuristic =new Heuristic(agent);
+		Strategy strategy = new AStar(heuristic);
 
 		// find a subgoal(s) which should be solved
 		Goal subgoal = heuristic.selectGoal(agent.state);
@@ -237,8 +238,9 @@ public class SearchClient {
 				System.err.println("SearchClient :: MultiAgentPlanning :: Agent " + agent.id + " planing,");
 				System.err.println("SearchClient :: MultiAgentPlanning :: Subgoals "+ agent.subgoals);
 
-				Heuristic heuristic = HeuristicParser.parse(agent, "Greedy");
-
+//				Heuristic heuristic = HeuristicParser.parse(agent, "Greedy");
+				Heuristic heuristic = new Heuristic(agent);
+				
 				Goal subgoal = null;
 				// find a subgoal(s) which should be solved
 				if(state.isGoalState(agent.subgoals)){
@@ -252,8 +254,9 @@ public class SearchClient {
 				// relaxed search setup
 				System.err.println("SearchClient :: MultiAgentPlanning :: Performing relaxed search");
 				Node relaxed = state.subdomain(agent.id);
-				Heuristic relaxedHeuristic = HeuristicParser.parse(agent, "Greedy");
-				relaxedStrategy = new StrategyBestFirst(relaxedHeuristic);
+//				Heuristic relaxedHeuristic = HeuristicParser.parse(agent, "Greedy");
+				Heuristic relaxedHeuristic =new Heuristic(agent);
+				relaxedStrategy = new Greedy(relaxedHeuristic);
 				agent.setState(relaxed);
 				SearchResult relaxedResult;
 				if(subgoal==null){
@@ -275,7 +278,7 @@ public class SearchClient {
 				agent.setState(state);
 
 				
-				strategy = new StrategyBestFirst(heuristic);
+				strategy = new Greedy(heuristic);
 				SearchResult result = agent.Search(strategy, agent.subgoals, relaxedResult);
 				if (!result.equals(null)||!result.expStatus.equals(null)){
 					expStatus.add(result.expStatus);

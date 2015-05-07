@@ -51,12 +51,7 @@ public class ClearRouteHeuristic extends Heuristic{
 //		return RUN_AWAY_LITTLE_GIRL_RUN_AWAY - d;
 	}
 
-	public int f(Node n){
-		// A* Search
-		return n.g() + h(n);
-		// Greedy Search
-//		return h(n);
-	}
+
 
 	public String toString(){
 		return "Clearing evaluation";

@@ -12,9 +12,6 @@ public class Proximity extends Heuristic{
 		this.box = box;
 	}
 
-	public int f(Node n){
-		return n.g() + h(n);
-	}
 
 	public String toString(){
 		return "Proximity A* Evaluation";

@@ -23,7 +23,7 @@ public class HeuristicParser{
 			System.err.println("Initialized using " + h.toString() + ".");
 		}catch( Exception e ){
 			System.err.println("Unrecognized Heuristic class. Using default heuristic.");
-			h = new Greedy(agent);
+			h = new Heuristic(agent);
 		}
 		return h;
 	}

@@ -1,21 +1,21 @@
 package client.heuristic;
 
-import client.heuristic.Heuristic;
-import client.SearchAgent;
+import client.Strategy;
 import client.node.Node;
 
-public class Greedy extends Heuristic {
+public class Greedy extends Strategy {
 
-	public Greedy(SearchAgent agent) {
-		super(agent);
+	public Heuristic heuristic;
+	public Greedy (Heuristic heuristic) {
+		super();
+		this.heuristic=heuristic;
 	}
-	
 
-	public int f( Node n ) {
-		return h( n );
+	public int f( Node n) {
+		return heuristic.h( n );
 	}
 
 	public String toString() {
-		return "Greedy evaluation";
+		return "Greedy Search using " + heuristic.toString();
 	}
 }
