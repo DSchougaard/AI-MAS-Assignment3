@@ -24,12 +24,16 @@ import client.parser.SettingsContainer;
 import client.utils.FiniteQueue;
 import client.parser.StrategyParser;
 
-public class SearchClient {
+import client.utils.History;
 
-	private static ArrayList<FiniteQueue<Point>> history = new ArrayList<FiniteQueue<Point>>();
+public class SearchClient {
 
 	public static boolean EXPANDED_DEBUG = false;
 
+	// History settings
+	public static History history;
+	private static final int HISTORY_LENGTH = 10;
+	private static final int CYCLE_THRESHOLD = 4;
 
 	static BufferedReader serverMessages = new BufferedReader( new InputStreamReader(System.in) );
 
@@ -103,7 +107,7 @@ public class SearchClient {
 	 * @param client
 	 * @throws IOException
 	 */
-	public static void executePlans(ArrayList<LinkedList<Node>> solutions) throws IOException {
+	public static void executePlans(ArrayList<LinkedList<Node>> solutions) throws Exception {
 		StringBuilder builder = new StringBuilder();
 
 		boolean done = false;
@@ -156,18 +160,18 @@ public class SearchClient {
 
 			// Dirty hack to determine whether or not it is multiagent
 			if( commands.size() > 1 ){
-				for( int i = 0 ; i < 2 ; i++ ){
-					history.get(i).add(new Point(state.agents[i].row, state.agents[i].col));
-					System.err.println("SearchClient::FiniteQueue:: [" + state.agents[i].row + ", " + state.agents[i].col + "].");
-					if( history.get(i).occurances(new Point(state.agents[i].row, state.agents[i].col)) > 4 ){
-						System.err.println("SearchClient::ExecutePlans:: Cycle!!");
-						System.exit(-1);
+				// Plug Cycle Detection into this place
+				for( int i = 0 ; i < agents.size() ; i++ ){
+					history.add(i, state.agents[i]);
+
+					if( history.occurances(i, state.agents[i]) > CYCLE_THRESHOLD ){
+						System.err.println("SearchClient::ExecutePlans:: Cycle Detected!");
+						agents.get(i).status = Status.STUCK;
+						//solutions.get(i).clear();
+						solutions = Conflict.solve(state, solutions, agents);						
+
 					}
-					//finitstate.agents[i].row, state.agents[i].col
 				}
-
-
-
 			}
 
 			// evaluate if it should continue
@@ -196,16 +200,15 @@ public class SearchClient {
 		init(serverMessages, settings);
 		System.err.println("Level loaded");
 
-		for( int i = 0 ; i < 10 ; i++ ){
-			history.add( new FiniteQueue<Point>(10) );
-		}
 
 		// online planning loop
 		ArrayList<LinkedList<Node>> solutions = new ArrayList<LinkedList<Node>>();
-		for (@SuppressWarnings("unused")
-		SearchAgent agent : agents) {
+		for (@SuppressWarnings("unused")SearchAgent agent : agents) {
 			solutions.add(new LinkedList<Node>());
 		}
+
+		history = new History(agents.size(), HISTORY_LENGTH);
+
 		while (!state.isGoalState()) {
 
 			if (agents.size() == 1) {
@@ -257,6 +260,10 @@ public class SearchClient {
 		for (SearchAgent agent : agents) {
 			// only plan if there is not already a plan
 			if (solutions.get(agent.id).isEmpty()) {
+				//if( agent.status == Status.CYCLE_DETECTED )
+				//	System.err.println("SearchClient::MultiAgentPlanning::Cycle status found!");
+
+
 				if( agent.status == Status.HELPING || agent.status == Status.STUCK_HELPING ){
 					agent.status = Status.IDLE;
 				}
@@ -264,7 +271,7 @@ public class SearchClient {
 				System.err.println("SearchClient :: MultiAgentPlanning :: Agent " + agent.id + " planing,");
 				System.err.println("SearchClient :: MultiAgentPlanning :: Subgoals "+ agent.subgoals);
 
-//				Heuristic heuristic = HeuristicParser.parse(agent, "Greedy");
+				//Heuristic heuristic = HeuristicParser.parse(agent, "Greedy");
 				Heuristic heuristic = new Heuristic(agent);
 				
 				Goal subgoal = null;

@@ -25,7 +25,7 @@ public class SearchAgent{
 
 	public int id;
 	public Color color;
-	public enum Status{STUCK, PLAN, DONE, IDLE, HELPING, STUCK_HELPING}
+	public enum Status{STUCK, PLAN, DONE, IDLE, HELPING, STUCK_HELPING, CYCLE_DETECTED}
 
 	public Status status = Status.IDLE;
 	public ArrayList<Goal> subgoals = new ArrayList<>();
@@ -86,8 +86,6 @@ public class SearchAgent{
 	public SearchResult Search(Strategy strategy, GoalState goal, SearchResult preResult) throws IOException {
 		System.err.format("SearchAgent :: Search :: Search starting with strategy %s\n", strategy);
 		strategy.addToFrontier(this.state);
-
-		Deque<Base> history = new FiniteQueue<>(10);
 		
 		int iterations = 0;
 		while (true) {
