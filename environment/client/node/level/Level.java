@@ -333,10 +333,7 @@ public class Level implements LevelInterface{
 					if(!explored.contains(b)){
 						tmpBase=b;
 					}
-				}
-				if(base.equals(new Base(2,4))){
-					System.err.println("hej");
-				}
+				}				
 				base=tmpBase;
 			}while(base != null && wallCount>=2 && !explored.contains(base) );
 		}
