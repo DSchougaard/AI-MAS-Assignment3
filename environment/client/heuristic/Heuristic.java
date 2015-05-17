@@ -2,12 +2,15 @@ package client.heuristic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import client.SearchAgent;
 import client.node.Node;
 import client.node.storage.Box;
 import client.node.storage.Goal;
 import client.node.storage.LogicalAgent;
+
+
 
 public class Heuristic {
 
@@ -25,6 +28,9 @@ public class Heuristic {
 	public int h ( Node n ) {
 		//euclid distance from mover to box and from box to goal
 		Integer tmpH=hs.get(n);
+
+		HashSet<Box> usedBoxes = new HashSet<>();
+
 		if(tmpH==null){
 			int gc=n.getGoals().size();
 			for (Goal goal : n.getGoals()) {
@@ -33,14 +39,18 @@ public class Heuristic {
 				}
 			}
 			
-//			int h=0;
+			//int h=0;
 			int h=gc*5;
 			for (Goal subgoal : agent.subgoals) {
+				
 				int tmp=Integer.MAX_VALUE;
+				Box tmpBox = null;
+
 				for (Box box : n.getBoxes(subgoal.getType())) {
-					if(!n.isGoalState(subgoal) && n.isGoal(box.row, box.col)!= box.getType() && n.distance(n.agents[agent.id], box)!=null){
-//					if(!n.isGoalState(subgoal) && n.distance(n.agents[agent.id], box)!=null){
+					if(!usedBoxes.contains(box) && !n.isGoalState(subgoal) && n.isGoal(box.row, box.col)!= box.getType() && n.distance(n.agents[agent.id], box)!=null){
+					//if(!n.isGoalState(subgoal) && n.distance(n.agents[agent.id], box)!=null){
 						tmp= Math.min(tmp,n.distance(n.agents[agent.id], box)-1+n.distance(box, subgoal)*2);
+						tmpBox = box;
 					}
 				}
 				if(tmp==Integer.MAX_VALUE){
@@ -48,6 +58,9 @@ public class Heuristic {
 					tmp=0;
 				}
 				h+=tmp;
+
+				usedBoxes.add(tmpBox);
+
 			}
 			hs.put(n, h);
 			return h;
