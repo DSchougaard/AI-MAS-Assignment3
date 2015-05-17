@@ -4,7 +4,7 @@ public class Settings{
 
 	public static class Global{
 		public static final boolean PRINT = false;
-		public static boolean EXPANDED_DEBUG = false;
+		public static final boolean EXPANDED_DEBUG = false;
 	}
 
 
@@ -23,6 +23,15 @@ public class Settings{
 
 	public static class ArgumentParser{
 		public static final String DISTANCEMAP_CLASS_PREFIX = "client.node.level.distancemap.";
+	}
+	
+	public static class SearchAgent{
+		public static final int searchMaxOffset = 2;
+		public static final int searchStartOffset = 20;
+	}
+	
+	public static class Heuristic{
+		public final static int goalPunishment=5;
 	}
 
 }
