@@ -1,7 +1,6 @@
 package client;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.LinkedList;
 
 import client.SearchClient.Memory;
@@ -12,13 +11,11 @@ import client.node.Color;
 import client.node.GoalState;
 import client.node.GoalState.GlobalGoldGoalState;
 import client.node.Node;
-import client.node.storage.Base;
 import client.node.storage.ExpansionStatus;
 import client.node.storage.Goal;
 import client.node.storage.LogicalAgent;
 import client.node.storage.SearchResult;
 // Includes necessary for detecting running in circles
-import client.utils.FiniteQueue;
 
 
 public class SearchAgent{
