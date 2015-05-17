@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import client.Settings;
 import client.node.Color;
 import client.node.level.clustering.KClusteringGoals;
 import client.node.level.distancemap.DistanceMap;
@@ -159,7 +160,9 @@ public class Level implements LevelInterface{
 
 	public Integer distance(int rowFrom, int colFrom, int rowTo, int colTo){
 		if(dm==null){
-			System.err.println("DistanceMap: "+dm);
+			if(Settings.Global.PRINT){
+				System.err.println("DistanceMap: "+dm);
+			}
 			return 0;
 		}
 		
