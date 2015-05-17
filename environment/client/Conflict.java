@@ -126,12 +126,9 @@ public class Conflict{
 		if( Settings.Global.PRINT ){
 			System.err.println("Conflict :: ResolveBoxConflict :: Agent " + helperAgent.id + " is helping");
 		}
-		// Agent Select end.
-
 
 		// The solution to helping with moving a box.
 		LinkedList<Node> helpSolution = new LinkedList<>();
-
 
 		SearchResult moveToBoxResult = moveToBox(needingHelp, helperAgent, box, node, solutions, needs_help, needs_agents_moved, needs_boxes_moved);
 		if(moveToBoxResult==null){
@@ -151,17 +148,13 @@ public class Conflict{
 			moveStart = node;
 		}
 
-		
 		ArrayList<Base> routeToClear = RouteParser.parse(solutions, needingHelp.id);
 		
 		if( Settings.Global.PRINT ){
 			System.err.println("Conflict :: ResolveBoxConflict :: Route:"+routeToClear);
 		}
-		clearRoute(needingHelp, helperAgent, box, node, moveStart, routeToClear, solutions, helpSolution, needs_help, needs_agents_moved, needs_boxes_moved);
-
-		
+		clearRoute(needingHelp, helperAgent, box, node, moveStart, routeToClear, solutions, helpSolution, needs_help, needs_agents_moved, needs_boxes_moved);	
 	}
-
 
 	private static SearchAgent findHelperAgent(SearchAgent needingHelp, Box box, Node node, List<SearchAgent> agents){
 		// PLUG AND PLAY AGENT SELECT
@@ -278,7 +271,7 @@ public class Conflict{
 			needingHelp.status = SearchAgent.Status.PLAN;
 
 			// Inject dirty NoOpts into helping agent.
-			injectNoOp(node, solutions.get(helperAgent.id),  Math.abs(routeToClear.size()-moveBoxResult.solution.size()) + 2 , -1);
+			injectNoOp(node, solutions.get(helperAgent.id),  Math.abs(routeToClear.size()-moveBoxResult.solution.size()) + Settings.Conflict.NO_OP_CLEAR_ROUTE , -1);
 
 		}else{
 			if( Settings.Global.PRINT ){
@@ -410,7 +403,7 @@ public class Conflict{
 		}else{
 			solutions.get(saInTheWay.id).clear();
 			solutions.get(saInTheWay.id).addAll( outOfTheWayResult.solution );
-			injectNoOp(node, solutions.get(saInTheWay.id), outOfTheWayResult.solution.size() + 1,  -1);
+			injectNoOp(node, solutions.get(saInTheWay.id), outOfTheWayResult.solution.size() + Settings.Conflict.NO_OP_RESOLVE_AGENT_CONFLICT,  -1);
 
 			needingHelp.status 	= SearchAgent.Status.PLAN;
 			saInTheWay.status 	= SearchAgent.Status.PLAN;
