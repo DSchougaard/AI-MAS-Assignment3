@@ -361,7 +361,7 @@ public class SearchClient {
 				case DONE:
 					agent.status=Status.DONE;
 					if( Settings.Global.PRINT){
-					System.err.println("Done");
+						System.err.println("Done");
 					}
 					break;
 				case IMPOSIBLE:
