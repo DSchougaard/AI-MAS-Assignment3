@@ -24,5 +24,10 @@ public class Settings{
 	public static class ArgumentParser{
 		public static final String DISTANCEMAP_CLASS_PREFIX = "client.node.level.distancemap.";
 	}
+	
+	public static class SearchAgent{
+		public static int searchMaxOffset = 2;
+		public static int searchStartOffset = 20;
+	}
 
 }

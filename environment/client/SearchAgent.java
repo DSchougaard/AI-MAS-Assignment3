@@ -28,7 +28,6 @@ public class SearchAgent{
 	public ArrayList<Goal> subgoals = new ArrayList<>();
 	
 	public Node state;
-	public static int searchMaxOffset = 2;
 	int startG;
 	
 	public SearchAgent(int name, Color color, int row, int col){
@@ -123,7 +122,7 @@ public class SearchAgent{
 
 			Node leafNode = strategy.getAndRemoveLeaf();
 
-			if (leafNode.g()>(20+startG) && preResult != null && leafNode.g() > (startG+preResult.solution.size() * searchMaxOffset)) {
+			if (leafNode.g()>(searchStartOffset+startG) && preResult != null && leafNode.g() > (startG+preResult.solution.size() * Settings.SearchAgent.searchMaxOffset)) {
 				ExpansionStatus expStatus = new ExpansionStatus(strategy);
 				if(preResult.reason==SearchResult.Result.DONE){
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>(),expStatus);
