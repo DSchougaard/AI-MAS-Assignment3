@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import client.SearchAgent.Status;
+import client.Settings.client;
 import client.heuristic.Heuristic;
 import client.node.Node;
 import client.node.level.distancemap.FloydWarshallDistanceMap;
@@ -19,17 +20,15 @@ import client.parser.LevelParser;
 import client.parser.SettingsContainer;
 import client.parser.StrategyParser;
 import client.utils.History;
-
 import client.Settings;
 
 public class SearchClient {
 
-	public static boolean EXPANDED_DEBUG = false;
+	
 
 	// History settings
 	public static History history;
-	private static final int HISTORY_LENGTH = 10;
-	private static final int CYCLE_THRESHOLD = 4;
+
 
 	static BufferedReader serverMessages = new BufferedReader( new InputStreamReader(System.in) );
 
@@ -160,8 +159,10 @@ public class SearchClient {
 				for( int i = 0 ; i < agents.size() ; i++ ){
 					history.add(i, state.agents[i]);
 
-					if( history.occurances(i, state.agents[i]) > CYCLE_THRESHOLD ){
-						System.err.println("SearchClient::ExecutePlans:: Cycle Detected!");
+					if( history.occurances(i, state.agents[i]) > Settings.client.CYCLE_THRESHOLD ){
+						if( Settings.Global.PRINT){
+							System.err.println("SearchClient::ExecutePlans:: Cycle Detected!");
+						}
 						agents.get(i).status = Status.STUCK;
 						//solutions.get(i).clear();
 						solutions = Conflict.solve(state, solutions, agents);						
@@ -186,18 +187,19 @@ public class SearchClient {
 
 	public static void main(String[] args) throws Exception {
 
-		System.err.println(Settings.Global.PRINT);
 
 		SettingsContainer settings = ArgumentParser.parse(args);
 		expStatus = new ExpansionStatus();
 
 		// Use stderr to print to console
-		System.err.println("SearchClient initializing. I am sending this using the error output stream.");
-
+		if( Settings.Global.PRINT){
+			System.err.println("SearchClient initializing. I am sending this using the error output stream.");
+		}
 		// Read level and create the initial state of the problem
 		init(serverMessages, settings);
-		System.err.println("Level loaded");
-
+		if( Settings.Global.PRINT){
+			System.err.println("Level loaded");
+		}
 
 		// online planning loop
 		ArrayList<LinkedList<Node>> solutions = new ArrayList<LinkedList<Node>>();
@@ -205,7 +207,7 @@ public class SearchClient {
 			solutions.add(new LinkedList<Node>());
 		}
 
-		history = new History(agents.size(), HISTORY_LENGTH);
+		history = new History(agents.size(), Settings.client.HISTORY_LENGTH);
 
 		while (!state.isGoalState()) {
 
@@ -214,19 +216,25 @@ public class SearchClient {
 			} else {
 				MultiAgentPlaning( solutions);
 			}
-			System.err.println("-----------------------------------------------------------------");
+			
+			if( Settings.Global.PRINT){
+				System.err.println("-----------------------------------------------------------------");
+			}
 			
 			executePlans(solutions);
 
 		}
-
-		System.err.println("Level Completed");
+		if( Settings.Global.PRINT){
+			System.err.println("Level Completed");
+		}
 	}
 
 	private static void SingleAgentPlaning( ArrayList<LinkedList<Node>> solution) throws IOException {
 		SearchAgent agent = agents.get(0);
-		System.err.println("\nAgent " + agent.id + " planing");
-
+		if( Settings.Global.PRINT){
+			System.err.println("\nAgent " + agent.id + " planing");
+		}
+		
 		agent.setState(state);
 
 		// normal search setup
@@ -238,13 +246,17 @@ public class SearchClient {
 		Goal subgoal = heuristic.selectGoal(agent.state);
 		if(subgoal!=null){
 			agent.subgoals.add(subgoal);
-			System.err.println("new subgoal "+subgoal);
+			if( Settings.Global.PRINT){
+				System.err.println("new subgoal "+subgoal);
+			}
 		}
 		SearchResult result = agent.Search(strategy,  agent.subgoals);
 		
 		if (!result.equals(null)||!result.expStatus.equals(null)){
 			expStatus.add(result.expStatus);
-			System.err.println(expStatus.toString());
+			if( Settings.Global.PRINT){
+				System.err.println(expStatus.toString());
+			}
 		}	
 
 		solution.get(agent.id).addAll(result.solution);
@@ -265,10 +277,12 @@ public class SearchClient {
 				if( agent.status == Status.HELPING || agent.status == Status.STUCK_HELPING ){
 					agent.status = Status.IDLE;
 				}
-
-				System.err.println("SearchClient :: MultiAgentPlanning :: Agent " + agent.id + " planing,");
-				System.err.println("SearchClient :: MultiAgentPlanning :: Subgoals "+ agent.subgoals);
-
+				
+				if( Settings.Global.PRINT){
+					System.err.println("SearchClient :: MultiAgentPlanning :: Agent " + agent.id + " planing,");
+					System.err.println("SearchClient :: MultiAgentPlanning :: Subgoals "+ agent.subgoals);
+				}
+				
 				//Heuristic heuristic = HeuristicParser.parse(agent, "Greedy");
 				Heuristic heuristic = new Heuristic(agent);
 				
@@ -278,12 +292,16 @@ public class SearchClient {
 					subgoal = heuristic.selectGoal(state);
 					if(subgoal!=null){
 						agent.subgoals.add(subgoal);
-						System.err.println("SearchClient :: MultiAgentPlanning :: New subgoal " + subgoal + ".");
+						if( Settings.Global.PRINT){
+							System.err.println("SearchClient :: MultiAgentPlanning :: New subgoal " + subgoal + ".");
+						}
 					}
 				}
 				
 				// relaxed search setup
-				System.err.println("SearchClient :: MultiAgentPlanning :: Performing relaxed search");
+				if( Settings.Global.PRINT){
+					System.err.println("SearchClient :: MultiAgentPlanning :: Performing relaxed search");
+				}
 				Node relaxed = state.subdomain(agent.id);
 				Heuristic relaxedHeuristic =new Heuristic(agent);
 				relaxedStrategy =  StrategyParser.parse(relaxedHeuristic,"Greedy");//new Greedy(relaxedHeuristic);
@@ -298,13 +316,19 @@ public class SearchClient {
 				}
 				if (!relaxedResult.equals(null)||!relaxedResult.expStatus.equals(null)){
 					expStatus.add(relaxedResult.expStatus);
-					if(SearchClient.EXPANDED_DEBUG)System.err.println(expStatus.toString());
+					if( Settings.Global.PRINT){
+						if(Settings.client.EXPANDED_DEBUG){
+							System.err.println(expStatus.toString());
+						}
+					}
 				}
 				System.gc();
 				
 				
 				// normal search setup
-				System.err.println("SearchClient :: MultiAgentPlanning :: Performing normal search");
+				if( Settings.Global.PRINT){
+					System.err.println("SearchClient :: MultiAgentPlanning :: Performing normal search");
+				}
 				agent.setState(state);
 
 				
@@ -312,7 +336,9 @@ public class SearchClient {
 				SearchResult result = agent.Search(strategy, agent.subgoals, relaxedResult);
 				if (!result.equals(null)||!result.expStatus.equals(null)){
 					expStatus.add(result.expStatus);
-					if(SearchClient.EXPANDED_DEBUG)System.err.println(expStatus.toString());
+					if( Settings.Global.PRINT){
+						if(Settings.client.EXPANDED_DEBUG)System.err.println(expStatus.toString());
+					}
 				}
 				System.gc();
 				
@@ -320,33 +346,42 @@ public class SearchClient {
 				case STUCK:
 					
 					agent.status = Status.STUCK;
-					System.err.println("=======================================================================");
-					System.err.println("SearchClient :: MultiAgentPlanning :: Agent " + agent.id + " is stuck.");
-					System.err.println("=======================================================================");
-					System.err.println("\nSummary for " + relaxedStrategy);
-					System.err.println("Found solution of length " + relaxedResult.solution.size());
-					if(SearchClient.EXPANDED_DEBUG) System.err.println(relaxedStrategy.searchStatus());
+					if( Settings.Global.PRINT){
+						System.err.println("=======================================================================");
+						System.err.println("SearchClient :: MultiAgentPlanning :: Agent " + agent.id + " is stuck.");
+						System.err.println("=======================================================================");
+						System.err.println("\nSummary for " + relaxedStrategy);
+						System.err.println("Found solution of length " + relaxedResult.solution.size());
+						if(Settings.client.EXPANDED_DEBUG) System.err.println(relaxedStrategy.searchStatus());
+					}
+					
 					stuck = true;
 					solutions.get(agent.id).addAll(relaxedResult.solution);
 					break;
 				case DONE:
 					agent.status=Status.DONE;
+					if( Settings.Global.PRINT){
 					System.err.println("Done");
+					}
 					break;
 				case IMPOSIBLE:
 					throw new Exception("Imposible");
 				default:
 					agent.status=Status.PLAN;
-					System.err.println("\nSearchClient :: MultiAgentPlanning :: Summary for " + strategy);
-					System.err.println("SearchClient :: MultiAgentPlanning :: Found solution of length " + result.solution.size());
-					if(SearchClient.EXPANDED_DEBUG)System.err.println(strategy.searchStatus());
+					if( Settings.Global.PRINT){
+						System.err.println("\nSearchClient :: MultiAgentPlanning :: Summary for " + strategy);
+						System.err.println("SearchClient :: MultiAgentPlanning :: Found solution of length " + result.solution.size());
+						if(Settings.client.EXPANDED_DEBUG)System.err.println(strategy.searchStatus());
+					}
 					solutions.get(agent.id).addAll(result.solution);
 					break;
 				}
 
 
 			} else {
-				System.err.println("SearchClient :: MultiAgentPlanning :: Agent " + agent.id + " continuing existing plan.");
+				if( Settings.Global.PRINT){
+					System.err.println("SearchClient :: MultiAgentPlanning :: Agent " + agent.id + " continuing existing plan.");
+				}
 			}
 		}
 
