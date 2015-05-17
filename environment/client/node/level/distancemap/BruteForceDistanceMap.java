@@ -8,6 +8,8 @@ import java.util.HashSet;
 import client.node.level.Level;
 import client.node.storage.Base;
 
+import client.Settings;
+
 public class BruteForceDistanceMap extends DistanceMap{
 	private HashMap<Point, HashMap<Point, Integer>> values;
 
@@ -31,14 +33,19 @@ public class BruteForceDistanceMap extends DistanceMap{
 		long start_time = System.currentTimeMillis();
 
 		HashSet<Point> reachable = this.explore(level);
-		System.err.println("Initializing BruteForceDistanceMap.");
+		if( Settings.Global.PRINT ){
+			System.err.println("Initializing BruteForceDistanceMap.");
+		}
 		for(Point p : reachable ){
 			values.put(p, calculateDistances(p, 0, new HashMap<Point, Integer>(), level));
 		}
 
 		long end_time = System.currentTimeMillis();
 		long difference = end_time-start_time;
-		System.err.println("Initialization time for " + name() + " took " + difference + " ms."); 
+
+		if( Settings.Global.PRINT ){
+			System.err.println("Initialization time for " + name() + " took " + difference + " ms."); 
+		}
 	}
 
 	private HashSet<Point> explore(Level level){
@@ -83,13 +90,17 @@ public class BruteForceDistanceMap extends DistanceMap{
 	}
 
 	public void printMap(){
-		for( Point p : values.keySet() ){
-			System.out.println("[ " + p.x + ", " + p.y + " ]: ");
-			HashMap<Point, Integer> distances = values.get(p);
-			for( Point p2 : distances.keySet() ){
-				System.out.println("    " + p2.x + ", " + p2.y + " -> " +  distances.get(p2).intValue());
+		if( Settings.Global.PRINT ){
+
+			for( Point p : values.keySet() ){
+				System.out.println("[ " + p.x + ", " + p.y + " ]: ");
+				HashMap<Point, Integer> distances = values.get(p);
+				for( Point p2 : distances.keySet() ){
+					System.out.println("    " + p2.x + ", " + p2.y + " -> " +  distances.get(p2).intValue());
+				}
+				System.out.println("");
 			}
-			System.out.println("");
+
 		}
 	}
 }

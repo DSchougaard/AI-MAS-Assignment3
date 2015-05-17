@@ -3,9 +3,9 @@ package client.parser;
 import client.node.level.distancemap.DistanceMap;
 import client.node.level.distancemap.FloydWarshallDistanceMap;
 
-public class ArgumentParser{
+import client.Settings;
 
-	private final static String DISTANCEMAP_CLASS_PREFIX = "client.node.level.distancemap.";
+public class ArgumentParser{
 
 	public static SettingsContainer parse(String[] args){
 		SettingsContainer settings = new SettingsContainer();
@@ -14,11 +14,15 @@ public class ArgumentParser{
 			switch(args[i]){
 			case "-dm":
 				try{
-					Object _dm = Class.forName(DISTANCEMAP_CLASS_PREFIX + args[i+1]).newInstance();
+					Object _dm = Class.forName( Settings.ArgumentParser.DISTANCEMAP_CLASS_PREFIX + args[i+1]).newInstance();
 					settings.dm = (DistanceMap) _dm;
-					System.err.println("Initialized using " + settings.dm.name() + ".");
+					if( Settings.Global.PRINT ){
+						System.err.println("Initialized using " + settings.dm.name() + ".");
+					}
 				}catch( Exception e ){
-					System.err.println("Unrecognized DistanceMap class. Using default map.");
+					if( Settings.Global.PRINT ){
+						System.err.println("Unrecognized DistanceMap class. Using default map.");
+					}
 					settings.dm = new FloydWarshallDistanceMap();
 				}
 				break;

@@ -18,4 +18,8 @@ public class Settings{
 	}
 
 
+	public static class ArgumentParser{
+		public static final String DISTANCEMAP_CLASS_PREFIX = "client.node.level.distancemap.";
+	}
+
 }
