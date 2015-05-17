@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import client.Settings;
 import client.node.level.Level;
 import client.node.storage.Base;
 
@@ -33,8 +34,9 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 
 		HashMap<Base, ArrayList<Base>> map = explore(level);
 		int size = map.size();
-
-		System.err.println("Initialized FloydWarshall matrix to size " + size + "x" + size + ".");
+		if(Settings.Global.PRINT){
+			System.err.println("Initialized FloydWarshall matrix to size " + size + "x" + size + ".");
+		}
 
 		distance = new int[size][size];
 		
@@ -64,7 +66,9 @@ public class FloydWarshallDistanceMap extends DistanceMap{
 
 		long end_time = System.currentTimeMillis();
 		long difference = end_time-start_time;
-		System.err.println("Initialization time for " + name() + " took " + difference + " ms."); 
+		if(Settings.Global.PRINT){
+			System.err.println("Initialization time for " + name() + " took " + difference + " ms.");
+		}
 	}
 
 	private HashMap<Base, ArrayList<Base>> explore(Level level){

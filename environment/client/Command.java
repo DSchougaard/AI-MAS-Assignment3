@@ -68,7 +68,9 @@ public class Command {
 	public Command reverseCommand( Command command ){
 		type newType = null;
 		dir newDir1 = null, newDir2 = null;
-		System.err.println("Reversing: " + this);
+		if(Settings.Global.PRINT){
+			System.err.println("Reversing: " + this);
+		}
 		
 		switch( command.actType ){
 			case Move:
@@ -106,7 +108,9 @@ public class Command {
 			newDir2 = command.dir2;
 
 		Command newCommand = new Command(newType, newDir1, newDir2);
-		System.err.println("Reversed Command : " + newCommand);
+		if(Settings.Global.PRINT){
+			System.err.println("Reversed Command : " + newCommand);
+		}
 		return newCommand;
 	}
 
