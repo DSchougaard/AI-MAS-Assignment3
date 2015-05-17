@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import client.SearchAgent;
+import client.Settings;
 import client.node.Node;
 import client.node.storage.Box;
 import client.node.storage.Goal;
@@ -34,7 +35,7 @@ public class Heuristic {
 			}
 			
 //			int h=0;
-			int h=gc*5;
+			int h=gc*Settings.Heuristic.goalPunishment;
 			for (Goal subgoal : agent.subgoals) {
 				int tmp=Integer.MAX_VALUE;
 				for (Box box : n.getBoxes(subgoal.getType())) {

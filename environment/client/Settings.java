@@ -4,7 +4,7 @@ public class Settings{
 
 	public static class Global{
 		public static final boolean PRINT = false;
-		public static boolean EXPANDED_DEBUG = false;
+		public static final boolean EXPANDED_DEBUG = false;
 	}
 
 
@@ -26,8 +26,12 @@ public class Settings{
 	}
 	
 	public static class SearchAgent{
-		public static int searchMaxOffset = 2;
-		public static int searchStartOffset = 20;
+		public static final int searchMaxOffset = 2;
+		public static final int searchStartOffset = 20;
+	}
+	
+	public static class Heuristic{
+		public final static int goalPunishment=5;
 	}
 
 }
