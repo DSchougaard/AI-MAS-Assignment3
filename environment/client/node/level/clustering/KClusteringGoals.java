@@ -9,6 +9,7 @@ import client.node.level.Level;
 import client.node.storage.Goal;
 import client.node.storage.LogicalAgent;
 
+import client.Settings;
 
 
 public class KClusteringGoals{
@@ -163,11 +164,15 @@ public class KClusteringGoals{
 	}
 
 	public void printCluster(){
-		for( int i : this.clusters.keySet() ){
-			System.err.print("[ " + i + " ]: ");
-			for( Goal g : this.clusters.get(i) )
-				System.err.println(g);
-			System.err.println("");
+		if( Settings.Global.PRINT ){
+			for( int i : this.clusters.keySet() ){
+					System.err.print("[ " + i + " ]: ");
+				
+
+				for( Goal g : this.clusters.get(i) )
+					System.err.println(g);
+				System.err.println("");
+			}
 		}
 	}
 }
