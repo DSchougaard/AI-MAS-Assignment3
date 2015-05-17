@@ -163,11 +163,15 @@ public class KClusteringGoals{
 	}
 
 	public void printCluster(){
-		for( int i : this.clusters.keySet() ){
-			System.err.print("[ " + i + " ]: ");
-			for( Goal g : this.clusters.get(i) )
-				System.err.println(g);
-			System.err.println("");
+		if( Settings.Global.PRINT ){
+			for( int i : this.clusters.keySet() ){
+					System.err.print("[ " + i + " ]: ");
+				
+
+				for( Goal g : this.clusters.get(i) )
+					System.err.println(g);
+				System.err.println("");
+			}
 		}
 	}
 }

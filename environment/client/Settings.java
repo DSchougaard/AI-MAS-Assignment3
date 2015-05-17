@@ -6,6 +6,9 @@ public class Settings{
 		public static final boolean PRINT = false;
 	}
 
+	public static class Conflict{
+		public static final int REMAINING_AGENT_PLAN_THRESHOLD = 5;
+	}
 
 
 }
