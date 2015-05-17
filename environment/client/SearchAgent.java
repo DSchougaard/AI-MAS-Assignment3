@@ -122,7 +122,7 @@ public class SearchAgent{
 
 			Node leafNode = strategy.getAndRemoveLeaf();
 
-			if (leafNode.g()>(searchStartOffset+startG) && preResult != null && leafNode.g() > (startG+preResult.solution.size() * Settings.SearchAgent.searchMaxOffset)) {
+			if (leafNode.g()>(Settings.SearchAgent.searchStartOffset+startG) && preResult != null && leafNode.g() > (startG+preResult.solution.size() * Settings.SearchAgent.searchMaxOffset)) {
 				ExpansionStatus expStatus = new ExpansionStatus(strategy);
 				if(preResult.reason==SearchResult.Result.DONE){
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>(),expStatus);
