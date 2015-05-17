@@ -6,24 +6,18 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.awt.Point;
 
 import client.SearchAgent.Status;
-import client.heuristic.AStar;
-import client.heuristic.Greedy;
 import client.heuristic.Heuristic;
 import client.node.Node;
 import client.node.level.distancemap.FloydWarshallDistanceMap;
 import client.node.storage.ExpansionStatus;
 import client.node.storage.Goal;
-import client.node.storage.Base;
 import client.node.storage.SearchResult;
 import client.parser.ArgumentParser;
 import client.parser.LevelParser;
 import client.parser.SettingsContainer;
-import client.utils.FiniteQueue;
 import client.parser.StrategyParser;
-
 import client.utils.History;
 
 import client.Settings;
