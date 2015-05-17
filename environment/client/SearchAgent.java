@@ -81,7 +81,9 @@ public class SearchAgent{
 	}
 	
 	public SearchResult Search(Strategy strategy, GoalState goal, SearchResult preResult) throws IOException {
-		System.err.format("SearchAgent :: Search :: Search starting with strategy %s\n", strategy);
+		if(Settings.Global.PRINT){
+			System.err.format("SearchAgent :: Search :: Search starting with strategy %s\n", strategy);
+		}
 		strategy.addToFrontier(this.state);
 		
 		int iterations = 0;
