@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import client.SearchAgent.Status;
-import client.Settings.client;
 import client.heuristic.Heuristic;
 import client.node.Node;
 import client.node.level.distancemap.FloydWarshallDistanceMap;
@@ -99,7 +98,7 @@ public class SearchClient {
 	 * Executes the plans until done or some things goes wrong
 	 * 
 	 * @param solutions
-	 * @param client
+	 * @param SearchClient
 	 * @throws IOException
 	 */
 	public static void executePlans(ArrayList<LinkedList<Node>> solutions) throws Exception {
@@ -159,7 +158,7 @@ public class SearchClient {
 				for( int i = 0 ; i < agents.size() ; i++ ){
 					history.add(i, state.agents[i]);
 
-					if( history.occurances(i, state.agents[i]) > Settings.client.CYCLE_THRESHOLD ){
+					if( history.occurances(i, state.agents[i]) > Settings.SearchClient.CYCLE_THRESHOLD ){
 						if( Settings.Global.PRINT){
 							System.err.println("SearchClient::ExecutePlans:: Cycle Detected!");
 						}
@@ -207,7 +206,7 @@ public class SearchClient {
 			solutions.add(new LinkedList<Node>());
 		}
 
-		history = new History(agents.size(), Settings.client.HISTORY_LENGTH);
+		history = new History(agents.size(), Settings.SearchClient.HISTORY_LENGTH);
 
 		while (!state.isGoalState()) {
 
@@ -317,7 +316,7 @@ public class SearchClient {
 				if (!relaxedResult.equals(null)||!relaxedResult.expStatus.equals(null)){
 					expStatus.add(relaxedResult.expStatus);
 					if( Settings.Global.PRINT){
-						if(Settings.client.EXPANDED_DEBUG){
+						if(Settings.Global.EXPANDED_DEBUG){
 							System.err.println(expStatus.toString());
 						}
 					}
@@ -337,7 +336,7 @@ public class SearchClient {
 				if (!result.equals(null)||!result.expStatus.equals(null)){
 					expStatus.add(result.expStatus);
 					if( Settings.Global.PRINT){
-						if(Settings.client.EXPANDED_DEBUG)System.err.println(expStatus.toString());
+						if(Settings.Global.EXPANDED_DEBUG)System.err.println(expStatus.toString());
 					}
 				}
 				System.gc();
@@ -352,7 +351,7 @@ public class SearchClient {
 						System.err.println("=======================================================================");
 						System.err.println("\nSummary for " + relaxedStrategy);
 						System.err.println("Found solution of length " + relaxedResult.solution.size());
-						if(Settings.client.EXPANDED_DEBUG) System.err.println(relaxedStrategy.searchStatus());
+						if(Settings.Global.EXPANDED_DEBUG) System.err.println(relaxedStrategy.searchStatus());
 					}
 					
 					stuck = true;
@@ -371,7 +370,7 @@ public class SearchClient {
 					if( Settings.Global.PRINT){
 						System.err.println("\nSearchClient :: MultiAgentPlanning :: Summary for " + strategy);
 						System.err.println("SearchClient :: MultiAgentPlanning :: Found solution of length " + result.solution.size());
-						if(Settings.client.EXPANDED_DEBUG)System.err.println(strategy.searchStatus());
+						if(Settings.Global.EXPANDED_DEBUG)System.err.println(strategy.searchStatus());
 					}
 					solutions.get(agent.id).addAll(result.solution);
 					break;

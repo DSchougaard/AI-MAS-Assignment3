@@ -90,7 +90,7 @@ public class SearchAgent{
 		while (true) {
 			if(Settings.Global.PRINT){
 				if (iterations % 2000 == 0) {
-					if(Settings.client.EXPANDED_DEBUG) System.err.println(strategy.searchStatus());
+					if(Settings.Global.EXPANDED_DEBUG) System.err.println(strategy.searchStatus());
 				}	
 			}
 			if (Memory.shouldEnd()) {
@@ -135,7 +135,7 @@ public class SearchAgent{
 			if (goal.eval(leafNode)) {
 				ExpansionStatus expStatus = new ExpansionStatus(strategy);
 
-				if(Settings.client.EXPANDED_DEBUG)System.err.println(strategy.searchStatus());
+				if(Settings.Global.EXPANDED_DEBUG)System.err.println(strategy.searchStatus());
 				
 				if(leafNode.isInitialState()){
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>(),expStatus);
