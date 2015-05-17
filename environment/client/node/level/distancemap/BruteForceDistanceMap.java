@@ -8,6 +8,8 @@ import java.util.HashSet;
 import client.node.level.Level;
 import client.node.storage.Base;
 
+import client.Settings;
+
 public class BruteForceDistanceMap extends DistanceMap{
 	private HashMap<Point, HashMap<Point, Integer>> values;
 
