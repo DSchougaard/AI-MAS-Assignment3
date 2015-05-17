@@ -192,7 +192,7 @@ public class SearchClient {
 
 	public static void main(String[] args) throws Exception {
 
-		System.err.println(Settings.TEST);
+		System.err.println(Settings.Global.PRINT);
 
 		SettingsContainer settings = ArgumentParser.parse(args);
 		expStatus = new ExpansionStatus();
