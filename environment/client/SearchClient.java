@@ -26,6 +26,8 @@ import client.parser.StrategyParser;
 
 import client.utils.History;
 
+import client.Settings;
+
 public class SearchClient {
 
 	public static boolean EXPANDED_DEBUG = false;
@@ -189,6 +191,8 @@ public class SearchClient {
 	}
 
 	public static void main(String[] args) throws Exception {
+
+		System.err.println(Settings.TEST);
 
 		SettingsContainer settings = ArgumentParser.parse(args);
 		expStatus = new ExpansionStatus();
