@@ -9,6 +9,7 @@ import client.node.level.Level;
 import client.node.storage.Goal;
 import client.node.storage.LogicalAgent;
 
+import client.Settings;
 
 
 public class KClusteringGoals{
