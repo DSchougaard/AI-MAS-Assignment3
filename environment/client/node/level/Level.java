@@ -283,10 +283,10 @@ public class Level implements LevelInterface{
 					deadends.add(new Base(i,j));
 					break;
 				default:
-					while(true){
-						System.err.println("unknown field type");
-						System.out.println("unknown field type");
-					}
+//					while(true){
+//						System.err.println("unknown field type");
+//						System.out.println("unknown field type");
+//					}
 				}
 
 			}
