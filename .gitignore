@@ -4,6 +4,7 @@
 stash
 environment_back
 *.fuse_hidden*
+report.pdf
 
 #################
 ## LaTeX
