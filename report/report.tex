@@ -48,11 +48,27 @@ To ensure that all reports have a uniform appearance corresponding to published 
 	\subsection{Conflict Resolution}
 		Since we're using multiple agents, each planning their own route, conflicts are bound to happen. We've chosen to rely on a method to resolve these, somewhat similar to online planning. But first and foremost, we need to describe exactly how we \emph{detect} these conflicts.
 
-		Currently we rely on two different methods for detecting conflicts. The first method is simply letting the server \emph{tell} the client, that there is a conflict. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a grater overhead. 
+		\subsubsection{Detecting the Conflicts}
+			Currently we rely on two different methods for detecting conflicts. The first method is simply letting the server \emph{tell} the client, that there is a conflict. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a grater overhead. 
 
-		The second approach is, that we employ a sort of double search. First we relax the domain, removing all other agents and boxes, that the current agent can not move. This results in a new subdomain, in which a search is performed. This results in a sort of threshold: In a perfect world, a solution for this problem exists in $X$ moves. This is then again used, to cut off the normal search, once it has taken too long. When this happens, we assume that it is because of a conflict. Using the route of the relaxed search, we identify which objects are in the way, causing this conflict.
+			The second approach is, that we employ a sort of double search. First we relax the domain, removing all other agents and boxes, that the current agent can not move. This results in a new subdomain, in which a search is performed. This results in a sort of threshold: In a perfect world, a solution for this problem exists in $X$ moves. This is then again used, to cut off the normal search, once it has taken too long. When this happens, we assume that it is because of a conflict. Using the route of the relaxed search, we identify which objects are in the way, causing this conflict.
 
-		Having detected a conflict, we partition the causes into one of two groups: The cases where it is only a box in the way, and the cases where it is a box. 
+		\subsubsection{Types of Conflicts}
+
+			Having detected a conflict, we partition the causes into one of two groups: The cases where it is only a box in the way, and the cases where it is a box. As a rule, all boxes found in the route, is handled first. This is done to avoid cases, where an agent otherwise asked to move a box, is told to get out of the way. An example of this, can be seen below. $0$ is a \verb=BLUE= agent, and $1$ is a \verb=RED= agent. The box $B$ is also \verb=RED=. 
+			\begin{verbatim}
+				...+++++++++...
+				     0 B1
+				...+++++++++...
+			\end{verbatim}
+			In this example, $0$ would like to move right. Obviously, that is impossible, due to the fact that both the agent $1$ and the box $B$ is in the way. Should we chose to handle agents first, $1$ would move out of the way, leaving no one to move the box $1$.
+
+		\subsubsection{Box Resolution}
+			First we identify which agent is supposed to move any given box.  
+
+			Agent close by not doing anything
+
+
 
 
 
