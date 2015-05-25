@@ -1,0 +1,50 @@
+abstract
+	less than 150 words
+	
+introduction
+
+Background
+	teori
+		relaxation
+	
+Related work
+
+
+Methods
+	overordnet implem/design
+
+	heuristic
+	
+	conflict 
+	
+	search
+		relaxed
+	
+
+results/experiments
+	distance maps
+	
+	heuristics
+	
+	goals
+		indivdual goals vs series of goals
+		priotizing goals
+	
+	good levels vs bad 
+		why
+		store
+		kordinering
+
+		
+discussion		
+		
+future work
+	store levels
+	koordinering
+	
+	
+referencers
+	6 referencers
+		3 papers
+		
+		
