@@ -38,12 +38,28 @@ To ensure that all reports have a uniform appearance corresponding to published 
 	\subsection{Brief Overview of Design and Implementation}
 		Reindahl\\
 		Randomization
-	\subsection{The Heuristic}
-		Reindahl \\
-	\subsection{Conflict Resolution}
-		Daniel
 	\subsection{Search}
-		\subsubsection{Relaxing the Domain}
+		\subsubsection{The Heuristic}
+		Reindahl \\
+		RELAXATION OF A RABBIT
+
+
+
+	\subsection{Conflict Resolution}
+		Since we're using multiple agents, each planning their own route, conflicts are bound to happen. We've chosen to rely on a method to resolve these, somewhat similar to online planning. But first and foremost, we need to describe exactly how we \emph{detect} these conflicts.
+
+		Currently we rely on two different methods for detecting conflicts. The first method is simply letting the server \emph{tell} the client, that there is a conflict. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a grater overhead. 
+
+		The second approach is, that we employ a sort of double search. First we relax the domain, removing all other agents and boxes, that the current agent can not move. This results in a new subdomain, in which a search is performed. This results in a sort of threshold: In a perfect world, a solution for this problem exists in $X$ moves. This is then again used, to cut off the normal search, once it has taken too long. When this happens, we assume that it is because of a conflict. Using the route of the relaxed search, we identify which objects are in the way, causing this conflict.
+
+		Having detected a conflict, we partition the causes into one of two groups: The cases where it is only a box in the way, and the cases where it is a box. 
+
+
+
+
+		\subsubsection{Cycle Detection}
+
+		Daniel
 
 \section{Results and Experiments}
 	\subsection{Distance Maps}
