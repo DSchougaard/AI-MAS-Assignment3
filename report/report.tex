@@ -61,12 +61,16 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		Since we're using multiple agents, each planning their own route, conflicts are bound to happen. We've chosen to rely on a method to resolve these, somewhat similar to online planning. But first and foremost, we need to describe exactly how we \emph{detect} these conflicts.
 
 		\subsubsection{Detecting the Conflicts}
-			Currently we rely on two different methods for detecting conflicts. The first method is simply letting the server \emph{tell} the client, that there is a conflict. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a grater overhead. 
+			Currently we rely on three different methods for detecting conflicts. The first method is simply letting the server \emph{tell} the client, that there is a conflict. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a grater overhead. 
 
-			The second approach is, that we employ a sort of double search. First we relax the domain, removing all other agents and boxes, that the current agent can not move. This results in a new subdomain, in which a search is performed. This results in a sort of threshold: In a perfect world, a solution for this problem exists in $X$ moves. This is then again used, to cut off the normal search, once it has taken too long. When this happens, we assume that it is because of a conflict. Using the route of the relaxed search, we identify which objects are in the way, causing this conflict.
+			The second approach is, that we employ a sort of double search. By first relaxing the domain, into something we call a subdomain, only containing the agent itself, and boxes it can move, we then search this domain. Using the length of the found route, we get a threshold, for determining whether or not the normal search is stuck.
+
+
+			%First we relax the domain, removing all other agents and boxes, that the current agent can not move. This results in a new subdomain, in which a search is performed. This results in a sort of threshold: In a perfect world, a solution for this problem exists in $X$ moves. This is then again used, to cut off the normal search, once it has taken too long. When this happens, we assume that it is because of a conflict. Using the route of the relaxed search, we identify which objects are in the way, causing this conflict.
+
+			The third an final approach is using something we call a \verb=History=. Due to the way we implemented searching and re-planning, occasionally two agents could find themselves in a situation, where both of them would \textsc{cycle} between two locations. The \verb=History= is memory of a certain length, containing information about where an agent has been for the past $x$ moves. Should more than a certain fraction of this history be of the same location, a cycle is detected.
 
 		\subsubsection{Types of Conflicts}
-
 			Having detected a conflict, we partition the causes into one of two groups: The cases where it is only a box in the way, and the cases where it is a box. As a rule, all boxes found in the route, is handled first. This is done to avoid cases, where an agent otherwise asked to move a box, is told to get out of the way. An example of this, can be seen below. $0$ is a \verb=BLUE= agent, and $1$ is a \verb=RED= agent. The box $B$ is also \verb=RED=. 
 			\begin{verbatim}
 				...+++++++++...
@@ -75,19 +79,15 @@ To ensure that all reports have a uniform appearance corresponding to published 
 			\end{verbatim}
 			In this example, $0$ would like to move right. Obviously, that is impossible, due to the fact that both the agent $1$ and the box $B$ is in the way. Should we chose to handle agents first, $1$ would move out of the way, leaving no one to move the box $1$.
 
-		\subsubsection{Box Resolution}
-			First we identify which agent is supposed to move any given box.  
+		\subsubsection{Resolving a Box Conflict}
+			To move a box out of the way, we first need to identify which agent should ``help". This is done by first trying to find the nearest agent, which currently does not have a plan. If none is found, the nearest agent is simply hijacked. Once the selected agent has reached the box, we employ a very naïve search: We breadth-first search, until both agent and box is out of the route.
 
-			Agent close by not doing anything
+		\subsubsection{Resolving an Agent Conflict}
+			If it should happen that is an agent that is in the route, this agent is told to get out of the way, \emph{unless} it's plans length, is below a certain threshold. Should the plan be below this threshold, the agent in the way is allowed to finish its current plan, before getting out of the way \emph{(if it is required at that time)}.
 
-
-
-
-
-
-		\subsubsection{Cycle Detection}
-
-		Daniel
+		\subsubsection{Resolving a Cycle}
+			A cycle is resolved by simply injecting NoOps in one of the agents, enabling the other to re-plan itself out of the problem area.
+		
 
 \section{Experiments and Results}
 	\subsection{Distance Maps}
