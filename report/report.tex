@@ -1,66 +1,41 @@
-\documentclass[10pt,a4paper]{article}
-\usepackage[latin1]{inputenc}
-\usepackage{multirow}
-\usepackage{graphicx}
-\usepackage{epstopdf}
-\usepackage{hyperref}
-\hypersetup{
-    colorlinks,
-    citecolor=black,
-    filecolor=black,
-    linkcolor=black,
-    urlcolor=black
-}
+\def\year{2015}
+%File: formatting-instruction.tex
+\documentclass[letterpaper]{article}
 
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{makeidx}
-\usepackage{listings}
-\usepackage{color}
-\usepackage[nottoc,numbib]{tocbibind}
-\usepackage{titlesec}
-\usepackage[toc,page]{appendix}
+% Required Packages
+\usepackage{aaai}
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{courier}
+\frenchspacing
+\setlength{\pdfpagewidth}{8.5in}
+\setlength{\pdfpageheight}{11in}
 
+% Section numbers. 
+\setcounter{secnumdepth}{2}  
 
-\author{
-    Daniel Schougaard \\ \textit{s103446} \\
-    Kasper Reindahl Rasmussen\\ \textit{s103476}\\ 
-    Martin V. Ottesen\\ \textit{s060186} 
-}
-\title{ 
-    \Huge{02285 - Artificial Intelligence and Multi-Agent Systems}
-}
-
+\nocopyright
 \begin{document}
+% Title and author information
+\title{How to Kill a Hamster - Group NULL\\ 02285 AI \& MAS}
+\author{Daniel Schougaard \\ \textit{s103446} \And Kasper Reindahl Rasmussen\\ \textit{s103476} \And Martin V. Ottesen\\ \textit{s060186}}
+\maketitle
 
-%Macro File
-\input{macro.tex}
+\begin{abstract}
+The abstract goes here. Please read this document carefully before preparing your manuscript.
 
-\lstset{
-	language=Java, 
-	keywordstyle=\color[rgb]{0.5216, 0.05098, 0.3569}\textbf,
-	commentstyle=\color[rgb]{0.133,0.545,0.133},
-	stringstyle=\color[rgb]{0,0,1},
-	tabsize=2
-}
-
-% Clears title page for TOC
-\clearpage\maketitle
-\thispagestyle{empty}
-\pagebreak
-\pagestyle{plain}
-\tableofcontents
-\pagebreak
-%TOC and Title page done report begins here!
-
+To ensure that all reports have a uniform appearance corresponding to published papers at the major AI conferences (like IJCAI and AAAI), authors must adhere to the following instructions. 
+\end{abstract}
 
 \section{Introduction}
+	Martin
 	Like so ~\cite{book2015}. 
 \section{Background}
+	Martin\\
 	Theory : Relaxation
 
 \section{Related Work}
+	Martin
 
 \section{Methods}
 	\subsection{Brief Overview of Design and Implementation}
@@ -114,22 +89,34 @@
 
 		Daniel
 
-\section{Results and Experiments}
+\section{Experiments and Results}
 	\subsection{Distance Maps}
+		Daniel\\
+		Bispe \\
+		Giant Maze Comp \\
+		Crunch\\
+		Boxes of Hanoi\\
+
+	\subsection{Comparison of Approaches}
+		Daniel
+		% Greedy vs AStar
+
 	\subsection{Goals}
+		Kasper
 		\begin{itemize}
 			\item{Individual goals vs series of goals}
 			\item{Prioritizing goals}
 		\end{itemize}
 
-	\subsection{Comparison of Levels}
-		\begin{itemize}
-			\item{Why is this?}
-			\item{Large levels!}
-			\item{Coordination amongst Agents.}
-		\end{itemize}
 
 \section{Discussion}
+	\subsection{Comparison of Levels}
+	\begin{itemize}
+		\item{Why is this?}
+		\item{Large levels!}
+		\item{Coordination amongst Agents.}
+	\end{itemize}
+
 
 \section{Future Work}
 	\begin{itemize}
@@ -146,38 +133,3 @@
 \bibliographystyle{aaai}
 \bibliography{bibliography}
 \end{document}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> origin/master
