@@ -39,22 +39,33 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 \section{Methods}
 	\subsection{Brief Overview of Design and Implementation}
-		Reindahl\\
-		the general structure is a multi body approach with preprocessing of goals.
+%		Reindahl\\
+%		the general structure is a multi body approach with preprocessing of the goals.
+%		
+%		the preprocessing consist of clustering the goals to the agent.
+%			Randomization
+%		
+%		we assume that goals located near each 
+%		goal decomposition 
+%			subgoal independence
+%			adding goals for agents
+%		
+		the general structure is a multi body approach with preprocessing. with each agent solving its goals independent of the other agents as far as possible. This is done to lower the complexity of the problem. The complexity is lowered by decomposing the problem by assuming that goals of the same colour, located close to each other are related and therefore can be grouped together. It is also assumed that solving each grouping is independent of the others.  one agent is assigned to solve to each grouping. 
+		To lower the complexity of solving each grouping the agent picks a single goal based on a heuristic, and solve this.. it cumulative solves the goals, to avoid destroying already achieved goals, since they are assumed to be dependent on each other. After each search the found plan is executed until it is completed or it fails. if it fails replanning is commenced
+		\\
+		\\
+	
+		real distance.....
 		
-		the preprocessing consist of clustering the goals to the agent.
-			Randomization
-		
-		we assume that goals located near each 
-		goal decomposition 
-			subgoal independence
-			adding goals for agents
-		
+		 
+	\subsection{goal Heuristic}
+		%Reindahl
+		goals are mainly selected from a given grouping based on how close they and the nearest similar box (not on a goal) are to the given agent. the location of a given goal is also taken into consideration so goals likely to be blocked (fx. dead ends and corners) is prioritised higher 
 				
 	\subsection{Search}
 		\subsubsection{The Heuristic}
 			Reindahl \\
-			RELAXATION OF A RABBIT
+			RELAXATION OF A WABBIT
 
 
 	\subsection{Conflict Resolution}
@@ -121,6 +132,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 
 \section{Discussion}
+	fully observable world.... full knowledge... complete off-line planning is possible, why not complete offline planing?
 	\subsection{Comparison of Levels}
 	\begin{itemize}
 		\item{Why is this?}
