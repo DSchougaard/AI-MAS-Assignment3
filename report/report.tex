@@ -90,12 +90,23 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		
 
 \section{Experiments and Results}
+	Throughout the development and implementation of the client for this project, we have tested out various ideas and designs. This sections contains a mix of experiments performed during all stages of development.
+
 	\subsection{Distance Maps}
-		Daniel\\
-		Bispe \\
-		Giant Maze Comp \\
-		Crunch\\
-		Boxes of Hanoi\\
+		During the early stages of development, we quickly realized that have a sort of modular approach to calculating distances would be beneficial. First few iterations we only employed a Manhattan distance calculation. Later on we then implemented various approaches to generating what we call "Real Distance Maps": They calculate the \emph{actual} distance, between to coordinate sets, by pre-processing.
+
+		All testing is done on single agent levels, since we're testing the efficiency of using the real distance map, instead of a Manhattan distance. To create a fixed point of reference, a greedy approach is used on all benchmarks.
+		\begin{tabular}{ | l | l | l | }
+			\hline
+			\textbf{Level} 	& \textbf{Manhattan} 	& \textbf{Floyd–Warshall} \\
+			\hline
+			SABispebjerg 	& - 					& - \\
+			SAGroup42F13 	& - 					& - \\
+			SACrunch 		& - 					& - \\
+			SAboxesOfHanoi 	& - 					& - \\
+			\hline
+		\end{tabular}
+		As it is seen, the real distance map, significantly increases the performance of our search client on the test cases, as we suspected.
 
 	\subsection{Comparison of Approaches}
 		Daniel
