@@ -50,39 +50,46 @@ To ensure that all reports have a uniform appearance corresponding to published 
 %			subgoal independence
 %			adding goals for agents
 %		
-		the general structure is a multi body approach with preprocessing. with each agent solving its goals independent of the other agents as far as possible. This is done to lower the complexity of the problem. The complexity is lowered by decomposing the problem by assuming that goals of the same colour, located close to each other are related and therefore can be grouped together. It is also assumed that solving each grouping is independent of the others.  one agent is assigned to solve to each grouping. 
-		To lower the complexity of solving each grouping the agent picks a single goal based on a heuristic, and solve this.. it cumulative solves the goals, to avoid destroying already achieved goals, since they are assumed to be dependent on each other. After each search the found plan is executed until it is completed or it fails. if it fails replanning is commenced
+		the general structure is a multi body approach with preprocessing. with each agent solving its goals independent of the other agents as far as possible. This is done to lower the complexity of the problem. The complexity is lowered by decomposing the problem by assuming that goals of the same colour, located close to each other are related and therefore can be grouped together. It is also assumed that solving each grouping is independent of the others. One agent is assigned to solve each grouping. 
+		To lower the complexity of solving each grouping the agent picks a single goal based on a heuristic, and solve this.. it cumulative solves the goals, to avoid destroying already achieved goals, since they are assumed to be dependent on each other. After each search the found plan is executed until it is completed or it fails. if it fails replanning is commenced.
 		\\
 		\\
 	
-		real distance.....
-		to enhance the heuristics the distances used is the shortest path when the domain is relaxed by removing all movable objects
-		 
-	\subsection{goal Heuristic}
-		%Reindahl
-		goals are mainly selected from a given grouping based on how close they and the nearest similar box (not on a goal) are to the given agent. the location of a given goal is also taken into consideration so goals likely to be blocked (fx. dead ends and corners) is prioritised higher 
+
+ 
 				
 	\subsection{Search}
-		to find a plan to solve a given set of goals, a search is performed. The search is either a greedy or A* search. A* is used in the single agent world and when the problem is considered small enough, such as moving out of a given path. 
+		To find a plan to solve a given set of goals, a search is performed. The search is either a greedy or A* search. A* is used in the single agent world and when the problem is considered small enough, such as moving out of a given path. 
 		The search works under the assumption that nothing changes in the world except what the agent performing the search do.
+		
+		
 		
 %		when making a search, in fact two searches is performed
 %		one on a more relaxed world and one less relaxed
 %		
 %		the first search is done on a world where other agent and other wrong colour boxes is removed. this relaxation has no effect in a single system an therefore only one search is performed.
-		\subsubsection{The Heuristic}
+		\subsection{The Heuristic}
 			Reindahl \\
 			RELAXATION OF A WABBIT
-			the main heuristic used is heuristic used for putting boxes on goals.
-			the heuristic used consist of two parts, one to ensure progress and one to ensure as little interference as possible with the other agents.
+			a series of heuristics is used one for each different purpose.
 			
-			first parts finds the shorts distance from the agent to a box to the goal for each of the agents assigned goals and sums it.
+			but all the heuristic have that in common that to enhance the heuristics the distances used is the shortest path when the domain is relaxed by removing all movable objects, these values can be precomputed.
+					
+			
+			\subsubsection{Goal heuristic}
+			the main heuristic used is a heuristic used for putting boxes on goals.
+			It consist of two parts, one to ensure progress and one to ensure as little interference as possible with the other agents.
+			
+			The first parts finds the shorts distance from the agent to a box to the goal for each of the agents assigned goals and sums it.
 			
 			the second part is basically a goal count which works as punishment for moving boxes away from goal fields even though the goals ar not part of the agents goal condition.
 			
 			not optimistic
 			
-			
+			\subsubsection{goal Heuristic}
+				%Reindahl
+				goals are mainly selected from a given grouping based on how close they and the nearest similar box (not on a goal) are to the given agent. the location of a given goal is also taken into consideration so goals likely to be blocked (fx. dead ends and corners) is prioritised higher	
+				
 			
 
 	\subsection{Conflict Resolution}
