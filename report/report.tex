@@ -56,17 +56,34 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		\\
 	
 		real distance.....
-		
+		to enhance the heuristics the distances used is the shortest path when the domain is relaxed by removing all movable objects
 		 
 	\subsection{goal Heuristic}
 		%Reindahl
 		goals are mainly selected from a given grouping based on how close they and the nearest similar box (not on a goal) are to the given agent. the location of a given goal is also taken into consideration so goals likely to be blocked (fx. dead ends and corners) is prioritised higher 
 				
 	\subsection{Search}
+		to find a plan to solve a given set of goals, a search is performed. The search is either a greedy or A* search. A* is used in the single agent world and when the problem is considered small enough, such as moving out of a given path. 
+		The search works under the assumption that nothing changes in the world except what the agent performing the search do.
+		
+%		when making a search, in fact two searches is performed
+%		one on a more relaxed world and one less relaxed
+%		
+%		the first search is done on a world where other agent and other wrong colour boxes is removed. this relaxation has no effect in a single system an therefore only one search is performed.
 		\subsubsection{The Heuristic}
 			Reindahl \\
 			RELAXATION OF A WABBIT
-
+			the main heuristic used is heuristic used for putting boxes on goals.
+			the heuristic used consist of two parts, one to ensure progress and one to ensure as little interference as possible with the other agents.
+			
+			first parts finds the shorts distance from the agent to a box to the goal for each of the agents assigned goals and sums it.
+			
+			the second part is basically a goal count which works as punishment for moving boxes away from goal fields even though the goals ar not part of the agents goal condition.
+			
+			not optimistic
+			
+			
+			
 
 	\subsection{Conflict Resolution}
 		Since we're using multiple agents, each planning their own route, conflicts are bound to happen. We've chosen to rely on a method to resolve these, somewhat similar to online planning. But first and foremost, we need to describe exactly how we \emph{detect} these conflicts.
