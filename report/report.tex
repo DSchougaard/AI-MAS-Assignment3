@@ -50,16 +50,13 @@ To ensure that all reports have a uniform appearance corresponding to published 
 %			subgoal independence
 %			adding goals for agents
 %		
-		the general structure is a multi body approach with preprocessing. with each agent solving its goals independent of the other agents as far as possible. This is done to lower the complexity of the problem. The complexity is lowered by decomposing the problem by assuming that goals of the same colour, located close to each other are related and therefore can be grouped together. It is also assumed that solving each grouping is independent of the others. One agent is assigned to solve each grouping. 
-		To lower the complexity of solving each grouping the agent picks a single goal based on a heuristic, and solve this.. it cumulative solves the goals, to avoid destroying already achieved goals, since they are assumed to be dependent on each other. After each search the found plan is executed until it is completed or it fails. if it fails replanning is commenced.
-		\\
-		\\
-	
+		The general structure is a multi body approach with preprocessing. with each agent solving its own goals independent of the other agents as far as possible. This is done to lower the complexity of the problem. The complexity is lowered by decomposing the problem by assuming that goals of the same colour, located close to each other are related and therefore can be grouped together (using k-clustering). It is also assumed that solving each grouping is independent of the others. One agent is assigned to solve each grouping. 
+		To lower the complexity further for each grouping the goals are solved cumulative. The order of solving the goals is based on a heuristic. It cumulative solves the goals, to avoid destroying already achieved goals, since they are assumed to be dependent on each other. After each search the found plan is executed until it is completed or it fails. if it fails replanning is commenced.
 
  
 				
 	\subsection{Search}
-		To find a plan to solve a given set of goals, a search is performed. The search is either a greedy or A* search. A* is used in the single agent world and when the problem is considered small enough, such as moving out of a given path. 
+		To find a plan to solve a given set of goals, a search is performed. The search is either a Greedy or A* search. A* is used in the single agent world and when the problem is considered small enough, such as moving out of a given path. 
 		The search works under the assumption that nothing changes in the world except what the agent performing the search do.
 		
 		
@@ -70,10 +67,10 @@ To ensure that all reports have a uniform appearance corresponding to published 
 %		the first search is done on a world where other agent and other wrong colour boxes is removed. this relaxation has no effect in a single system an therefore only one search is performed.
 		\subsection{The Heuristic}
 %			Reindahl \\
-			RELAXATION OF A WABBIT, WABBIT! WABBIT!
-			a series of heuristics is used one for each different purpose.
+			RELAXATION OF A WABBIT, WABBIT! WABBIT!\\
+			a series of heuristics is used, each one to solve different problem.
 			
-			but all the heuristic have that in common that to enhance the heuristics the distances used is the shortest path when the domain is relaxed by removing all movable objects, these values can be precomputed.
+			but all the heuristic have that in common that to enhance the heuristics the distances used, is the shortest path when the domain is relaxed by removing all movable objects, these values can be precomputed (The All-pairs shortest paths problem).
 					
 			
 			\subsubsection{Goal heuristic}
@@ -166,9 +163,14 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 
 \section{Future Work}
+	Our approach has three general disadvantage, which would be obvious to address,
 	\begin{itemize}
-		\item{Large Levels}
-		\item{Coordination}
+		\item{Large Levels:}
+			\dots \dots
+		\item{Coordination:}
+			improving the coordination between several agents, by using a blackboard approach, this would avoid many of the situations where agents keeps getting in each others way.
+		\item{Backtracking:}
+			Running the complete search offline to allow better backtracking and thereby being able to recover from situations where we get stuck by solving the goals in the wrong order. 
 	\end{itemize}
 
 \section{References}
