@@ -25,7 +25,14 @@ map:
 	javac client/SettingsContainer.java
 
 run:
-	java $(JAVA) -jar server.jar -l $(LEVEL_PREFIX)$(level) -g 200 -c "java -Xmx2048m client.SearchClient -dm FloydWarshallDistanceMap"
+	java $(JAVA) -jar server.jar -l $(LEVEL_PREFIX)$(level) -g 200 -c "java -Xmx2048m client.SearchClient -dm ManhattanDistanceMap"
+
+bench:
+	java $(JAVA) -jar server.jar -l $(LEVEL_PREFIX)$(level) -o ../report/benchmarks -c "java -Xmx2048m client.SearchClient -dm ManhattanDistanceMap"
+
+comp:
+	java $(JAVA) -jar cserver.jar -d complevels/ -c "java -Xmx2048m client.SearchClient -dm FloydWarshallDistanceMap"
+
 
 count:
 	sloc --details --format cli-table .
