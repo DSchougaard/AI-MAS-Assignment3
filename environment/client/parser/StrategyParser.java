@@ -13,7 +13,8 @@ public class StrategyParser{
 	public static Strategy parse(Heuristic heuristic, String strategy){
 		Strategy s;
 		try{
-			Class<?> clazz = Class.forName(HEURISTIC_CLASS_PREFIX + heuristic);
+
+			Class<?> clazz = Class.forName(HEURISTIC_CLASS_PREFIX + strategy);
 			Constructor<?> constructor = clazz.getConstructor(Heuristic.class);
 			Object instance = constructor.newInstance(heuristic);
 			s = (Strategy) instance;
