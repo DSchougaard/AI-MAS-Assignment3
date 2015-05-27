@@ -3,8 +3,8 @@ package client;
 public class Settings{
 
 	public static class Global{
-		public static final boolean PRINT = false;
-		public static final boolean EXPANDED_DEBUG = false;
+		public static final boolean PRINT = true;
+		public static final boolean EXPANDED_DEBUG = true;
 	}
 
 
