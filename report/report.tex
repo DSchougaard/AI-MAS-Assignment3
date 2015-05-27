@@ -29,7 +29,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 \section{Introduction}
 	Martin
-	Like so ~\cite{book2015}. 
+	Like so ~\cite{Pukoban}. 
 \section{Background}
 	Martin\\
 	Theory : Relaxation
@@ -38,7 +38,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 	Martin
 
 \section{Methods}
-	\subsection{Brief Overview of Design and Implementation}
+%	\subsection{Brief Overview of Design and Implementation}
 %		Reindahl\\
 %		the general structure is a multi body approach with preprocessing of the goals.
 %		
@@ -69,8 +69,8 @@ To ensure that all reports have a uniform appearance corresponding to published 
 %		
 %		the first search is done on a world where other agent and other wrong colour boxes is removed. this relaxation has no effect in a single system an therefore only one search is performed.
 		\subsection{The Heuristic}
-			Reindahl \\
-			RELAXATION OF A WABBIT
+%			Reindahl \\
+			RELAXATION OF A WABBIT, WABBIT! WABBIT!
 			a series of heuristics is used one for each different purpose.
 			
 			but all the heuristic have that in common that to enhance the heuristics the distances used is the shortest path when the domain is relaxed by removing all movable objects, these values can be precomputed.
@@ -86,11 +86,11 @@ To ensure that all reports have a uniform appearance corresponding to published 
 			
 			not optimistic
 			
-			\subsubsection{goal Heuristic}
+			\subsubsection{Different goal Heuristic}
 				%Reindahl
 				goals are mainly selected from a given grouping based on how close they and the nearest similar box (not on a goal) are to the given agent. the location of a given goal is also taken into consideration so goals likely to be blocked (fx. dead ends and corners) is prioritised higher	
 				
-			
+			\subsubsection{Move heuristic}	
 
 	\subsection{Conflict Resolution}
 		Since we're using multiple agents, each planning their own route, conflicts are bound to happen. We've chosen to rely on a method to resolve these, somewhat similar to online planning. But first and foremost, we need to describe exactly how we \emph{detect} these conflicts.
@@ -140,7 +140,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 			SACrunch 		& - 					& - \\
 			SAboxesOfHanoi 	& - 					& - \\
 			\hline
-		\end{tabular}
+		\end{tabular}\\
 		As it is seen, the real distance map, significantly increases the performance of our search client on the test cases, as we suspected.
 
 	\subsection{Comparison of Approaches}
