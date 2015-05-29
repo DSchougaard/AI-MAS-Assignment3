@@ -122,7 +122,7 @@ public class SearchClient {
 				}
 			}
 			builder.append(']');
-
+			
 			// communicate with server
 			System.out.println(builder.toString());
 			builder.setLength(0);
@@ -184,7 +184,9 @@ public class SearchClient {
 
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
+		try {
+			
 
 
 		SettingsContainer settings = ArgumentParser.parse(args);
@@ -225,6 +227,11 @@ public class SearchClient {
 		}
 		if( Settings.Global.PRINT){
 			System.err.println("Level Completed");
+		}
+		
+		} catch (Exception e) {
+			System.err.println("DAMM");
+			e.printStackTrace();
 		}
 	}
 
@@ -323,7 +330,6 @@ public class SearchClient {
 					}
 				}
 				System.gc();
-				
 				switch (result.reason) {
 				case STUCK:
 					

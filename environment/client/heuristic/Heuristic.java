@@ -123,7 +123,7 @@ public class Heuristic {
 		int dist = Integer.MAX_VALUE;
 
 		for( Goal goal : goals ){
-			if( goalInUse(goal) )
+			if( goalInUse(goal) || node.isGoalState(goal))
 				continue;
 			if(node.distance(goal, agent)== null){
 				continue;
