@@ -216,14 +216,14 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		\label{table:bench_goals}
 		\caption{Benchmarks using independent and dependent subgoals.}
 	\end{table}
-	the single agent part shows 
-	that the performance is more or less equal when the looking at steps and time. the only major difference is the success rate one SAnull, where a livelock occurs 4/5 of the time.
+	The results shows a clear difference between the single agent and the multi agent levels. 
+	the single agent part shows that the performance is more or less equal when the looking at steps and time. the only major difference is the success rate one SAnull, where a livelock occurs 4/5 of the time, due to the nearer proximity of the goals.
 	
-	the interesting part of the data is that the independent goal strategy finds faster and shorter solutions for the multi agent levels. this is due to....
+	the interesting part of the data is that the independent goal strategy finds faster and shorter solutions for the multi agent levels. this can be explained by the fact if an agent interferes a with an other agents goal, it is not necessary best to fix the goal immediately, but instead wait for an more opportune time.	The only problem is the same as for the single agent is that it can end up in livelocks.
 	
-	the only problem is that it can end up in livelocks 
+	part of the explanation is also that the heuristic helps avoid destroying already achieved goals, and there by negating most of the disadvantages the independent goal approach has. 
 	
-	why is this not the case for MAnull
+	why is this not the case for MAnull???
 	
 	
 	
