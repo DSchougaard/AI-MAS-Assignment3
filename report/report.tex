@@ -203,7 +203,20 @@ To ensure that all reports have a uniform appearance corresponding to published 
 			\item{Individual goals vs series of goals}
 			\item{Prioritizing goals}
 		\end{itemize}
-
+	\begin{table}
+		\begin{tabular}{ l | r | c | l | c | r | l }
+			& 	\multicolumn{3}{c |}{Cumulative}	& 	\multicolumn{3}{c}{independent}		\\
+			\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time}	&	\textbf{rate} &	\textbf{Steps}	&	\textbf{Time}		\textbf{rate}\\
+			\hline
+			SACrunch		&	104.0			& 	167.0			&	&	105.4			&	574.8	&	\\
+			SAnull			&	104.0			& 	167.0			&	&	105.4			&	574.8	&	\\
+			SAFirefly		&	100.4			& 	160.6 			&	&	62.0			&	202.2	&	\\
+			SABispebjerg	&	1520.8			& 	2023.2 			&	&	1568.0			&	9439.8	&	\\
+			SAGroup42F13	&	375.0			& 	31846.2 		&	&	481.4			&	756.4	&	\\
+		\end{tabular}
+		\label{table:bench_astar}
+		\caption{Benchmarks using AStar strategy.}
+	\end{table}
 
 \section{Discussion}
 	fully observable world.... full knowledge... complete off-line planning is possible, why not complete offline planing?
