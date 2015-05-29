@@ -69,7 +69,9 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		The search works under the assumption that nothing changes in the world except what the agent performing the search do.
 		
 		one thing worth remarking on here is that a randomized approach is used in expanding the search space, which means that a search is often not likely to result in the same plan each time.
-		
+
+		% N.B.!!! Mention Admissibility, here! If heuristic is admissable (which ours isnt) AStar will return a solution of optimal length (which ours doens't) which will most likely always be identical.
+
 %		when making a search, in fact two searches is performed
 %		one on a more relaxed world and one less relaxed
 %		
@@ -77,6 +79,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		\subsection{The Heuristic}
 %			Reindahl \\
 			RELAXATION OF A WABBIT, WABBIT! WABBIT!\\
+			http://bit.ly/1clVSnK\\
 			a series of heuristics is used, each one to solve different problem.all the heuristic have that in common that to enhance the heuristics the distances used, is the shortest path when the domain is relaxed by removing all movable objects, these values can be precomputed (The All-pairs shortest paths problem).
 					
 			 of all the heuristic used only two are noteworthy \nameref{Goal1} and \nameref{goal2}, the rest is basically just the distance to or from a point.
@@ -128,34 +131,57 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		
 
 \section{Experiments and Results}
-	Throughout the development and implementation of the client for this project, we have tested out various ideas and designs. This sections contains a mix of experiments performed during all stages of development.
+	Throughout the development and implementation of the client for this project, we have tested out various ideas and designs. This sections contains a mix of experiments performed during all stages of development. The names AStar and Greedy will refer to an A* Search and a Greedy approach search, from now on out.
+
+	\begin{table}
+		\begin{tabular}{ l | r | l | r | l }
+							& 	\multicolumn{2}{c |}{FloydWarshall}	& 	\multicolumn{2}{c}{Manhattan}		\\
+			\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time}	&	\textbf{Steps}	&	\textbf{Time}	\\
+			\hline
+			SACrunch		&	104.0			& 	167.0			&	105.4			&	574.8	\\
+			SAFirefly		&	100.4			& 	160.6 			&	62.0			&	202.2	\\
+			SABispebjerg	&	1520.8			& 	2023.2 			&	1568.0			&	9439.8	\\
+			SAGroup42F13	&	375.0			& 	31846.2 		&	481.4			&	756.4	\\
+		\end{tabular}
+		\label{table:bench_astar}
+		\caption{Benchmarks using AStar strategy.}
+	\end{table}
+
+
+	\begin{table}
+		\begin{tabular}{ l | r | l | r | l }
+							& 	\multicolumn{2}{c |}{FloydWarshall}	& 	\multicolumn{2}{c}{Manhattan}		\\
+			\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time}	&	\textbf{Steps}	&	\textbf{Time}	\\
+			\hline
+			SACrunch		&	106.4			& 	162.2			&	296.6			&	1849.6	\\
+			SAFirefly		&	100.4			& 	164.0 			&	98.4			&	155.8	\\
+			SABispebjerg	&	1530.0			& 	1913.6 			&	0.0				&	0.0		\\
+			SAGroup42F13	&	375.0			& 	31110.4 		&	0.0				&	0.0		\\
+		\end{tabular}
+		\label{table:bench_greedy}
+		\caption{Benchmarks using Greedy strategy.}
+		\end{table}
 
 	\subsection{Testing Methodology}
-		All testing is done over the course of 5 iterations, after which the average is calculated. Should the experiment fail more than 1 time, the test is considered as failed, and will generate a value of "-". An experiment fails, should it run out of memory or time. The limits have been set to approximately 2 gigabyte RAM and 5 minutes.
+		All testing is done over the course of 5 iterations, after which the average is calculated. The limits have been set to approximately 2 gigabyte RAM and 5 minutes. The benchmarks have been run on a system powered by an Intel i5-3570k (Ivy Bridge) processor, equipped with 8 gigabyte 1866MHz DDR3 RAM, running Ubuntu 12.04.
 
+		The test data have been put in the tables \ref{table:bench_astar} and \ref{table:bench_greedy} for easier viewing. In the following two sections, we will refer to these tables.
+
+
+
+
+	\subsection{Comparison of Approaches}
+		Right off the bat, we can see how using a Manhattan distance, with Greedy is a horrible choice, cf. table \ref{table:bench_greedy}. Not only does it result in sub-par solutions, but it simply fails to solve both \verb=SABispebjerg= and \verb=SAGroup42F13=. This is due to the branching factor on the two, combined with the inherent source of error, from calculating distances, using Manhattan Distance. 
+
+		Applying AStar, however, we see that we are now able to actually solve the previously unsolvable levels. However, the time for it to solve \verb=SABispebjerg= is far from good.
+
+		What we can conclude so far, is that AStar definitely seems to be an appropriate strategy, taking 
 
 
 	\subsection{Distance Maps}
-		During the early stages of development, we quickly realized that have a sort of modular approach to calculating distances would be beneficial. First few iterations we only employed a Manhattan distance calculation. Later on we then implemented various approaches to generating what we call "Real Distance Maps": They calculate the \emph{actual} distance, between to coordinate sets, by pre-processing.
+		Having compared AStar and Greedy, we can now take another look on the benefit of the distance map. As we've mentioned before, we are applying a FloydWarshall algorithm to generate it. This comes with a trade-off: Time. In terms of running time, the algorithm is bound by $O(n^3)$ in pre-computation time. On some levels this trade-off is non-noticeable, simply due to the increased effectiveness. This is very much the case on \verb=SABispebjerg= and \verb=SACrunch=. However, when the level reaches a certain size, the time explodes. This is clearly seen on \verb=SAGroupF42F13=.
 
-		All testing is done on single agent levels, since we're testing the efficiency of using the real distance map, instead of a Manhattan distance. To create a fixed point of reference, a greedy approach is used on all benchmarks. 
-
-		\begin{tabular}{ | l | l | l | }
-			\hline
-			\textbf{Level} 	& \textbf{Manhattan} 	  			& \textbf{Floyd–Warshall}  \\
-			\hline
-			SACrunch 		& 305.5 							& 106.4 \\
-			SAFirefly 		& 98.4 								& 104.4 \\
-			SABispebjerg 	& -									& 1530.0 \\
-			%SAboxesOfHanoi 	& - 								& - \\
-			SAGroup42F13 	& - 								& 375.0 \\
-			\hline
-		\end{tabular}\\
-		As it is seen, the real distance map, significantly increases the performance of our search client on the test cases, as we suspected.
-
-	\subsection{Comparison of Approaches}
-		Daniel
-		% Greedy vs AStar
+		One \emph{very} interesting effect of the FloydWarshall distance map, is that it makes the Greedy approach be the optimal approach. This is simply because, that for each location on the level, we know \emph{exactly} how far there is to the goal.
 
 	\subsection{Goals}
 		Kasper
