@@ -90,7 +90,6 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		\subsection{The Heuristic}
 			%Reindahl \\
 			RELAXATION OF A WABBIT, WABBIT! WABBIT!\\
-			http://bit.ly/1clVSnK\\
 			a series of heuristics is used, each one to solve different problem.all the heuristic have that in common that to enhance the heuristics the distances used, is the shortest path when the domain is relaxed by removing all movable objects, these values can be precomputed (The All-pairs shortest paths problem).
 					
 			 of all the heuristic used only two are noteworthy \nameref{Goal1} and \nameref{goal2}, the rest is basically just the distance to or from a point.
@@ -175,7 +174,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		\end{tabular}
 		\label{table:bench_greedy}
 		\caption{Benchmarks using Greedy strategy.}
-		\end{table}
+	\end{table}
 
 	\subsection{Testing Methodology}
 		All testing is done over the course of 5 iterations, after which the average is calculated. The limits have been set to approximately 2 gigabyte RAM and 5 minutes. The benchmarks have been run on a system powered by an Intel i5-3570k (Ivy Bridge) processor, equipped with 8 gigabyte 1866MHz DDR3 RAM, running Ubuntu 12.04.
@@ -198,11 +197,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		In the current test set, the only case where we see an actual \emph{increase} in time is on \verb=SAGroup42F13=. A theory as to why the pre-computation time is much more significant on this level, compared to i.e. \verb=SABispebjerg=, is because \verb=SAGroup42F13= can be considered a sparse graph \cite{sparse}. Because of this, the pre-computation time exceeds the benefit of the reduced search time, in cases like this. While the time penalty \emph{is} a concern in this case, the fact that we increase the quality of the solution by roughly $29\%$, we feel that the FloydWarshall distance map is a good choice, in this domain.
 
 	\subsection{Goals}
-		Kasper
-		\begin{itemize}
-			\item{Individual goals vs series of goals}
-			\item{Prioritizing goals}
-		\end{itemize}
+%		Kasper
 	\begin{table}
 		\begin{tabular}{ l | r | c | l | c | r | l }
 			& 	\multicolumn{3}{c |}{Cumulative}	& 	\multicolumn{3}{c}{independent}		\\
@@ -212,7 +207,6 @@ To ensure that all reports have a uniform appearance corresponding to published 
 			SAnull			&	97.8			& 	0.15			& 100 \%	&		95	&	0.17	&	20 \% \\
 			SAFirefly		&	97.2			& 	0.13 			& 100 \%	& 123.2			&	0.13	& 100 \%	\\
 			SABispebjerg	&	1526			& 	 	1.8		& 100 \%	&	1523.6		&	1.7	&	100 \% \\
-			SAGroup42F13	&	375		& 	 40.3		& 100 \%	&	375			& 40.0	&	100 \% \\
 			MAAteam			&	338.6			& 	13.9 		& 100 \%	&		228.8		&	6.1	& 80 \%	\\
 			MABullFightF11	&	335.0			& 	14.7 		& 100 \%	&	303.8			&	8.2	& 100 \% \\
 			MAdeepblue	&		252.4		& 	8.2 		& 100 \%	&		229.4		&	8.1	&	100 \% \\
@@ -222,7 +216,17 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		\label{table:bench_goals}
 		\caption{Benchmarks using independent and dependent subgoals.}
 	\end{table}
-
+	the single agent part shows 
+	that the performance is more or less equal when the looking at steps and time. the only major difference is the success rate one SAnull, where a livelock occurs 4/5 of the time.
+	
+	the interesting part of the data is that the independent goal strategy finds faster and shorter solutions for the multi agent levels. this is due to....
+	
+	the only problem is that it can end up in livelocks 
+	
+	why is this not the case for MAnull
+	
+	
+	
 \section{Discussion}
 	fully observable world.... full knowledge... complete off-line planning is possible, why not complete offline planing?
 	\subsection{Comparison of Levels}
