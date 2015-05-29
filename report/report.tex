@@ -93,17 +93,17 @@ To ensure that all reports have a uniform appearance corresponding to published 
 					
 			Of all the heuristic used only two are noteworthy \nameref{Goal1} and \nameref{goal2}, the rest is basically just the distance to or from a point.
 			\subsubsection{Goal Heuristic}\label{Goal1}
-			The main heuristic used is a heuristic used for putting boxes on goals. It consist of two parts, one to ensure progress and one to ensure as little interference as possible with the other agents.
-			
-			The first part calculates the shortest path from each from each of the agents assigned goals to the agent going through a box that matches the goal (boxes already on goals are not used). all these parts are summed together.
-			
-			The second part is basically a goal count which works as punishment for moving boxes away from goal fields even though the goals ar not part of the agents goal condition.
-			
-			this results in an non admissible heuristic.
+				The main heuristic used is a heuristic used for putting boxes on goals. It consist of two parts, one to ensure progress and one to ensure as little interference as possible with the other agents.
+				
+				The first part calculates the shortest path from each from each of the agents assigned goals to the agent going through a box that matches the goal (boxes already on goals are not used). all these parts are summed together.
+				
+				The second part is basically a goal count which works as punishment for moving boxes away from goal fields even though the goals ar not part of the agents goal condition.
+				
+				This results in an non admissible heuristic.
 			
 			\subsubsection{Different Goal Heuristic}\label{goal2}
 				%Reindahl
-				goals are selected from a agents grouping mainly based on the shortest distance from a goal to the nearest similar box (not on a goal) and to the agent. The location of a given goal is also taken into consideration so goals likely to be blocked (fx. dead ends and corners) is prioritised higher by a factor.
+				This heuristic is used to to choose the order in which the goals is solved. Goals are selected from a agents grouping mainly based on the shortest distance from a goal to the nearest similar box (not on a goal) and to the agent. The location of a given goal is also taken into consideration so goals likely to be blocked (fx. dead ends and corners) is prioritised higher by a factor.
 
 	\subsection{Distances in the Map}
 		To speed up our search, we have been employing something we've called a ``Distance Map". A distance map is a certain way to calculate distances from one location to another. In the first few iterations, this was merely a wrapper for calculating the Manhattan distance.
@@ -149,7 +149,8 @@ To ensure that all reports have a uniform appearance corresponding to published 
 	\pagebreak
 {
 \Huge
-UNITS!!!
+UNITS!!!\\
+What is being tested?
 }
 	\begin{table}
 		\begin{tabular}{ l | r | l | r | l }
@@ -200,11 +201,12 @@ UNITS!!!
 
 		In the current test set, the only case where we see an actual \emph{increase} in time is on \verb=SAGroup42F13=. A theory as to why the pre-computation time is much more significant on this level, compared to i.e. \verb=SABispebjerg=, is because \verb=SAGroup42F13= can be considered a sparse graph \cite{sparse}. Because of this, the pre-computation time exceeds the benefit of the reduced search time, in cases like this. While the time penalty \emph{is} a concern in this case, the fact that we increase the quality of the solution by roughly $29\%$, we feel that the FloydWarshall distance map is a good choice, in this domain.
 
-	\subsection{Goals}
+	\subsection{Goal dependency}
 %		Kasper
+	Comparing total subgoal independence and cumulative subgoal dependence in the goal conditions. ... \textbf{mere specifikt}.... The results of the test can be seen in Table \ref{table:bench_goals}.
 	\begin{table}
 		\begin{tabular}{ l | r | c | l | c | r | l }
-			& 	\multicolumn{3}{c |}{Cumulative}	& 	\multicolumn{3}{c}{independent}		\\
+			& 	\multicolumn{3}{c |}{Cumulative}	& 	\multicolumn{3}{c}{Independent}		\\
 			\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time}	&	\textbf{rate} &	\textbf{Steps}	&	\textbf{Time}	&	\textbf{rate}\\
 			\hline
 			SACrunch		&		104		& 	0.13		& 100 \%	&	102.8		&	0.12	& 100 \%	\\
@@ -221,11 +223,13 @@ UNITS!!!
 		\label{table:bench_goals}
 	\end{table}
 	The results shows a clear difference between the single agent and the multi agent levels. 
-	The single agent part shows that the performance is more or less equal when the looking at steps and time. the only major difference is the success rate one \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the nearer proximity of the goals.
+	The single agent part shows that the performance is more or less equal when the looking at steps and time. The only major difference is the success rate one \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the nearer proximity of the goals.
 	
-	The interesting part of the data is that the independent goal strategy finds faster and shorter solutions for the multi agent levels. This can be explained by the fact if an agent interferes a with an other agents goal, it is not necessary best to fix the goal immediately, but instead wait for an more opportune time.	The only problem is the same as for the single agent is that it can end up in livelocks.
+	why is this not the case for SaFireFly different???
 	
-	Part of the explanation is also that the heuristic helps avoid destroying already achieved goals, and there by negating most of the disadvantages the independent goal approach has. 
+	The interesting part of the data is that the independent goal strategy finds faster and shorter solutions for the multi agent levels. This can be explained by the fact that if an agent interferes a with an other agents goal, it is not necessary best to fix the goal immediately, but instead wait for an more opportune time.	The only disadvantage is the same as for the single agent, is that it can end up in livelocks.
+	
+	Part of the explanation is also, that the heuristic helps avoid destroying already achieved goals, and there by negating most of the disadvantages the independent goal approach has. 
 	
 	why is this not the case for MAnull???
 	
@@ -264,11 +268,20 @@ UNITS!!!
 		\item{Large Levels:}
 			\dots \dots
 		\item{Coordination:}
-			improving the coordination between several agents, by using a blackboard approach, this would avoid many of the situations where agents keeps getting in each others way.
+			We had problems with several agents lack of coordination. which resulted in agents doing more than necessary noops to avoid conflicts and in general hitting each other even though there is space to pass each other. To avoid this the agent needs to have some idea of where the other agents are at all time. This can be achieved by using a  blackboard approach, and thereby letting the agents modify and validate their plans before executing them.
 		\item{Backtracking:}
 			Running the complete search offline to allow better backtracking and thereby being able to recover from situations where we get stuck by solving the goals in the wrong order. 
 	\end{itemize}
 
+	\subsection{Does it generalise}
+%	Does your method generalise to other types of domain? If not, what would be required for it to do so?
+	
+	
+	generalise to sokoban.
+	
+	Sokoban is a very similar domain, and it will therefore be simple to generalise to this domain, the only concern would be that Sokoban does have some irreversible actions/situations (due to no pull). the concern is that a single error can make a level unsolvable and it would not be obvious at the time, this means that backtracking is far more important.
+	
+	
 \section{References}
 	Martin\\
 	6 references, 3 papers.
