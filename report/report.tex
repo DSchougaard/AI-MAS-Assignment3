@@ -98,7 +98,9 @@ To ensure that all reports have a uniform appearance corresponding to published 
 				goals are selected from a agents grouping mainly based on the shortest distance from a goal to the nearest similar box (not on a goal) and to the agent. The location of a given goal is also taken into consideration so goals likely to be blocked (fx. dead ends and corners) is prioritised higher by a factor.
 
 	\subsection{Distances in the Map}
-		For the Glory of the Sontarran Empire!
+		To speed up our search, we have been employing something we've called a ``Distance Map". A distance map is a certain way to calculate distances from one location to another. In the first few iterations, this was merely a wrapper for calculating the Manhattan distance.
+
+		Looking further into this matter, we quickly realized that the levels we work on here, can represented as graphs: Each cell is a vertice, $V$, and each connection to another cell is an edge, $E$. With this knowledge in hand, we quickly realised that we could employ various algorithms actually meant to work on graphs. At the time of writing, we've implemented, tested and worked with a distance map generated using the Floyd-Warshall algorithm.
 
 	\subsection{Conflict Resolution}
 		Since we're using multiple agents, each planning their own route, conflicts are bound to happen. We've chosen to rely on a method to resolve these somewhat similar to online planning. But first and foremost, we need to describe exactly how we \emph{detect} these conflicts.
@@ -169,9 +171,6 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 		The test data have been put in the tables \ref{table:bench_astar} and \ref{table:bench_greedy} for easier viewing. In the following two sections, we will refer to these tables.
 
-
-
-
 	\subsection{Comparison of Approaches}
 		First off, it could seem like our benchmarks are flawed: Where Greedy fails to find a solution using the Manhattan distance, AStar actually manages to find it, cf. table \ref{table:bench_greedy}. This might seem a tad counter-intuitive. But the reason is actually fairly simple; We apply goal decomposition, as mentioned earlier. Each search is treated as its own. Hence the difference here, stems from respectively Greedy and AStar fares in search across the level. In larger levels with a rather high possible branching factor, the Greedy approach would simply end up reaching the memory limit, before even getting a box \emph{close} to the goal.
 
@@ -181,11 +180,11 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 
 	\subsection{Distance Maps}
-		Having compared AStar and Greedy based on the Manhattan distance map, we can now take another look on the benefit of the distance map. As we've mentioned before, we are applying a FloydWarshall algorithm to generate it. This comes with a trade-off: Time. In terms of running time, the algorithm is bound by $O(n^3)$ in pre-computation time. On some levels this trade-off is non-noticeable, simply due to the increased effectiveness. This is very much the case on \verb=SABispebjerg= and \verb=SACrunch=. However, when the level reaches a certain size, the time explodes. This is clearly seen on \verb=SAGroupF42F13=.
+		Having compared AStar and Greedy based on the Manhattan distance map, we can now take another look on the benefit of the distance map. As we've mentioned before, we are applying a FloydWarshall algorithm to generate it. This comes with a trade-off: Time. In terms of running time, the algorithm is bound by $O(|V|^3)$ in pre-computation time, where $V$ is the number of cells. On some levels this trade-off is non-noticeable, simply due to the increased effectiveness. This is very much the case on \verb=SABispebjerg= and \verb=SACrunch=. However, when the level reaches a certain size, the time explodes. This is clearly seen on \verb=SAGroupF42F13=.
 
 		One \emph{very} interesting effect of the FloydWarshall distance map, is that it makes the Greedy approach be the optimal approach. This is simply because, that for each location on the level, we know \emph{exactly} how far there is to the goal.
 
-		In the current test set, the only case where we see an actual \emph{increase} in time is on \verb=SAGroup42F13=. However, we also see a great increase in the viability of the solution: $~29\%$. But seeing the gains that the FloydWarshall distance map resulted in, we've deemed it beneficial to always use it for pre-computation.
+		In the current test set, the only case where we see an actual \emph{increase} in time is on \verb=SAGroup42F13=. A theory as to why the pre-computation time is much more significant on this level, compared to i.e. \verb=SABispebjerg=, is because \verb=SAGroup42F13= can be considered a sparse graph \cite{sparse}. Because of this, the pre-computation time exceeds the benefit of the reduced search time, in cases like this. While the time penalty \emph{is} a concern in this case, the fact that we increase the quality of the solution by roughly $29\%$, we feel that the FloydWarshall distance map is a good choice, in this domain.
 
 	\subsection{Goals}
 		Kasper
@@ -206,6 +205,20 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 
 \section{Future Work}
+	As with any project, there is a deadline. As the deadline approaches, one often finds that there are certain aspects that could still be improved. In this section, we will go through various aspects that could be improved, beyond the deadline of this project. Whether these improvements where not implemented simply due to a lack of time, or not prioritised because their benefit/cost ratio was too low is another story.
+
+	\subsection{Distance Maps}
+		As we saw in our benchmarks, there \emph{is} a considerable time penalty for using the FloydWarshall distance map on the \verb=SAGroup42F13= level. Originally we chose this particular algorithm, due to it being considerably easier to understand and implement, than other slightly more efficient algorithms. We estimated FloydWarshall to be the best benefit/resource ratio.
+
+		Having said this, if we had had more time, this is definitely a source of improvement. The first step to improving the algorithm, is using Johnson's Algorithm\cite{jonhson}, when the level is considered sparse. This effectively reduces the running time from $O(|V|^3)$ to $O(|V|^2log|V|+|V||E|)$, where $|V|$ vertices and $|E|$ edges. But this is far from the best that \emph{could} be done. Mikkel Thorup proposes an algorithm in \cite{Thorup} which can calculate all shortest paths from a single source in $O(|E|)$ time. This can then be repeated for all sources -- or vertices -- to calculate \emph{all} shortest paths in $O(|E||V|)$. Having said that, the algorithm proposed by Thorup is \emph{far} more complicated than the Floyd-Warshall algorithm.
+
+
+	\subsection{Searching the Nodes}
+		During the development of the code, we saw that the standard Java PriorityQueue was not optimal: The \verb=.contains(..)= method -- which is invoked a considerable number of times -- was causing significant slow-downs. We suspect that this is because of it simply iterating over the queue in $O(n)$ time. To avoid this, we added a secondary data structure: A hash-set. Using the hash-set we can invoke \verb=.contains(..)= in expected $O(1)$ time.
+
+		However, this comes at a disadvantage: We have to keep \emph{two} data structures in memory, while also maintaining it. Another approach to this, could be to use a Fibonachhi Heap \cite{fibonacchi}. This data structure would allow us to perform most operations at expected time $O(1)$, resulting in a theoretical improvement.
+
+
 	Our approach has three general disadvantage, which would be obvious to address,
 	\begin{itemize}
 		\item{Large Levels:}
