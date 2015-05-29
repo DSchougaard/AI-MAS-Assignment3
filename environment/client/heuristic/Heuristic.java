@@ -86,6 +86,11 @@ public class Heuristic {
 		}
 		return g;
 	}
+	
+	public Goal selectGoalWithOutBookkeeping(Node node){
+		Goal g = selectGoal_boxGoalDist(node);
+		return g;
+	}
 
 	private boolean goalInUse(Goal g){
 		return ( Heuristic.agent_goal_bookkeeping.get(g) != null /*|| Heuristic.agent_goal_bookkeeping.get(g).intValue != this.agentID */);
@@ -118,7 +123,7 @@ public class Heuristic {
 		int dist = Integer.MAX_VALUE;
 
 		for( Goal goal : goals ){
-			if( goalInUse(goal) )
+			if( goalInUse(goal) || node.isGoalState(goal))
 				continue;
 			if(node.distance(goal, agent)== null){
 				continue;

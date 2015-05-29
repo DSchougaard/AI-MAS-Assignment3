@@ -122,7 +122,7 @@ public class SearchClient {
 				}
 			}
 			builder.append(']');
-
+			
 			// communicate with server
 			System.out.println(builder.toString());
 			builder.setLength(0);
@@ -184,7 +184,9 @@ public class SearchClient {
 
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
+		try {
+			
 
 
 		SettingsContainer settings = ArgumentParser.parse(args);
@@ -226,6 +228,11 @@ public class SearchClient {
 		if( Settings.Global.PRINT){
 			System.err.println("Level Completed");
 		}
+		
+		} catch (Exception e) {
+			System.err.println("DAMM");
+			e.printStackTrace();
+		}
 	}
 
 	private static void SingleAgentPlaning( ArrayList<LinkedList<Node>> solution) throws IOException {
@@ -237,17 +244,12 @@ public class SearchClient {
 		agent.setState(state);
 
 		// normal search setup
-//		Heuristic heuristic = HeuristicParser.parse(agent, "AStar");
 		Heuristic heuristic =new Heuristic(agent);
 		Strategy strategy = StrategyParser.parse(heuristic,"AStar");
 
 		// find a subgoal(s) which should be solved
-		Goal subgoal = heuristic.selectGoal(agent.state);
-		if(subgoal!=null){
-			agent.subgoals.add(subgoal);
-			if( Settings.Global.PRINT){
-				System.err.println("new subgoal "+subgoal);
-			}
+		if(state.isGoalState(agent.subgoals)){
+			agent.selectNewGoal();
 		}
 		SearchResult result = agent.Search(strategy,  agent.subgoals);
 		
@@ -282,19 +284,12 @@ public class SearchClient {
 					System.err.println("SearchClient :: MultiAgentPlanning :: Subgoals "+ agent.subgoals);
 				}
 				
-				//Heuristic heuristic = HeuristicParser.parse(agent, "Greedy");
-				Heuristic heuristic = new Heuristic(agent);
 				
-				Goal subgoal = null;
+				
 				// find a subgoal(s) which should be solved
 				if(state.isGoalState(agent.subgoals)){
-					subgoal = heuristic.selectGoal(state);
-					if(subgoal!=null){
-						agent.subgoals.add(subgoal);
-						if( Settings.Global.PRINT){
-							System.err.println("SearchClient :: MultiAgentPlanning :: New subgoal " + subgoal + ".");
-						}
-					}
+					agent.setState(state);
+					agent.selectNewGoal();
 				}
 				
 				// relaxed search setup
@@ -306,13 +301,8 @@ public class SearchClient {
 				relaxedStrategy =  StrategyParser.parse(relaxedHeuristic,"Greedy");//new Greedy(relaxedHeuristic);
 				agent.setState(relaxed);
 				SearchResult relaxedResult;
-				if(subgoal==null){
-					relaxedResult = agent.Search(relaxedStrategy, agent.subgoals);
-				}else{
-					ArrayList<Goal> goals = new ArrayList<>();
-					goals.add(subgoal);
-					relaxedResult = agent.Search(relaxedStrategy, goals);
-				}
+
+				relaxedResult = agent.Search(relaxedStrategy, agent.subgoals);
 				if (!relaxedResult.equals(null)||!relaxedResult.expStatus.equals(null)){
 					expStatus.add(relaxedResult.expStatus);
 					if( Settings.Global.PRINT){
@@ -330,7 +320,7 @@ public class SearchClient {
 				}
 				agent.setState(state);
 
-				
+				Heuristic heuristic = new Heuristic(agent);
 				strategy = StrategyParser.parse(heuristic,"Greedy");
 				SearchResult result = agent.Search(strategy, agent.subgoals, relaxedResult);
 				if (!result.equals(null)||!result.expStatus.equals(null)){
@@ -340,7 +330,6 @@ public class SearchClient {
 					}
 				}
 				System.gc();
-				
 				switch (result.reason) {
 				case STUCK:
 					

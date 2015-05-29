@@ -4,13 +4,14 @@ public class Settings{
 
 	public static class Global{
 		public static final boolean PRINT = true;
-		public static final boolean EXPANDED_DEBUG = true;
+		public static final boolean EXPANDED_DEBUG = false;
 	}
 
 
 	public static class SearchClient{
 		public static final int HISTORY_LENGTH = 10;
 		public static final int CYCLE_THRESHOLD = 4;
+		public static final boolean CumulativeGoals = true;
 	}
 
 	public static class Conflict{
