@@ -242,11 +242,13 @@ public class SearchClient {
 		Strategy strategy = StrategyParser.parse(heuristic,"AStar");
 
 		// find a subgoal(s) which should be solved
-		Goal subgoal = heuristic.selectGoal(agent.state);
-		if(subgoal!=null){
-			agent.subgoals.add(subgoal);
-			if( Settings.Global.PRINT){
-				System.err.println("new subgoal "+subgoal);
+		if(state.isGoalState(agent.subgoals)){
+			Goal subgoal = heuristic.selectGoal(agent.state);
+			if(subgoal!=null){
+				agent.subgoals.add(subgoal);
+				if( Settings.Global.PRINT){
+					System.err.println("new subgoal "+subgoal);
+				}
 			}
 		}
 		SearchResult result = agent.Search(strategy,  agent.subgoals);
