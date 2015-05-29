@@ -3,7 +3,7 @@ package client.utils;
 import client.node.storage.Base;
 
 public class History{
-	private int limit, pointer;
+	private int limit;
 
 			// Base[Agents][History]
 	private Base[][] histories;

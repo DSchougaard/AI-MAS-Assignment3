@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import client.SearchClient.Memory;
+import client.heuristic.Heuristic;
 // Goals have a type
 // Agents have a color
 // Boxes have a color AND a type
@@ -26,10 +27,10 @@ public class SearchAgent{
 
 	public Status status = Status.IDLE;
 	public ArrayList<Goal> subgoals = new ArrayList<>();
-	
+
 	public Node state;
 	int startG;
-	
+
 	public SearchAgent(int name, Color color, int row, int col){
 		this.id 	= name;
 		if(color==null){
@@ -44,7 +45,7 @@ public class SearchAgent{
 		this.color 	= Color.blue;
 	}
 
-	
+
 	public SearchAgent(SearchAgent agent) {
 		this.id=agent.id;
 		this.color=agent.color;
@@ -61,7 +62,7 @@ public class SearchAgent{
 		startG= n.g();
 		this.state = n;
 	}
-	
+
 	public SearchResult Search(Strategy strategy) throws IOException {
 		return Search(strategy,  new GlobalGoldGoalState( this.state.getGoals(state.agents[id].color)), null);
 	}
@@ -78,13 +79,13 @@ public class SearchAgent{
 	public SearchResult Search(Strategy strategy, GoalState goal) throws IOException {
 		return Search(strategy, goal, null);
 	}
-	
+
 	public SearchResult Search(Strategy strategy, GoalState goal, SearchResult preResult) throws IOException {
 		if(Settings.Global.PRINT){
 			System.err.format("SearchAgent :: Search :: Search starting with strategy %s\n", strategy);
 		}
 		strategy.addToFrontier(this.state);
-		
+
 		int iterations = 0;
 		while (true) {
 			if(Settings.Global.PRINT){
@@ -108,7 +109,7 @@ public class SearchAgent{
 				ExpansionStatus expStatus = new ExpansionStatus(strategy);
 				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>(),expStatus);
 			}
-			
+
 			if (strategy.frontierIsEmpty()) {
 				ExpansionStatus expStatus = new ExpansionStatus(strategy);
 				if (goal.eval(state)) {
@@ -126,7 +127,7 @@ public class SearchAgent{
 				ExpansionStatus expStatus = new ExpansionStatus(strategy);
 				if(preResult.reason==SearchResult.Result.DONE){
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>(),expStatus);
-					
+
 				}
 				return new SearchResult(SearchResult.Result.STUCK, new LinkedList<>());
 			}
@@ -135,7 +136,7 @@ public class SearchAgent{
 				ExpansionStatus expStatus = new ExpansionStatus(strategy);
 
 				if(Settings.Global.EXPANDED_DEBUG)System.err.println(strategy.searchStatus());
-				
+
 				if(leafNode.isInitialState()){
 					return new SearchResult(SearchResult.Result.DONE, new LinkedList<>(),expStatus);
 				}
@@ -152,10 +153,26 @@ public class SearchAgent{
 			}
 			iterations++;
 		}
-		
+
 	}
 
-	
+	public void selectNewGoal(){
+		Heuristic heuristic = new Heuristic(this);
+
+		if(Settings.SearchClient.CumulativeGoals){
+			Goal subgoal = heuristic.selectGoal(state);
+			if(subgoal!=null){
+				this.subgoals.add(subgoal);
+				if( Settings.Global.PRINT){
+					System.err.println("SearchClient :: MultiAgentPlanning :: New subgoal " + subgoal + ".");
+				}
+			}
+		}else{
+			subgoals.clear();
+			subgoals.add(heuristic.selectGoalWithOutBookkeeping(state));
+		}
+	}
+
 	@Override
 	public boolean equals( Object obj ) {
 		if( getClass() != obj.getClass() ){
@@ -166,7 +183,7 @@ public class SearchAgent{
 		SearchAgent b = (SearchAgent)obj;
 		return ( this.id == b.id && this.color == b.color );
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 37;
@@ -174,7 +191,7 @@ public class SearchAgent{
 		result = prime * result + this.id;
 		return result;
 	}
-	
+
 	@Override
 	public String toString(){
 		return id+" "+color;
