@@ -85,18 +85,20 @@ To ensure that all reports have a uniform appearance corresponding to published 
 				
 	\subsection{Search}
 		To find a plan to solve a given set of goals, a search is performed. The search is either a Greedy or A* search. A* is used in the single agent world and when the problem is considered small enough, such as moving out of a given path. 
-		The search works under the assumption, that nothing changes in the world except what the agent performing the search do.
+		The search works under the assumption, that nothing changes in the world except what the agent performing the search do. This will sometimes fail in the multiagent levels, and we rely on simply letting the server \emph{tell} the client, that there is a conflict and then replanning is commenced. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a greater overhead. 
 		
-		One thing worth remarking on here is that a randomized approach is used in expanding the search space, which means that a search is often not likely to result in the same plan each time. This even more so the case when combining it with a greedy approach and a non admissible heuristic.
+		
+		To avoid using to much time on searches which are impossible or just to long, we employ a sort of double search. By first relaxing the domain, into a subdomain, only containing the agent itself and boxes, it can move. We then search this reduced domain. Using the length of the found route, we get a threshold for determining whether or not the normal search is worth progressing with the normal search. This approach rely on the assumption that relaxed search is significantly faster than the normal search. This assumption is however not the case for the single agent level, and it is therefore not performed in that case.
+		
+		
+		
+		
+		another thing worth remarking on here is that a randomized approach is used in expanding the search space, which means that a search is often not likely to result in the same plan each time. This even more so the case when combining it with a greedy approach and a non admissible heuristic.
 
 
-		%		when making a search, in fact two searches is performed
-		%		one on a more relaxed world and one less relaxed
-		%		
-		%		the first search is done on a world where other agent and other wrong colour boxes is removed. this relaxation has no effect in a single system an therefore only one search is performed.
 		\subsection{The Heuristic}
 			%Reindahl \\
-			RELAXATION OF A WABBIT, WABBIT! WABBIT!\\
+			%RELAXATION OF A WABBIT, WABBIT! WABBIT!\\
 			a series of heuristics is used, each one to solve different problem. all the heuristic though have that in common, that to enhance the heuristics the distances used, is the shortest path when the domain is relaxed by removing all movable objects, these values can be precomputed (The All-pairs shortest paths problem).
 					
 			Of all the heuristic used only two are noteworthy \nameref{Goal1} and \nameref{goal2}, the rest is basically just the distance to or from a point.
@@ -122,14 +124,15 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		Since we're using multiple agents, each planning their own route, conflicts are bound to happen. We've chosen to rely on a method to resolve these somewhat similar to online planning. But first and foremost, we need to describe exactly how we \emph{detect} these conflicts.
 
 		\subsubsection{Detecting the Conflicts}
-			Currently we rely on three different methods for detecting conflicts. The first method is simply letting the server \emph{tell} the client, that there is a conflict. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a greater overhead. 
+			Currently we rely on two different methods for detecting if agent is stuck. The first is if the double search fails.
+			%Currently we rely on three different methods for detecting conflicts. The first method is simply letting the server \emph{tell} the client, that there is a conflict. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a greater overhead. 
 
-			The second approach is that we employ a sort of double search. By first relaxing the domain, into something we call a subdomain, only containing the agent itself and boxes, it can move. We then search this reduced domain. Using the length of the found route, we get a threshold for determining whether or not the normal search is stuck.
+			%The second approach is that we employ a sort of double search. By first relaxing the domain, into something we call a subdomain, only containing the agent itself and boxes, it can move. We then search this reduced domain. Using the length of the found route, we get a threshold for determining whether or not the normal search is stuck.
 
 
 			%First we relax the domain, removing all other agents and boxes, that the current agent can not move. This results in a new subdomain, in which a search is performed. This results in a sort of threshold: In a perfect world, a solution for this problem exists in $X$ moves. This is then again used, to cut off the normal search, once it has taken too long. When this happens, we assume that it is because of a conflict. Using the route of the relaxed search, we identify which objects are in the way, causing this conflict.
 
-			The third and final approach is using something we call a \verb=History=. Due to the way we implemented searching and re-planning, occasionally two agents could find themselves in a situation, where both of them would \textsc{cycle} between two locations -- a so called live-lock. The \verb=History= is a memory of a certain length, containing information about where an agent has been for the past $x$ moves. Should more than a certain fraction of this history be of the same location, a cycle is detected.
+			The second approach is using something we call a \verb=History=. Due to the way we implemented searching and re-planning, occasionally two agents could find themselves in a situation, where both of them would \textsc{cycle} between two locations -- a so called live-lock. The \verb=History= is a memory of a certain length, containing information about where an agent has been for the past $x$ moves. Should more than a certain fraction of this history be of the same location, a cycle is detected.
 
 		\subsubsection{Types of Conflicts}
 			Having detected a conflict, we partition the causes into one of two groups: The cases where it is only a box in the way, and the cases where it is a box. As a rule, all boxes found in the route, is handled first. This is done to avoid cases, where an agent otherwise asked to move a box, is told to get out of the way. An example of this, can be seen below. $0$ is a \verb=BLUE= agent, and $1$ is a \verb=RED= agent. The box $B$ is also \verb=RED=. 
