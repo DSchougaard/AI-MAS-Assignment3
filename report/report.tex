@@ -314,40 +314,46 @@ To ensure that all reports have a uniform appearance corresponding to published 
 \section{Future Work}
 	As with any project, there is a deadline. As the deadline approaches, one often finds that there are certain aspects that could still be improved. In this section, we will go through various aspects that could be improved, beyond the deadline of this project. Whether these improvements where not implemented simply due to a lack of time, or not prioritised because their benefit/cost ratio was too low is another story. The improvements can be categorized in two groups, one speeding up performance using more complex algorithms on the already existing approach, the other attacking the problem in another way.
 	
-	\subsection{improving current approach} 
+	\subsection{Improving the Current Approach} 
 
-	\subsubsection{Distance Maps}
-		As we saw in our benchmarks, there \emph{is} a considerable time penalty for using the FloydWarshall distance map on the \verb=SAGroup42F13= level. Originally we chose this particular algorithm, due to it being considerably easier to understand and implement, than other slightly more efficient algorithms. We estimated FloydWarshall to be the best benefit/resource ratio.
+		\subsubsection{Distance Maps}
+			As we saw in our benchmarks, there \emph{is} a considerable time penalty for using the FloydWarshall distance map on the \verb=SAGroup42F13= level. Originally we chose this particular algorithm, due to it being considerably easier to understand and implement, than other slightly more efficient algorithms. We estimated FloydWarshall to be the best benefit/resource ratio.
 
-		Having said this, if we had had more time, this is definitely a source of improvement. The first step to improving the algorithm, is using Johnson's Algorithm ~\cite{jonhson}, when the level is considered sparse. This effectively reduces the running time from $O(|V|^3)$ to $O(|V|^2log|V|+|V||E|)$, where $|V|$ vertices and $|E|$ edges. But this is far from the best that \emph{could} be done. Mikkel Thorup proposes an algorithm in ~\cite{thorup} which can calculate all shortest paths from a single source in $O(|E|)$ time. This can then be repeated for all sources -- or vertices -- to calculate \emph{all} shortest paths in $O(|E||V|)$. Having said that, the algorithm proposed by Thorup is \emph{far} more complicated than the Floyd-Warshall algorithm.
+			Having said this, if we had had more time, this is definitely a source of improvement. The first step to improving the algorithm, is using Johnson's Algorithm ~\cite{jonhson}, when the level is considered sparse. This effectively reduces the running time from $O(|V|^3)$ to $O(|V|^2log|V|+|V||E|)$, where $|V|$ vertices and $|E|$ edges. But this is far from the best that \emph{could} be done. Mikkel Thorup proposes an algorithm in ~\cite{thorup} which can calculate all shortest paths from a single source in $O(|E|)$ time. This can then be repeated for all sources -- or vertices -- to calculate \emph{all} shortest paths in $O(|E||V|)$. Having said that, the algorithm proposed by Thorup is \emph{far} more complicated than the Floyd-Warshall algorithm.
 
 
-	\subsubsection{Searching the Nodes}
-		During the development of the code, we saw that the standard Java PriorityQueue was not optimal: The \verb=.contains(..)= method -- which is invoked a considerable number of times -- was causing significant slow-downs. This is because of it simply iterating over the queue in $O(n)$ time \cite{website:Java-Docs}. To avoid this, we added a secondary data structure: A hash-set. Using the hash-set we can invoke \verb=.contains(..)= in expected $O(1)$ time.
+		\subsubsection{Searching the Nodes}
+			During the development of the code, we saw that the standard Java PriorityQueue was not optimal: The \verb=.contains(..)= method -- which is invoked a considerable number of times -- was causing significant slow-downs. This is because of it simply iterating over the queue in $O(n)$ time \cite{website:Java-Docs}. To avoid this, we added a secondary data structure: A hash-set. Using the hash-set we can invoke \verb=.contains(..)= in expected $O(1)$ time.
 
-		However, this comes at a disadvantage: We have to keep \emph{two} data structures in memory, while also maintaining it. Another approach to this, could be to use a Fibonacci Heap ~\cite{fibonacci}. This data structure would allow us to perform most operations at expected time $O(1)$, resulting in a theoretical improvement.
+			However, this comes at a disadvantage: We have to keep \emph{two} data structures in memory, while also maintaining it. Another approach to this, could be to use a Fibonacci Heap ~\cite{fibonacci}. This data structure would allow us to perform most operations at expected time $O(1)$, resulting in a theoretical improvement.
 
-	\subsection{Single Agent Decomposition}
-
-	\subsection{New approaches}
+	\subsection{New Approaches}
 		Our approach has three general disadvantage as discussed in section \ref{disscussion}, which would be obvious to address,
-		\begin{itemize}
-			\item{Large Levels:}
-				\dots \dots
-			\item{Coordination:}
-				We had problems with several agents lack of coordination. which resulted in agents doing more than necessary noops to avoid conflicts and in general hitting each other even though there is space to pass each other. To avoid this the agent needs to have some idea of where the other agents are at all time. This can be achieved by using a  blackboard approach, and thereby letting the agents modify and validate their plans before executing them.
-			\item{Backtracking:}
-				Running the complete search offline to allow better backtracking and thereby being able to recover from situations where we get stuck by solving the goals in the wrong order. 
-		\end{itemize}
 
-	\subsection{Does it generalise}
+		\subsubsection{Identical Adjacent Goals:}
+			Box Cycling\\
+			Goal history of which box IDs on it
+			Look into which boxes agent has moved / goals it tried to achieve.
+			\dots \dots
+		\subsubsection{Coordination:}
+			We had problems with several agents lack of coordination. which resulted in agents doing more than necessary noops to avoid conflicts and in general hitting each other even though there is space to pass each other. To avoid this the agent needs to have some idea of where the other agents are at all time. This can be achieved by using a  blackboard approach, and thereby letting the agents modify and validate their plans before executing them.
+		\subsubsection{Backtracking:}
+			Running the complete search offline to allow better backtracking and thereby being able to recover from situations where we get stuck by solving the goals in the wrong order. 
+
+		\subsubsection{Single Agent Decomposition}
+
+
+	\subsection{Does It Generalise?}
 		%Does your method generalise to other types of domain? If not, what would be required for it to do so?
 		
-		
-		generalise to sokoban.
-		
-		Sokoban is a very similar domain, and it will therefore be simple to generalise to this domain, the only concern would be that Sokoban does have some irreversible actions/situations (due to no pull). the concern is that a single error can make a level unsolvable and it would not be obvious at the time, this means that backtracking is far more important.
-		
+		\subsubsection{Reducing the Search to a Single-Agent Sokoban Domain}
+			%Reindahl
+			generalise to sokoban.
+			
+			Sokoban is a very similar domain, and it will therefore be simple to generalise to this domain, the only concern would be that Sokoban does have some irreversible actions/situations (due to no pull). the concern is that a single error can make a level unsolvable and it would not be obvious at the time, this means that backtracking is far more important.
+
+		\subsubsection{Multi-Body NPC Route Finding in a Dynamic Environment}
+			% Daniel
 
 % References and end of paper
 \bibliographystyle{aaai}
