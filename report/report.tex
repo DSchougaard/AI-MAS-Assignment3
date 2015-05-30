@@ -268,24 +268,24 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		However, this comes at a disadvantage: We have to keep \emph{two} data structures in memory, while also maintaining it. Another approach to this, could be to use a Fibonacci Heap ~\cite{fibonacci}. This data structure would allow us to perform most operations at expected time $O(1)$, resulting in a theoretical improvement.
 
 	\subsection{New approaches}
-	Our approach has three general disadvantage as discussed in section \ref{disscussion}, which would be obvious to address,
-	\begin{itemize}
-		\item{Large Levels:}
-			\dots \dots
-		\item{Coordination:}
-			We had problems with several agents lack of coordination. which resulted in agents doing more than necessary noops to avoid conflicts and in general hitting each other even though there is space to pass each other. To avoid this the agent needs to have some idea of where the other agents are at all time. This can be achieved by using a  blackboard approach, and thereby letting the agents modify and validate their plans before executing them.
-		\item{Backtracking:}
-			Running the complete search offline to allow better backtracking and thereby being able to recover from situations where we get stuck by solving the goals in the wrong order. 
-	\end{itemize}
+		Our approach has three general disadvantage as discussed in section \ref{disscussion}, which would be obvious to address,
+		\begin{itemize}
+			\item{Large Levels:}
+				\dots \dots
+			\item{Coordination:}
+				We had problems with several agents lack of coordination. which resulted in agents doing more than necessary noops to avoid conflicts and in general hitting each other even though there is space to pass each other. To avoid this the agent needs to have some idea of where the other agents are at all time. This can be achieved by using a  blackboard approach, and thereby letting the agents modify and validate their plans before executing them.
+			\item{Backtracking:}
+				Running the complete search offline to allow better backtracking and thereby being able to recover from situations where we get stuck by solving the goals in the wrong order. 
+		\end{itemize}
 
 	\subsection{Does it generalise}
-	%Does your method generalise to other types of domain? If not, what would be required for it to do so?
-	
-	
-	generalise to sokoban.
-	
-	Sokoban is a very similar domain, and it will therefore be simple to generalise to this domain, the only concern would be that Sokoban does have some irreversible actions/situations (due to no pull). the concern is that a single error can make a level unsolvable and it would not be obvious at the time, this means that backtracking is far more important.
-	
+		%Does your method generalise to other types of domain? If not, what would be required for it to do so?
+		
+		
+		generalise to sokoban.
+		
+		Sokoban is a very similar domain, and it will therefore be simple to generalise to this domain, the only concern would be that Sokoban does have some irreversible actions/situations (due to no pull). the concern is that a single error can make a level unsolvable and it would not be obvious at the time, this means that backtracking is far more important.
+		
 	
 \section{References}
 	Martin\\
