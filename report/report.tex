@@ -263,7 +263,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 
 	\subsubsection{Searching the Nodes}
-		During the development of the code, we saw that the standard Java PriorityQueue was not optimal: The \verb=.contains(..)= method -- which is invoked a considerable number of times -- was causing significant slow-downs. This is because of it simply iterating over the queue in $O(n)$ time. To avoid this, we added a secondary data structure: A hash-set. Using the hash-set we can invoke \verb=.contains(..)= in expected $O(1)$ time.
+		During the development of the code, we saw that the standard Java PriorityQueue was not optimal: The \verb=.contains(..)= method -- which is invoked a considerable number of times -- was causing significant slow-downs. This is because of it simply iterating over the queue in $O(n)$ time \cite{website:Java-Docs}. To avoid this, we added a secondary data structure: A hash-set. Using the hash-set we can invoke \verb=.contains(..)= in expected $O(1)$ time.
 
 		However, this comes at a disadvantage: We have to keep \emph{two} data structures in memory, while also maintaining it. Another approach to this, could be to use a Fibonacci Heap \cite{Fibonacci}. This data structure would allow us to perform most operations at expected time $O(1)$, resulting in a theoretical improvement.
 
