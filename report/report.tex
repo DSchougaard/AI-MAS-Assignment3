@@ -118,6 +118,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		One important fact to realise, is that the levels we work on here, can represented as graphs: Each cell is a vertice, $V$, and each connection to another cell is an edge, $E$. With this knowledge in hand, we quickly realised that we could employ various algorithms actually meant to work on graphs. At the time of writing, we've implemented, tested and worked with a distance map generated using the Floyd-Warshall algorithm.
 
 	\subsection{Search}
+		\label{sec:search}
 		To find a plan to solve a given set of goals, a search is performed. The search is either a Greedy or A* search. A* is used in the single agent world and when the problem is considered small enough, such as moving out of a given path. 
 		The search works under the assumption, that nothing changes in the world except what the agent performing the search do. This will sometimes fail in the multiagent levels, and we rely on simply letting the server \emph{tell} the client, that there is a conflict and then replanning is commenced. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a greater overhead. 
 		
@@ -136,13 +137,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		Since we're using multiple agents, each planning their own route, conflicts are bound to happen. We've chosen to rely on a method to resolve these somewhat similar to online planning. But first and foremost, we need to describe exactly how we \emph{detect} these conflicts.
 
 		\subsubsection{Detecting the Conflicts}
-			Currently we rely on two different methods for detecting if agent is stuck. The first is if the double search fails.
-			%Currently we rely on three different methods for detecting conflicts. The first method is simply letting the server \emph{tell} the client, that there is a conflict. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a greater overhead. 
-
-			%The second approach is that we employ a sort of double search. By first relaxing the domain, into something we call a subdomain, only containing the agent itself and boxes, it can move. We then search this reduced domain. Using the length of the found route, we get a threshold for determining whether or not the normal search is stuck.
-
-
-			%First we relax the domain, removing all other agents and boxes, that the current agent can not move. This results in a new subdomain, in which a search is performed. This results in a sort of threshold: In a perfect world, a solution for this problem exists in $X$ moves. This is then again used, to cut off the normal search, once it has taken too long. When this happens, we assume that it is because of a conflict. Using the route of the relaxed search, we identify which objects are in the way, causing this conflict.
+			Currently we rely on two different methods for detecting if agent is stuck. As was mentioned in section \ref{sec:search}, we employ a double search. Because the threshold is generated from the subdomain, we can assume that should the threshold be exceeded, a conflict must be present.
 
 			The second approach is using something we call a \verb=History=. Due to the way we implemented searching and re-planning, occasionally two agents could find themselves in a situation, where both of them would \textsc{cycle} between two locations -- a so called live-lock. The \verb=History= is a memory of a certain length, containing information about where an agent has been for the past $x$ moves. Should more than a certain fraction of this history be of the same location, a cycle is detected.
 
