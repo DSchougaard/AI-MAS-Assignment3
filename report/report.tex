@@ -168,7 +168,8 @@ To ensure that all reports have a uniform appearance corresponding to published 
 	\begin{table}
 		\begin{tabular}[t]{ l | r | L{1.2cm} | r | L{1.2cm} }
 							& 	\multicolumn{2}{c |}{FloydWarshall}	& 	\multicolumn{2}{c}{Manhattan}		\\
-			\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time} \textit{(ms)}	&	\textbf{Steps}	&	\textbf{Time} \textit{(ms)}	\\
+			\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time}	&	\textbf{Steps}	&	\textbf{Time} \\
+							&					&	\textbf{(ms)}	&					&	\textbf{(ms)} \\
 			\hline
 			SACrunch		&	104.0			& 	167.0			&	105.4			&	574.8	\\
 			SAFirefly		&	100.4			& 	160.6 			&	62.0			&	202.2	\\
@@ -183,7 +184,8 @@ To ensure that all reports have a uniform appearance corresponding to published 
 	\begin{table}
 		\begin{tabular}{ l | r | L{1.2cm} | r | L{1.2cm} }
 							& 	\multicolumn{2}{c |}{FloydWarshall}	& 	\multicolumn{2}{c}{Manhattan}		\\
-			\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time} \textit{(ms)}		&	\textbf{Steps}	&	\textbf{Time} \textit{(ms)}		\\
+			\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time} 	&	\textbf{Steps}	&	\textbf{Time} \\
+							&					&	\textbf{(ms)}	&					&	\textbf{(ms)} \\	
 			\hline
 			SACrunch		&	106.4			& 	162.2			&	296.6			&	1849.6	\\
 			SAFirefly		&	100.4			& 	164.0 			&	98.4			&	155.8	\\
@@ -197,7 +199,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 	\subsection{Testing Methodology}
 		All testing is done over the course of 5 iterations, after which the average is calculated. The limits have been set to approximately 2 gigabyte RAM and 5 minutes. The benchmarks in Table \ref{table:bench_astar} and Table \ref{table:bench_greedy} have been run on a system powered by an Intel i5-3570k (Ivy Bridge) processor, equipped with 8 gigabyte 1866MHz DDR3 RAM, running Ubuntu 12.04.
 		
-		Table \ref{table:bench_goals} have been run on a system powered by an Intel i7-3680QM (Ivy Bridge) processor, equipped with 8 gigabyte 1600MHz DDR3 SDRAM, running Windows 8.1.
+		Table \ref{table:bench_indygoals} and Table \ref{table:bench_cumgoals} have been run on a system powered by an Intel i7-3680QM (Ivy Bridge) processor, equipped with 8 gigabyte 1600MHz DDR3 SDRAM, running Windows 8.1.
 
 	\subsection{Comparison of Approaches}
 		First off, it could seem like our benchmarks are flawed: Where Greedy fails to find a solution using the Manhattan distance, AStar actually manages to find it, cf. table \ref{table:bench_greedy}. This might seem a tad counter-intuitive. But the reason is actually fairly simple:  We apply goal decomposition, as mentioned earlier. Each search is treated as its own. Hence the difference here, stems from respectively Greedy and AStar fares in search across the level. In larger levels with a rather high possible branching factor, the Greedy approach would simply end up reaching the memory limit, before even getting a box \emph{close} to the goal.
@@ -221,6 +223,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 %		Kasper
 		Comparing total subgoal independence and cumulative subgoal dependence in the goal conditions. ... \textbf{mere specifikt}.... The results of the test can be seen in Table \ref{table:bench_goals}.
 		\begin{table}
+			\centering
 			\begin{tabular}{ l | r | c | l }
 								& 	\multicolumn{3}{c }{Cumulative}							\\
 				\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time}	&	\textbf{Rate} \\
@@ -236,10 +239,11 @@ To ensure that all reports have a uniform appearance corresponding to published 
 				
 			\end{tabular}
 			\caption{Benchmarks using cumulative subgoals.}
-			\label{table:bench_goals}
+			\label{table:bench_indygoals}
 		\end{table}
 
 		\begin{table}
+			\centering
 			\begin{tabular}{ l | c | r | r }
 								&	\multicolumn{3}{c}{Independent}		\\
 				\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time}	&	\textbf{Rate} \\
@@ -255,7 +259,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 				
 			\end{tabular}
 			\caption{Benchmarks using independent subgoals.}
-			\label{table:bench_goals}
+			\label{table:bench_cumgoals}
 		\end{table}
 
 
