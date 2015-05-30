@@ -23,6 +23,13 @@
 % Section numbers. 
 \setcounter{secnumdepth}{2}  
 
+
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+
 \nocopyright
 \begin{document}
 % Title and author information
@@ -155,11 +162,13 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 \section{Experiments and Results}
 	Throughout the development and implementation of the client for this project, we have tested out various ideas and designs. This sections contains a mix of experiments performed during all stages of development. The names AStar and Greedy will refer to an A* Search and a Greedy approach search, from now on out.
+
+	Tables \ref{table:bench_astar} and \ref{table:bench_greedy} shows benchmarks using a Greedy search and a AStar search, with respectively a real distance map calculated with the Floyd-Warshall algorithm, and a Manhattan distance map. 
 	
 	\begin{table}
-		\begin{tabular}{ l | r | l | r | l }
+		\begin{tabular}[t]{ l | r | L{1.2cm} | r | L{1.2cm} }
 							& 	\multicolumn{2}{c |}{FloydWarshall}	& 	\multicolumn{2}{c}{Manhattan}		\\
-			\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time (ms)}	&	\textbf{Steps}	&	\textbf{Time (ms)}	\\
+			\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time} \textit{(ms)}	&	\textbf{Steps}	&	\textbf{Time} \textit{(ms)}	\\
 			\hline
 			SACrunch		&	104.0			& 	167.0			&	105.4			&	574.8	\\
 			SAFirefly		&	100.4			& 	160.6 			&	62.0			&	202.2	\\
@@ -172,9 +181,9 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 
 	\begin{table}
-		\begin{tabular}{ l | r | l | r | l }
+		\begin{tabular}{ l | r | L{1.2cm} | r | L{1.2cm} }
 							& 	\multicolumn{2}{c |}{FloydWarshall}	& 	\multicolumn{2}{c}{Manhattan}		\\
-			\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time}	&	\textbf{Steps}	&	\textbf{Time}	\\
+			\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time} \textit{(ms)}		&	\textbf{Steps}	&	\textbf{Time} \textit{(ms)}		\\
 			\hline
 			SACrunch		&	106.4			& 	162.2			&	296.6			&	1849.6	\\
 			SAFirefly		&	100.4			& 	164.0 			&	98.4			&	155.8	\\
@@ -212,23 +221,44 @@ To ensure that all reports have a uniform appearance corresponding to published 
 %		Kasper
 		Comparing total subgoal independence and cumulative subgoal dependence in the goal conditions. ... \textbf{mere specifikt}.... The results of the test can be seen in Table \ref{table:bench_goals}.
 		\begin{table}
-			\begin{tabular}{ l | r | c | l | c | r | r }
-								& 	\multicolumn{3}{c |}{Cumulative}						& 	\multicolumn{3}{c}{Independent}		\\
-				\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time}	&	\textbf{Rate} &	\textbf{Steps}	&	\textbf{Time}	&	\textbf{Rate}\\
+			\begin{tabular}{ l | r | c | l }
+								& 	\multicolumn{3}{c }{Cumulative}							\\
+				\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time}	&	\textbf{Rate} \\
 				\hline
-				SACrunch		&	104				& 	0.13		& 100 \%	&	102.8		&	0.12	& 	100 \%	\\
-				SAnull			&	97.8			& 	0.15		& 100 \%	&	95			&	0.17	&	20 	\% 	\\
-				SAFirefly		&	97.2			& 	0.13 		& 100 \%	& 	123.2		&	0.13	& 	100 \%	\\
-				SABispebjerg	&	1526			& 	1.8			& 100 \%	&	1523.6		&	1.7		&	100 \% 	\\
-				MAAteam			&	338.6			& 	13.9 		& 100 \%	&	228.8		&	6.1		& 	80 	\%	\\
-				MABullFightF11	&	335.0			& 	14.7 		& 100 \%	&	303.8		&	8.2		& 	100 \% 	\\
-				MAdeepblue		&	252.4			& 	8.2 		& 100 \%	&	229.4		&	8.1		&	100 \% 	\\
-				MAnull			&	106.8			& 	8.7			& 100 \%	&	112.4		&	11.3	& 	100 \% 	\\
+				SACrunch		&	104				& 	0.13		& 100 \%		\\
+				SAnull			&	97.8			& 	0.15		& 100 \%		\\
+				SAFirefly		&	97.2			& 	0.13 		& 100 \%	 	\\
+				SABispebjerg	&	1526			& 	1.8			& 100 \%		\\
+				MAAteam			&	338.6			& 	13.9 		& 100 \%		\\
+				MABullFightF11	&	335.0			& 	14.7 		& 100 \%	 	\\
+				MAdeepblue		&	252.4			& 	8.2 		& 100 \%	 	\\
+				MAnull			&	106.8			& 	8.7			& 100 \%		\\
 				
 			\end{tabular}
-			\caption{Benchmarks using independent and dependent subgoals.}
+			\caption{Benchmarks using cumulative subgoals.}
 			\label{table:bench_goals}
 		\end{table}
+
+		\begin{table}
+			\begin{tabular}{ l | c | r | r }
+								&	\multicolumn{3}{c}{Independent}		\\
+				\textbf{Level}	&	\textbf{Steps}	&	\textbf{Time}	&	\textbf{Rate} \\
+				\hline
+				SACrunch		&	102.8		&	0.12	& 	100 \%	\\
+				SAnull			&	95			&	0.17	&	20 	\% 	\\
+				SAFirefly		& 	123.2		&	0.13	& 	100 \%	\\
+				SABispebjerg	&	1523.6		&	1.7		&	100 \% 	\\
+				MAAteam			&	228.8		&	6.1		& 	80 	\%	\\
+				MABullFightF11	&	303.8		&	8.2		& 	100 \% 	\\
+				MAdeepblue		&	229.4		&	8.1		&	100 \% 	\\
+				MAnull			&	112.4		&	11.3	& 	100 \% 	\\
+				
+			\end{tabular}
+			\caption{Benchmarks using independent subgoals.}
+			\label{table:bench_goals}
+		\end{table}
+
+
 		The results shows a clear difference between the single agent and the multi agent levels. 
 		The single agent part shows that the performance is more or less equal when the looking at steps and time. The only major difference is the success rate one \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the nearer proximity of the goals.
 		
