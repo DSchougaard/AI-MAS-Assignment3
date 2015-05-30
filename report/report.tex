@@ -290,8 +290,9 @@ To ensure that all reports have a uniform appearance corresponding to published 
 	One of the method we employ to create this decomposition on the multi-agent levels, is the process of clustering the goals. This is a far more logical process to perform, on these multi-agent levels.
 
 
-	One unfortunate thing that has turned up, is that we're only able to successfully solve \verb=SAHoldKaeft= at around $25\%$ success rate. Our investigations show, that this has to do with the way we prioritise goals. The problem is, that we treat the prioritisation as a weight, instead of an actual sequence. The way we've chosen to do it is \emph{fast}, but obviously have certain shortcomings, that in this case unfortunately results in a rather low success rate. One 
+	One unfortunate thing that has turned up, is that we're only able to successfully solve \verb=SAHoldKaeft= at around $25\%$ success rate. Our investigations show, that this has to do with the way we prioritise goals. The problem is, that we treat the prioritisation as a weight, instead of an actual sequence. The way we've chosen to do it is \emph{fast}, but obviously have certain shortcomings, that in this case unfortunately results in a rather low success rate. 
 
+	Levels such as \verb=SAWatsOn= and \verb=MAmultiagentSort= unfortunately unearths another weakness in our solution. Multiple goals and boxes with the same letter \emph{can} result in the agent moving a box from one goal to another, moving some random box -- as to generate a new state -- and move the box back to its original goal. When caught in this behavior, it will result in a practically infinite search space. The inherent cause of this issue, is that this new ``goal state" is reachable within a single move. Thus when expanding the search space, we will always reach this problematic goal state, no matter what the heuristic returns.
 
 
 
