@@ -109,7 +109,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 				
 				This results in an non admissible heuristic.
 			
-			\subsubsection{Different Goal Heuristic}\label{goal2}
+			\subsubsection{Goal Selection Heuristic}\label{goal2}
 				%Reindahl
 				This heuristic is used to to choose the order in which the goals is solved. Goals are selected from a agents grouping mainly based on the shortest distance from a goal to the nearest similar box (not on a goal) and to the agent. The location of a given goal is also taken into consideration so goals likely to be blocked (fx. dead ends and corners) is prioritised higher by a factor.
 
@@ -234,13 +234,14 @@ What is being tested?
 	The single agent part shows that the performance is more or less equal when the looking at steps and time. The only major difference is the success rate one \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the nearer proximity of the goals.
 	
 	why is this not the case for SaFireFly different???
+	order of the goals, getting on the wrong side of a goal.
 	
 	The interesting part of the data is that the independent goal strategy finds faster and shorter solutions for the multi agent levels. This can be explained by the fact that if an agent interferes a with an other agents goal, it is not necessary best to fix the goal immediately, but instead wait for an more opportune time.	The only disadvantage is the same as for the single agent, is that it can end up in livelocks.
 	
 	Part of the explanation is also, that the heuristic helps avoid destroying already achieved goals, and there by negating most of the disadvantages the independent goal approach has. 
 	
 	why is this not the case for MAnull???
-	
+	hanoi....
 	
 	
 \section{Discussion}
