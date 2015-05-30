@@ -62,6 +62,8 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		Relaxed solution should however only be used if no non relaxed solution can be produced. 
 	\subsection{Partial-order Planing}
 		An other useful relaxation is only to plan on a subset of the goals at a time instead of trying to solve them all in one go, at the same time if you only look at one goal at a time the agents might constantly undo attained goals in order to fulfil new ones. In order to make this function optimally ordering of goals is also necessary so that the goals come in an optimal order ~\cite{Subgoals}.
+	\subsection{Clustering}
+		In order to optimize the levels with multiple agents with the same problem space the goals are decided into clusters. this is done using a center-based K-means algorithm ~\cite{K-Means}.
 
 \section{Related Work}
 	Sokoban is as stated earlier a classical automated planing problem it was created in 1981 by Hiroyuki Imabayashi, and published in 1982. During it's 33 years a myriad of solutions have been created to solve it.
