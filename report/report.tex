@@ -85,35 +85,36 @@ To ensure that all reports have a uniform appearance corresponding to published 
 %			subgoal independence
 %			adding goals for agents
 %		
-		The general structure is a multi body approach with preprocessing. with each agent solving its own goals independent of the other agents as far as possible. This is done to lower the complexity of the problem. The complexity is lowered by decomposing the problem by assuming that goals of the same colour, located close to each other are related and therefore can be grouped together (using k-clustering). It is also assumed that solving each grouping is independent of the others. One agent is assigned to solve each grouping. 
-		To lower the complexity further for each grouping the goals are solved cumulative. The order of solving the goals is based on a heuristic. It cumulative solves the goals, to avoid destroying already achieved goals, since they are assumed to be dependent on each other. After each search the found plan is executed until it is completed or it fails. if it fails replanning is commenced.
+	The general structure is a multi body approach with preprocessing. with each agent solving its own goals independent of the other agents as far as possible. This is done to lower the complexity of the problem. The complexity is lowered by decomposing the problem by assuming that goals of the same colour, located close to each other are related and therefore can be grouped together (using k-clustering). It is also assumed that solving each grouping is independent of the others. One agent is assigned to solve each grouping. 
+	To lower the complexity further for each grouping the goals are solved cumulative. The order of solving the goals is based on a heuristic. It cumulative solves the goals, to avoid destroying already achieved goals, since they are assumed to be dependent on each other. After each search the found plan is executed until it is completed or it fails. if it fails replanning is commenced.
 
  
-		\subsection{The Heuristic}
+	\subsection{The Heuristic}
 		%Reindahl \\
 		%RELAXATION OF A WABBIT, WABBIT! WABBIT!\\
 		a series of heuristics is used, each one to solve different problem. all the heuristic though have that in common, that to enhance the heuristics the distances used, is the shortest path when the domain is relaxed by removing all movable objects, these values can be precomputed (The All-pairs shortest paths problem).
 		
 		Of all the heuristic used only two are noteworthy \nameref{Goal1} and \nameref{goal2}, the rest is basically just the distance to or from a point.
 		\subsubsection{Goal Heuristic}\label{Goal1}
-		The main heuristic used is a heuristic used for putting boxes on goals. It consist of two parts, one to ensure progress and one to ensure as little interference as possible with the other agents.
-		
-		The first part calculates the shortest path from each from each of the agents assigned goals to the agent going through a box that matches the goal (boxes already on goals are not used). all these parts are summed together.
-		
-		The second part is basically a goal count which works as punishment for moving boxes away from goal fields even though the goals ar not part of the agents goal condition.
-		
-		This results in an non admissible heuristic.
+			The main heuristic used is a heuristic used for putting boxes on goals. It consist of two parts, one to ensure progress and one to ensure as little interference as possible with the other agents.
+			
+			The first part calculates the shortest path from each from each of the agents assigned goals to the agent going through a box that matches the goal (boxes already on goals are not used). all these parts are summed together.
+			
+			The second part is basically a goal count which works as punishment for moving boxes away from goal fields even though the goals ar not part of the agents goal condition.
+			
+			This results in an non-admissible heuristic.
 		
 		\subsubsection{Goal Selection Heuristic}\label{goal2}
-		%Reindahl
-		This heuristic is used to to choose the order in which the goals is solved. Goals are selected from a agents grouping mainly based on the shortest distance from a goal to the nearest similar box (not on a goal) and to the agent. The location of a given goal is also taken into consideration so goals likely to be blocked (fx. dead ends and corners) is prioritised higher by a factor.
+			%Reindahl
+			This heuristic is used to to choose the order in which the goals is solved. Goals are selected from a agents grouping mainly based on the shortest distance from a goal to the nearest similar box (not on a goal) and to the agent. The location of a given goal is also taken into consideration so goals likely to be blocked (fx. dead ends and corners) is prioritised higher by a factor.
 
+				
 			
+	\subsection{Distances in the Map}
+		To increase the performance of our heuristics, we have been employing something we've called a ``Distance Map". A distance map is a certain way to calculate distances from one location to another.
 			
-		\subsection{Distances in the Map}
-		To speed up our search, we have been employing something we've called a ``Distance Map". A distance map is a certain way to calculate distances from one location to another. %In the first few iterations, this was merely a wrapper for calculating the Manhattan distance.
-			
-		Looking further into this matter, we quickly realized that the levels we work on here, can represented as graphs: Each cell is a vertice, $V$, and each connection to another cell is an edge, $E$. With this knowledge in hand, we quickly realised that we could employ various algorithms actually meant to work on graphs. At the time of writing, we've implemented, tested and worked with a distance map generated using the Floyd-Warshall algorithm.	
+		One important fact to realise, is that the levels we work on here, can represented as graphs: Each cell is a vertice, $V$, and each connection to another cell is an edge, $E$. With this knowledge in hand, we quickly realised that we could employ various algorithms actually meant to work on graphs. At the time of writing, we've implemented, tested and worked with a distance map generated using the Floyd-Warshall algorithm.
+
 	\subsection{Search}
 		To find a plan to solve a given set of goals, a search is performed. The search is either a Greedy or A* search. A* is used in the single agent world and when the problem is considered small enough, such as moving out of a given path. 
 		The search works under the assumption, that nothing changes in the world except what the agent performing the search do. This will sometimes fail in the multiagent levels, and we rely on simply letting the server \emph{tell} the client, that there is a conflict and then replanning is commenced. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a greater overhead. 
