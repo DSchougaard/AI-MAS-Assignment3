@@ -60,10 +60,10 @@ To ensure that all reports have a uniform appearance corresponding to published 
 	Sokoban is as stated earlier a classical automated planing problem it was created in 1981 by Hiroyuki Imabayashi, and published in 1982. During it's 33 years a myriad of solutions have been created to solve it.
 	The Pukoban and Multi-Agent variations however are not as well documented.
 	\subsection{Pukoban}
-		~\cite[Agent motion planning with pull and push moves]{Pukoban} is a solution to a single agent to the Pukoban problem. To the single agent implementation this solution has a very similar approach it however uses the Kuhn-Munkres(Hungarian)algorithm, instead of Floyd-Warshall this gives them some overhaed as they have to runn it multiple times.
+		In \textsc{motion planning with pull and push moves} ~\cite{Pukoban} is a solution to a single agent to the Pukoban problem. To the single agent implementation this solution has a very similar approach it however uses the Kuhn-Munkres(Hungarian)algorithm, instead of Floyd-Warshall this gives them some overhaed as they have to runn it multiple times.
 		~\cite{Pukoban} pairs up the boxes to goals they also analyse for bottlenecks called chock points and clean them for what they call Clogs, they have no partial order planing   so they only have a success rate of 30 on fairly simple levels.
 		\subsection{Multi-Agent}
-		~\cite[A Multi-Agent Planning Approach Integrated with Learning Mechanism]{Multi-Agent} is a solution to Sokoban problems it uses centralized planing. It is integrates machine learning in order to build up a knowledge base capable of solving complex Sokoban problems. As the problems the self learning system is solving is Sokoban the state-space does not explode in the same way as a Pukoban would, this makes it possible fairly fast to go throw possible combinations and learn what no to do, and be rewarded in accordance to how many goals were attained before the game was deadlocked. It is hard to compare this approach to the one we are using for the Pokuban problem but for this type of problem it should theoretically be more suited as it could with enough time solve a NP-hard problem, and the central control system is a better choice for Sokuban as backtracking is not a possibility.
+		In \textsc{A Multi-Agent Planning Approach Integrated with Learning Mechanism} ~\cite{Multi-Agent} is a solution to Sokoban problems it uses centralized planing. It is integrates machine learning in order to build up a knowledge base capable of solving complex Sokoban problems. As the problems the self learning system is solving is Sokoban the state-space does not explode in the same way as a Pukoban would, this makes it possible fairly fast to go throw possible combinations and learn what no to do, and be rewarded in accordance to how many goals were attained before the game was deadlocked. It is hard to compare this approach to the one we are using for the Pokuban problem but for this type of problem it should theoretically be more suited as it could with enough time solve a NP-hard problem, and the central control system is a better choice for Sokuban as backtracking is not a possibility.
 
 \section{Methods}
 %	\subsection{Brief Overview of Design and Implementation}
@@ -263,7 +263,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 
 	\subsubsection{Searching the Nodes}
-		During the development of the code, we saw that the standard Java PriorityQueue was not optimal: The \verb=.contains(..)= method -- which is invoked a considerable number of times -- was causing significant slow-downs. This is because of it simply iterating over the queue in $O(n)$ time. To avoid this, we added a secondary data structure: A hash-set. Using the hash-set we can invoke \verb=.contains(..)= in expected $O(1)$ time.
+		During the development of the code, we saw that the standard Java PriorityQueue was not optimal: The \verb=.contains(..)= method -- which is invoked a considerable number of times -- was causing significant slow-downs. This is because of it simply iterating over the queue in $O(n)$ time \cite{website:Java-Docs}. To avoid this, we added a secondary data structure: A hash-set. Using the hash-set we can invoke \verb=.contains(..)= in expected $O(1)$ time.
 
 		However, this comes at a disadvantage: We have to keep \emph{two} data structures in memory, while also maintaining it. Another approach to this, could be to use a Fibonacci Heap ~\cite{fibonacci}. This data structure would allow us to perform most operations at expected time $O(1)$, resulting in a theoretical improvement.
 
@@ -286,12 +286,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		
 		Sokoban is a very similar domain, and it will therefore be simple to generalise to this domain, the only concern would be that Sokoban does have some irreversible actions/situations (due to no pull). the concern is that a single error can make a level unsolvable and it would not be obvious at the time, this means that backtracking is far more important.
 		
-	
-\section{References}
-	Martin\\
-	6 references, 3 papers.
-		
-		
+
 % References and end of paper
 \bibliographystyle{aaai}
 \bibliography{bibliography}
