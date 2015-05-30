@@ -1,0 +1,25 @@
+Subgaol independance
+	Planning with Recursive Subgoals
+		www.engr.colostate.edu/~hj/conferences/258.pdf
+		
+	The CIvide-and-Conquer Subgoal-Ordering Algorithm for Speeding up Logic Inference
+		arxiv.org/pdf/1105.5442
+		
+Distance map - Sokoban		
+	A Multi-Agent Planning Approach Integrated with Learning Mechanism
+		http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=4913231&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D4913231
+		
+	Agent motion planning with pull and push moves
+		143.54.11.16/~MRPRITT/Publications/P35-enia-2011.pdf
+	
+	Pushing Boxes with A Mobile Robot in Sokoban-like Scenarios
+		http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=5749352&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D5749352
+	
+	Hashing methods in Sokoban
+		www.liacs.nl/assets/2011-05EdwinVeger.pdf
+	
+	Goal distance estimation for automated planning using neural		www.infosys.tuwien.ac.at/staff/bsatzger/publications/pdf/2012_natcomp_planning.pdf
+
+Distance map - floyd warshall
+	Query Processing for Distance Metrics*
+		www.cs.utexas.edu/~mobios/papers/wang-query_processing-02.pdf
