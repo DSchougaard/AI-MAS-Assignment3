@@ -306,13 +306,13 @@ To ensure that all reports have a uniform appearance corresponding to published 
 	\subsection{New Approaches}
 		Our approach has some general disadvantage as discussed in section \ref{disscussion} and as shown in the competition results the quality of the single agent solution could be higher, which would be obvious to address.
 
-		\subsubsection{Identical Adjacent Goals:}
-			Box Cycling\\
-			Goal history of which box IDs on it
-			Look into which boxes agent has moved / goals it tried to achieve.
-			\dots \dots
+		%\subsubsection{Identical Adjacent Goals:}
+			%Box Cycling\\
+			%Goal history of which box IDs on it
+			%Look into which boxes agent has moved / goals it tried %to achieve.
+			%\dots \dots
 		\subsubsection{Coordination:}
-			We had problems with several agents lack of coordination. which resulted in agents doing more than necessary noops to avoid conflicts and in general hitting each other even though there are space to pass each other. To avoid this the agent needs to have some idea of where the other agents are at all time. This can be achieved by using a  blackboard approach, and thereby letting the agents modify and validate their plans before executing them.
+			We had problems with several agents lack of coordination. Which resulted in agents doing more than necessary noops to avoid conflicts and in general hitting each other even though there are space to pass each other. To avoid this the agent needs to have some idea of where the other agents are at all time. This can be achieved by using a  blackboard approach, and thereby letting the agents modify and validate their plans before executing them.
 		\subsubsection{Backtracking:}
 		\label{subsub:backtrack}
 			Running the complete search offline to allow better backtracking and thereby being able to recover from situations where the agent get stuck by solving the goals in the wrong order. 
