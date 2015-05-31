@@ -1,0 +1,159 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[nottoc,numbib]{tocbibind}
+
+
+\title{Group Declacation - Group null\\ 02285 AI \& MAS}
+\author{
+	Daniel Schougaard - \textit{s103446} \\
+ 	Kasper Reindahl Rasmussen - \textit{s103476} \\
+ 	Martin V. Ottesen - \textit{s060186}
+ }
+
+\begin{document}
+
+\clearpage\maketitle
+\thispagestyle{empty}
+
+\section*{The Experience of Working Together}
+	Some members of the group have expressed their discontent, in regard to the work distribution of this project. One member in particular has consequently neglected to do his share of the work. Hence the general consensus is that the workload has \emph{not} been evenly distributed, but the remaining two members have been doing the majority of the work.
+
+
+
+
+\pagebreak
+\pagestyle{plain}
+
+\section{Ideas}
+	\subsection{Daniel}
+		\begin{itemize}	
+			\item Conflict Resolution for Boxes in the Way
+			\item Conflict Resolution when an Agent is in the way
+			\item Conflict Resolution, for detecting Cycles
+			\item Clustering of Goals
+			\item Distance Maps
+			\item Goal Selection Heuristic
+		\end{itemize}
+	\subsection{Kasper}
+		\begin{itemize}	
+			\item Overall Online Planning Methodology
+			\item Planning for a Single Agent
+			\item Planning for Multiple Agents
+			\item Live Re-Planning
+			\item Double Search, on a Relaxed Domain
+			\item Primary Goal Solving Heuristic
+		\end{itemize}
+	\subsection{Martin}
+
+\section{Project, Programming, \& Code}
+	\subsection{Daniel}
+		\begin{itemize}
+			\item client.Conflict
+	 		\item client.Settings
+	 		\item client.heuristic.ClearHeuristic
+	 		%\item client.heuristic.ClearRouteHeuristic
+	 		\item client.heuristic.MoveToHeuristic
+	 		\item client.heuristic.OutOfTheWayHeuristic
+	 		\item client.heuristic.Proximity
+	 		%\item client.node.BoxStorage
+	 		%\item client.node.Color
+	 		\item client.node.GoalState
+	 		%\item client.node.NodeInterface
+	 		\item client.node.level.Level
+	 		%\item client.node.level.LevelInterface
+	 		\item client.node.level.clustering.KClusteringGoals
+	 		\item client.node.level.distancemap.BasicManhattanDistanceMap
+	 		%\item client.node.level.distancemap.BruteForceDistanceMap
+	 		%\item client.node.level.distancemap.DistanceMap
+	 		\item client.node.level.distancemap.FloydWarshallDistanceMap
+	 		%\item client.node.level.distancemap.ManhattanDistanceMapWithCache
+	 		\item client.node.storage.Base
+	 		\item client.node.storage.Box
+	 		\item client.node.storage.Goal
+	 		\item client.parser.ArgumentParser
+	 		\item client.parser.LevelParser
+	 		\item client.parser.SettingsContainer
+	 		\item client.utils.History
+		\end{itemize}
+	\subsection{Kasper}
+		\begin{itemize}
+			\item client.SearchAgent
+			\item client.SearchClient
+			\item client.Strategy
+			\item client.heuristic.AStar
+			\item client.heuristic.GreedyRouteHeuristic
+			\item client.heuristic.Greedy
+			\item client.heuristic.Heuristic
+			\item client.heuristic.WeightedAStar
+			\item client.node.Node
+			\item client.node.storage.LogicalAgent
+			\item client.node.storage.SearchResult
+		\end{itemize}
+	\subsection{Martin}
+		\begin{itemize}
+			\item client.parser.RouteParser
+			\item client.parser.StrategyParser
+			\item client.node.storage.ExpansionStatus
+		\end{itemize}
+
+\section{Report}
+	\subsection{Daniel}
+		\begin{itemize}
+			\item 4.2 Distances in the Map
+			\item 4.4 Conflict Resolution
+			\item 5.0 Introduction to Section
+			\item 5.1 Testing Methodology
+			\item 5.2 Comparison of Search Strategies
+			\item 5.3 Distance Maps
+			\item 7.0 Introduction to Section
+			\item 7.1 Improving the Current Approach
+			\item 7.3.2 Multi-Body NPC Route Finding in a Dynamic Environment
+		\end{itemize}
+	\subsection{Kasper}
+		\begin{itemize}
+			\item 4.0 Introduction to Section
+			\item 4.1 The Heuristic
+			\item 4.3 Search
+			\item 5.4 Goal Dependency
+			\item 7.2 New Approaches
+			\item 7.3.1 Reducing the Search to a Single Agent Sokoban Domain
+		\end{itemize}
+	\subsection{Martin}
+		\begin{itemize}
+			\item 1.0 Introduction
+			\item 2.0 Background
+			\item 3.0 Related Work
+		\end{itemize}
+
+	\subsection{Joint Effort}
+		\begin{itemize}
+			\item 6.0 Discussion
+		\end{itemize}
+
+
+
+
+
+%\tableofcontents
+\pagebreak
+
+\pagebreak
+
+\end{document}
