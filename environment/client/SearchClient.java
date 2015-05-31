@@ -245,7 +245,7 @@ public class SearchClient {
 
 		// normal search setup
 		Heuristic heuristic =new Heuristic(agent);
-		Strategy strategy = StrategyParser.parse(heuristic,"AStar");
+		Strategy strategy = StrategyParser.parse(heuristic,"Greedy");
 
 		// find a subgoal(s) which should be solved
 		if(state.isGoalState(agent.subgoals)){
