@@ -279,8 +279,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 	\label{disscussion}
 	With any choice there is bound to be pros and cons: In this particular case, it is primarily the eternal question of the quality of the solution, compared to the time required to generate it. A classic example of this would be, that we originally feared, that performing our double-search would impact our performance in a negative way, what we were happy to discover was that it actually increased it. This is because we effectively terminate any searches, that would otherwise take too long complete. The benefit of this approach was depicted in the results of the competition. 
 
-
-	One unfortunate thing that turned up during the competetion, is that we're only able to successfully solve \verb=SAHoldKaeft= at around $25\%$ success rate. Our investigations show, that this has to do with the way we prioritise goals. The problem is, that we treat the prioritisation as a weight, instead of an actual sequence. The way we've chosen to do it is \emph{fast}, but obviously have certain shortcomings, that in this case unfortunately results in a rather low success rate. 
+	One unfortunate thing that turned up during the competition, is that we're only able to successfully solve \verb=SAHoldKaeft= at around $25\%$ success rate. Our investigations show, that this has to do with the way we prioritise goals. The problem is, that we treat the prioritisation as a weight, instead of an actual sequence. The way we've chosen to do it is \emph{fast}, but obviously have certain shortcomings, that in this case unfortunately results in a rather low success rate. 
 
 	Levels such as \verb=SAWatsOn= and \verb=MAmultiagentSort= unfortunately unearths another weakness in our solution. Multiple goals and boxes with the same letter \emph{can} result in the agent moving a box from one goal to another, moving some random box -- as to generate a new state -- and move the box back to its original goal. When caught in this behavior, it will result in a practically infinite search space. The inherent cause of this issue, is that this new ``goal state" is reachable within a single move. Thus when expanding the search space, we will always reach this problematic goal state, no matter what the heuristic returns.
 
@@ -324,6 +323,8 @@ To ensure that all reports have a uniform appearance corresponding to published 
 			
 
 	\subsection{Does It Generalise?}
+
+
 		%Does your method generalise to other types of domain? If not, what would be required for it to do so?
 		
 		\subsubsection{Reducing the Search to a Single-Agent Sokoban Domain}
@@ -332,11 +333,11 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 		\subsubsection{Multi-Body NPC Route Finding in a Dynamic Environment}
 			% Daniel
-			While this generalisation might be considered a stretch, one could argue that our solution -- given some work -- could be used for control of NPCs, for instance. 
+			A not quite-so-obvious generalisation, could be to employ our solution for controlling the behaviour of NPCs, in open-world sandbox games.
 
-			Imagine a sandbox game where a player is allowed to roam freely around. In these games NPCs usually stroll about, minding their own business, up until their wonderful day is disrupted by a maniac with a Gatling gun. These walking, driving, cycling, or some other form of transportation patterns, could easily be described described using our solution. 
+			Imagine a such a game, where a player is allowed to roam freely around. In these games NPCs usually stroll about, minding their own business, up until their wonderful day is disrupted by a maniac with a Gatling gun. These walking, driving, cycling, or some other form of transportation patterns, could easily be described described using our solution. 
 
-			What makes our solution excellent for this purpose, is that we employ online planning. The player, an outside agent, comes in a disrupts the agents view of the world. Had we used offline planning, this would be a huge issue. However, with our approach a simple replanning -- or a round of conflict resolution -- suffices to figure out how the NPCs react.
+			What makes our solution excellent for this purpose, is that we employ online planning. The player, an outside agent, comes in a disrupts the agents view of the world, by completely eradicating the car infront, using aforementioned Gatling gun. Had we used offline planning, this would be a huge issue. However, with our approach a simple replanning -- or a round of conflict resolution -- suffices to figure out how the NPCs react.
 
 
 			One aspect where modification would be required, is definitely conflict resolution. As it stands now, NPC-NPC conflicts is solvable, but a more detailed description of Player-NPC conflict would definitely need to be modelled. This, however, could rather easily be achieved by expanding on how we analyse and resolve conflict.
