@@ -266,24 +266,18 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 
 		The results shows a clear difference between the single agent and the multi agent levels. 
-		The single agent part shows that the performance is more or less equal when the looking at steps and time. The only major difference is the success rate one \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the nearer proximity of the goals.
-		
-		why is this not the case for SaFireFly different???
-		order of the goals, getting on the wrong side of a goal.
+		The single agent part shows that the performance is more or less equal when the looking at steps and time. The only major difference is the success rate one \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the nearer proximity of the goals. This tendency can how ever not be seen on the \verb|SaFirefly| since the agent have a fairly limited set of paths and the agent therefore cant easily move around precious achieved goals and end up undoing them instead.
 		
 		The interesting part of the data is that the independent goal strategy finds faster and shorter solutions for the multi agent levels. This can be explained by the fact that if an agent interferes a with an other agents goal, it is not necessary best to fix the goal immediately, but instead wait for an more opportune time.	The only disadvantage is the same as for the single agent, is that it can end up in livelocks.
 		
 		Part of the explanation is also, that the heuristic helps avoid destroying already achieved goals, and there by negating most of the disadvantages the independent goal approach has. 
 		
-		why is this not the case for MAnull???
-		hanoi....
+		For the multiagent levels \verb|MAnull| breaks the pattern, this is due to the most time consuming part of of the level is practise a minor version of the single agent level \verb|SAboxesOfHanoi| and a performance more similar to pattern from the single agent levels are therefore expected.
 	
 	
 \section{Discussion}
 	\label{disscussion}
-	With any choice there is bound to be pros and cons: In this particular case, it is primarily the eternal question of the quality of the solution, compared to the time required to generate it. A classic example of this would be, that we originally feared, that performing our double-search would impact our performance in a negative way, what we were happy to discover was that it actually increased it. This is because we effectively terminate any searches, that would otherwise take too long complete.
-
-	The benefit of this approach was depicted in the results of the competition. 
+	With any choice there is bound to be pros and cons: In this particular case, it is primarily the eternal question of the quality of the solution, compared to the time required to generate it. A classic example of this would be, that we originally feared, that performing our double-search would impact our performance in a negative way, what we were happy to discover was that it actually increased it. This is because we effectively terminate any searches, that would otherwise take too long complete. The benefit of this approach was depicted in the results of the competition. 
 
 
 
@@ -298,7 +292,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 
 
-	While we admittedly are in a fully observable world, where a perfect master plan could be devised, we've chosen to rely on relaxation and online planning. This obviously comes with some drawbacks, but also has its advantages. When perform a search to plan a solution, we don't the other agents into account. This greatly reduces the complexity of the problem, while also simplifying the algorithm. Additionally it also introduces an obvious opportunity of introducing parallelism, to further increase performance. However, taking the restraints of this project into consideration, we chose not go down this path. However, the obvious drawback is that agents inevitably will get in each others ways.
+	While we admittedly are in a fully observable world, where a perfect master plan could be devised, we've chosen to rely on relaxation and online planning. This obviously comes with some drawbacks, but also has its advantages. When perform a search to plan a solution, we don't take the other agents into account. This greatly reduces the complexity of the problem, while also simplifying the algorithm. Additionally it also introduces an obvious opportunity of introducing parallelism, to further increase performance. However, taking the restraints of this project into consideration, we chose not go down this path. However, the obvious drawback is that agents inevitably will get in each others ways.
 	
 	Because multi-agent levels, often are highly independent levels, we managed perform goal decomposition to a much greater extent, than we did with single-agent levels. We reckon that this is the primary reason, as to why we perform so much better at multi-agent levels, than we do single-agent levels. 
 
