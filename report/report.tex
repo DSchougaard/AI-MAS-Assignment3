@@ -221,7 +221,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 	\subsection{Goal Dependency}
 
 %		Kasper
-		Comparing total subgoal independence and cumulative subgoal dependence in the goal conditions. ... \textbf{mere specifikt}.... The results of the test can be seen in Tables \ref{table:bench_indygoals} and \ref{table:bench_cumgoals}.
+		Here we will be comparing the effect of running the algorithm with total subgoal independence and cumulative subgoal dependence in the goal conditions. The results of the test can be seen in Tables \ref{table:bench_indygoals} and \ref{table:bench_cumgoals}.
 		\begin{table}
 			\centering
 			\begin{tabular}{ l | r | c | l }
@@ -266,7 +266,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 
 		The results shows a clear difference between the single agent and the multi agent levels. 
-		The single agent part shows that the performance is more or less equal when the looking at steps and time. The only major difference is the success rate one \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the nearer proximity of the goals. This tendency can how ever not be seen on the \verb|SaFirefly| since the agent have a fairly limited set of paths and the agent therefore cant easily move around precious achieved goals and end up undoing them instead.
+		The single agent levels shows that the performance is more or less equal when the looking at steps and time. The only major difference is the success rate one \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the nearer proximity of the goals. This tendency can how ever not be seen on the \verb|SaFirefly| since the agent have a fairly limited set of paths and the agent therefore cant easily move around precious achieved goals and end up undoing them instead, and thereby resulting in a longer solution.
 		
 		The interesting part of the data is that the independent goal strategy finds faster and shorter solutions for the multi agent levels. This can be explained by the fact that if an agent interferes a with an other agents goal, it is not necessary best to fix the goal immediately, but instead wait for an more opportune time.	The only disadvantage is the same as for the single agent, is that it can end up in livelocks.
 		
@@ -313,9 +313,10 @@ To ensure that all reports have a uniform appearance corresponding to published 
 			Look into which boxes agent has moved / goals it tried to achieve.
 			\dots \dots
 		\subsubsection{Coordination:}
-			We had problems with several agents lack of coordination. which resulted in agents doing more than necessary noops to avoid conflicts and in general hitting each other even though there is space to pass each other. To avoid this the agent needs to have some idea of where the other agents are at all time. This can be achieved by using a  blackboard approach, and thereby letting the agents modify and validate their plans before executing them.
+			We had problems with several agents lack of coordination. which resulted in agents doing more than necessary noops to avoid conflicts and in general hitting each other even though there are space to pass each other. To avoid this the agent needs to have some idea of where the other agents are at all time. This can be achieved by using a  blackboard approach, and thereby letting the agents modify and validate their plans before executing them.
 		\subsubsection{Backtracking:}
-			Running the complete search offline to allow better backtracking and thereby being able to recover from situations where we get stuck by solving the goals in the wrong order. 
+		\label{subsub:backtrack}
+			Running the complete search offline to allow better backtracking and thereby being able to recover from situations where the agent get stuck by solving the goals in the wrong order. 
 
 		\subsubsection{Goal Decomposition}
 			To increase the performance on single agent levels, a more guide approach could be used. This could be by grouping goals together applying the same assumption as used for the multi agent clustering. The difference from multi agent approach would be that the grouping would be that there would be more groupings than agents. A more advanced approach would be to apply the techniques from \cite{Subgoals} to find the ordering of the goals and solve them in the found order. This approach could also be applied in combination with the clustering to the way goals are grouped for the multi agents.
@@ -327,9 +328,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		
 		\subsubsection{Reducing the Search to a Single-Agent Sokoban Domain}
 			%Reindahl
-			generalise to sokoban.
-			
-			Sokoban is a very similar domain, and it will therefore be simple to generalise to this domain, the only concern would be that Sokoban does have some irreversible actions/situations (due to no pull). the concern is that a single error can make a level unsolvable and it would not be obvious at the time, this means that backtracking is far more important.
+			One of the most obvious generalisations would be that of Sokoban. Due to it being a very similar domain, and it will therefore be simple to generalise to this domain, the only concern would be that Sokoban does have some irreversible actions/situations (due to no pull action). The concern is that a single error can make a level unsolvable and it would not be obvious at the time, this means that backtracking is far more important in this domain.
 
 		\subsubsection{Multi-Body NPC Route Finding in a Dynamic Environment}
 			% Daniel
