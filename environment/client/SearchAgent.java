@@ -169,7 +169,10 @@ public class SearchAgent{
 			}
 		}else{
 			subgoals.clear();
-			subgoals.add(heuristic.selectGoalWithOutBookkeeping(state));
+			Goal subgoal =heuristic.selectGoalWithOutBookkeeping(state);
+			if(subgoal!=null){
+				subgoals.add(subgoal);
+			}
 		}
 	}
 
