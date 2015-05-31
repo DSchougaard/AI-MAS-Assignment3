@@ -87,7 +87,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 %			subgoal independence
 %			adding goals for agents
 %		
-	The general structure is a multi body approach with preprocessing. with each agent solving its own goals independent of the other agents as far as possible. This is done to lower the complexity of the problem. The complexity is lowered by decomposing the problem by assuming that goals of the same colour, located close to each other are related and therefore can be grouped together (using k-clustering). It is also assumed that solving each grouping is independent of the others. One agent is assigned to solve each grouping. 
+	The general structure used is a multibody approach with preprocessing. Each agent in this system is responsible for solving its own goals independent of the other agents, as far as possible. This is done to lower the complexity of the problem. The complexity is lowered by decomposing the problem by assuming that goals of the same colour, located close to each other are related and therefore can be grouped together (using k-clustering). It is also assumed that solving each grouping is independent of the others. One agent is assigned to solve each grouping. 
 	To lower the complexity further for each grouping the goals are solved cumulative. The order of solving the goals is based on a heuristic. It cumulative solves the goals, to avoid destroying already achieved goals, since they are assumed to be dependent on each other. After each search the found plan is executed until it is completed or it fails. if it fails replanning is commenced.
 
  
