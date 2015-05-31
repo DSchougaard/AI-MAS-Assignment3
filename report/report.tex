@@ -333,6 +333,15 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 		\subsubsection{Multi-Body NPC Route Finding in a Dynamic Environment}
 			% Daniel
+			While this generalisation might be considered a stretch, one could argue that our solution -- given some work -- could be used for control of NPCs, for instance. 
+
+			Imagine a sandbox game where a player is allowed to roam freely around. In these games NPCs usually stroll about, minding their own business, up until their wonderful day is disrupted by a maniac with a Gatling gun. These walking, driving, cycling, or some other form of transportation patterns, could easily be described described using our solution. 
+
+			What makes our solution excellent for this purpose, is that we employ online planning. The player, an outside agent, comes in a disrupts the agents view of the world. Had we used offline planning, this would be a huge issue. However, with our approach a simple replanning -- or a round of conflict resolution -- suffices to figure out how the NPCs react.
+
+
+			One aspect where modification would be required, is definitely conflict resolution. As it stands now, NPC-NPC conflicts is solvable, but a more detailed description of Player-NPC conflict would definitely need to be modelled. This, however, could rather easily be achieved by expanding on how we analyse and resolve conflict.
+
 
 % References and end of paper
 \bibliographystyle{aaai}
