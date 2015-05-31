@@ -201,7 +201,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		
 		Table \ref{table:bench_indygoals} and Table \ref{table:bench_cumgoals} have been run on a system powered by an Intel i7-3680QM (Ivy Bridge) processor, equipped with 8 gigabyte 1600MHz DDR3 SDRAM, running Windows 8.1.
 
-	\subsection{Comparison of Approaches}
+	\subsection{Comparison of Search Strategies}
 		First off, it could seem like our benchmarks are flawed: Where Greedy fails to find a solution using the Manhattan distance, AStar actually manages to find it, cf. table \ref{table:bench_greedy}. This might seem a tad counter-intuitive. But the reason is actually fairly simple:  We apply goal decomposition, as mentioned earlier. Each search is treated as its own. Hence the difference here, stems from respectively Greedy and AStar fares in search across the level. In larger levels with a rather high possible branching factor, the Greedy approach would simply end up reaching the memory limit, before even getting a box \emph{close} to the goal.
 
 		A real interesting thing that is seen on table \ref{table:bench_astar} is, that using the Manhattan distance map, we get a better solution. This is because very odd set of events. We select the goal order based on the distance, cf. \ref{goal2}. When using the Manhattan distance, the inherent flaw in the distance, actually makes the goal heuristic select a \emph{better} goal order.
@@ -337,7 +337,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 
 			Imagine a such a game, where a player is allowed to roam freely around. In these games NPCs usually stroll about, minding their own business, up until their wonderful day is disrupted by a maniac with a Gatling gun. These walking, driving, cycling, or some other form of transportation patterns, could easily be described described using our solution. 
 
-			What makes our solution excellent for this purpose, is that we employ online planning. The player, an outside agent, comes in a disrupts the agents view of the world, by completely eradicating the car infront, using aforementioned Gatling gun. Had we used offline planning, this would be a huge issue. However, with our approach a simple replanning -- or a round of conflict resolution -- suffices to figure out how the NPCs react.
+			What makes our solution excellent for this purpose, is that we employ online planning. The player, an outside agent, comes in a disrupts the agents view of the world, by completely eradicating the car in front, using aforementioned Gatling gun. Had we used offline planning, this would be a huge issue. However, with our approach a simple replanning -- or a round of conflict resolution -- suffices to figure out how the NPCs react.
 
 
 			One aspect where modification would be required, is definitely conflict resolution. As it stands now, NPC-NPC conflicts is solvable, but a more detailed description of Player-NPC conflict would definitely need to be modelled. This, however, could rather easily be achieved by expanding on how we analyse and resolve conflict.
