@@ -88,7 +88,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 %			adding goals for agents
 %		
 	The general structure used is a multibody approach with preprocessing. The complexity is lowered by decomposing the problem by assuming that goals of the same colour, located close to each other are related and therefore can be grouped together (using k-clustering). It is also assumed that solving each grouping is independent of the others. One agent is assigned to solve each grouping.  Each agent in this system is responsible for solving its own goals independent of the other agents, as far as possible. 
-	To lower the complexity further for each grouping the goals are solved cumulative. The order of solving the goals is based on a heuristic. It cumulative solves the goals, to avoid destroying already achieved goals, since they are assumed to be dependent on each other. After each search the found plan is executed until it is completed or it fails. if it fails replanning is commenced.
+	To lower the complexity further for each grouping the goals are solved cumulative. The order of solving the goals is based on a heuristic. It cumulative solves the goals, to avoid destroying already achieved goals, since they are assumed to be dependent on each other. To find a solution for a set of goals a search is performed. After each search the found plan is executed until it is completed or it fails. if it fails replanning is commenced.
 
  
 	\subsection{The Heuristic}
@@ -120,7 +120,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 	\subsection{Search}
 		\label{sec:search}
 		To find a plan to solve a given set of goals, a search is performed. The search is either a Greedy or A* search. A* is used in the single agent world and when the problem is considered small enough, such as moving out of a given path. 
-		The search works under the assumption, that nothing changes in the world except what the agent performing the search do. This will sometimes fail in the multiagent levels, and we rely on simply letting the server \emph{tell} the client, that there is a conflict and then replanning is commenced. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a greater overhead. 
+		The search works under the assumption, that nothing changes in the world except what the agent performing the search do. This will sometimes fail on the multi agent levels, and we rely on simply letting the server \emph{tell} the client, that there is a conflict and then replanning is commenced. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a greater overhead. 
 		
 		
 		To avoid using to much time on searches which are impossible or just to long, we employ a sort of double search. By first relaxing the domain, into a subdomain, only containing the agent itself and boxes, it can move. We then search this reduced domain. Using the length of the found route, we get a threshold for determining whether or not the normal search is worth progressing with. This approach rely on the assumption that relaxed search is significantly faster than the normal search. This assumption is however not the case for the single agent level, and it is therefore not performed in that case.
@@ -128,7 +128,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		
 		
 		
-		another thing worth remarking on here is that a randomized approach is used in expanding the search space, which means that a search is often not likely to result in the same plan each time. This even more so the case when combining it with a greedy approach and a non admissible heuristic.
+		Another thing worth remarking on here is that a randomized approach is used in expanding the search space, which means that a search is often not likely to result in the same plan each time. This even more so the case when combining it with a greedy approach and a non admissible heuristic.
 
 
 
