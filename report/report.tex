@@ -305,7 +305,7 @@ To ensure that all reports have a uniform appearance corresponding to published 
 			However, this comes at a disadvantage: We have to keep \emph{two} data structures in memory, while also maintaining it. Another approach to this, could be to use a Fibonacci Heap ~\cite{fibonacci}. This data structure would allow us to perform most operations at expected time $O(1)$, resulting in a theoretical improvement.
 
 	\subsection{New Approaches}
-		Our approach has three general disadvantage as discussed in section \ref{disscussion}, which would be obvious to address,
+		Our approach has some general disadvantage as discussed in section \ref{disscussion} and as shown in the competition results the quality of the single agent solution could be higher, which would be obvious to address.
 
 		\subsubsection{Identical Adjacent Goals:}
 			Box Cycling\\
@@ -317,8 +317,10 @@ To ensure that all reports have a uniform appearance corresponding to published 
 		\subsubsection{Backtracking:}
 			Running the complete search offline to allow better backtracking and thereby being able to recover from situations where we get stuck by solving the goals in the wrong order. 
 
-		\subsubsection{Single Agent Decomposition}
-
+		\subsubsection{Goal Decomposition}
+			To increase the performance on single agent levels, a more guide approach could be used. This could be by grouping goals together applying the same assumption as used for the multi agent clustering. The difference from multi agent approach would be that the grouping would be that there would be more groupings than agents. A more advanced approach would be to apply the techniques from \cite{Subgoals} to find the ordering of the goals and solve them in the found order. This approach could also be applied in combination with the clustering to the way goals are grouped for the multi agents.
+			
+			
 
 	\subsection{Does It Generalise?}
 		%Does your method generalise to other types of domain? If not, what would be required for it to do so?
