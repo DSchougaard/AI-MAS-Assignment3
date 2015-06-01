@@ -303,7 +303,7 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 			However, this comes at a disadvantage: We have to keep \emph{two} data structures in memory, while also maintaining it. Another approach to this, could be to use a Fibonacci Heap ~\cite{fibonacci}. This data structure would allow us to perform most operations at expected time $O(1)$, resulting in a theoretical improvement.
 
 	\subsection{New Approaches}
-		Our approach has some general disadvantage as discussed in section \ref{disscussion} and as shown in the competition results the quality of the single agent solution could be higher, which would be obvious to address.
+		Our approach has some general disadvantages as discussed in section \ref{disscussion} and as shown in the competition results the quality of the single agent solution could be higher, which would be obvious to address.
 
 		%\subsubsection{Identical Adjacent Goals:}
 			%Box Cycling\\
@@ -311,13 +311,13 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 			%Look into which boxes agent has moved / goals it tried %to achieve.
 			%\dots \dots
 		\subsubsection{Coordination:}
-			We had problems with several agents lack of coordination. Which resulted in agents doing more than necessary noops to avoid conflicts and in general hitting each other even though there are space to pass each other. To avoid this the agent needs to have some idea of where the other agents are at all time. This can be achieved by using a  blackboard approach, and thereby letting the agents modify and validate their plans before executing them.
+			We had problems with several agents' lack of coordination. Which resulted in agents doing more than necessary noops to avoid conflicts and in general hitting each other even though there are space to pass each other. To avoid this the agent needs to have some idea of where the other agents are at all time. This can be achieved by using a  blackboard approach, and thereby letting the agents modify and validate their plans before executing them.
 		\subsubsection{Backtracking:}
 		\label{subsub:backtrack}
-			Running the complete search offline to allow better backtracking and thereby being able to recover from situations where the agent get stuck by solving the goals in the wrong order. 
+			Running the complete search offline will allow better backtracking, and thereby being able to recover from situations, where the agent get stuck by solving the goals in the wrong order. 
 
 		\subsubsection{Goal Decomposition}
-			To increase the performance on single agent levels, a more guide approach could be used. This could be by grouping goals together applying the same assumption as used for the multi agent clustering. The difference from multi agent approach would be that the grouping would be that there would be more groupings than agents. A more advanced approach would be to apply the techniques from \cite{Subgoals} to find the ordering of the goals and solve them in the found order. This approach could also be applied in combination with the clustering to the way goals are grouped for the multi agents.
+			To increase the performance on single agent levels, a more guide approach could be used. This could be by grouping goals together applying the same assumption as used for the multi agent clustering. The difference from the multi agent approach would be that the grouping would be that there would be more groupings than agents. A more advanced approach would be to apply the techniques from \cite{Subgoals} to find the ordering of the goals and solve them in the found order. This approach could also be applied in combination with the clustering to the way goals are grouped for the multi agents.
 			
 			
 
