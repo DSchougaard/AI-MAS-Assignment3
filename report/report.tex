@@ -203,12 +203,12 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 	\end{table}
 
 	\subsection{Testing Methodology}
-		All testing is done over the course of 5 iterations, after which the average is calculated. The limits have been set to approximately 2 gigabyte RAM and 5 minutes. The benchmarks in Table \ref{table:bench_astar} and Table \ref{table:bench_greedy} have been run on a system powered by an Intel i5-3570k (Ivy Bridge) processor, equipped with 8 gigabyte 1866MHz DDR3 RAM, running Ubuntu 12.04.
+		All testing is done over the course of 5 iterations, after which the average is calculated. The limits have been set to approximately 2 gigabyte RAM and 5 minutes. The benchmarks in Table \ref{table:bench_astar} and Table \ref{table:bench_greedy} have been run on a system powered by an Intel i5-3570k (Ivy Bridge) processor, equipped with 8 gigabyte 1866MHz DDR3 RAM, running Ubuntu 12.04. This was also 
 		
 		Table \ref{table:bench_indygoals} and Table \ref{table:bench_cumgoals} have been run on a system powered by an Intel i7-3680QM (Ivy Bridge) processor, equipped with 8 gigabyte 1600MHz DDR3 SDRAM, running Windows 8.1.
 
 	\subsection{Comparison of Search Strategies}
-		First off, it could seem like our benchmarks are flawed: Where Greedy fails to find a solution using the Manhattan distance, AStar actually manages to find it, cf. table \ref{table:bench_greedy}. This might seem a tad counter-intuitive. But the reason is actually fairly simple:  We apply goal decomposition, as mentioned earlier. Each search is treated as its own. Hence the difference here, stems from respectively Greedy and AStar fares in search across the level. In larger levels with a rather high possible branching factor, the Greedy approach would simply end up reaching the memory limit, before even getting a box \emph{close} to the goal.
+		First off, it could seem like our benchmarks are flawed: Where Greedy fails to find a solution using the Manhattan distance, AStar actually manages to find it, cf. table \ref{table:bench_greedy}. This might seem slightly counter-intuitive. But the reason is actually fairly simple:  We apply goal decomposition, as mentioned earlier. Each search is treated as its own. Hence the difference here, stems from respectively Greedy and AStar fares in search across the level. In larger levels with a rather high possible branching factor, the Greedy approach would simply end up reaching the memory limit, before even getting a box \emph{close} to the goal.
 
 		A real interesting thing that is seen on table \ref{table:bench_astar} is, that using the Manhattan distance map, we get a better solution. This is because very odd set of events. We select the goal order based on the distance, cf. \ref{goal2}. When using the Manhattan distance, the inherent flaw in the distance, actually makes the goal heuristic select a \emph{better} goal order.
 
@@ -225,9 +225,9 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 		In the current test set, the only case where we see an actual \emph{increase} in time is on \verb=SAGroup42F13=. A theory as to why the pre-computation time is much more significant on this level, compared to i.e. \verb=SABispebjerg=, is because \verb=SAGroup42F13= can be considered a sparse graph. Because of this, the pre-computation time exceeds the benefit of the reduced search time, in cases like this. While the time penalty \emph{is} a concern in this case, the fact that we increase the quality of the solution by roughly $29\%$, we feel that the FloydWarshall distance map is a good choice, in this domain.
 
 	\subsection{Goal Dependency}
-
-%		Kasper
-		Here we will be comparing the effect of running the algorithm with total subgoal independence and cumulative subgoal dependence in the goal conditions. The results of the test can be seen in Tables \ref{table:bench_indygoals} and \ref{table:bench_cumgoals}.
+		As a final experiment, we compare how our solution performs in regards to total subgoal independence contra cumulative subgoal dependence. The results of this experiment are found on Tables \ref{table:bench_indygoals} and \ref{table:bench_cumgoals}, respectively.
+		%Kasper
+		%Here we will be comparing the effect of running the algorithm with total subgoal independence and cumulative subgoal dependence in the goal conditions. The results of the test can be seen in Tables \ref{table:bench_indygoals} and \ref{table:bench_cumgoals}.
 		\begin{table}
 			\centering
 			\begin{tabular}{ l | r | c | l }
@@ -271,14 +271,18 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 		\end{table}
 
 
-		The results shows a clear difference between the single agent and the multi agent levels. 
-		The single agent levels shows that the performance is more or less equal when the looking at steps and time. The only major difference is the success rate one \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the nearer proximity of the goals. This tendency can how ever not be seen on the \verb|SaFirefly| since the agent have a fairly limited set of paths and the agent therefore cant easily move around precious achieved goals and end up undoing them instead, and thereby resulting in a longer solution.
+		The results show a clear difference between the single agent and the multi-agent levels. 
+		The single agent levels show that the performance is more or less equal, when comparing the number of steps and the amount of time. The only major difference is the success rate on \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the proximity of the goals. This tendency can however not be seen on the \verb|SAFirefly|, since the agent has a fairly limited set of paths. This means that the agent can not easily move around previously achieved goals, and unfortunately ends up undoing them, instead of progressing. This in return, results in a longer solution.
+
+		%and the agent therefore can't easily move around previously achieved goals and end up undoing them instead, and thereby resulting in a longer solution.
 		
-		The interesting part of the data is that the independent goal strategy finds faster and shorter solutions for the multi agent levels. This can be explained by the fact that if an agent interferes a with an other agents goal, it is not necessary best to fix the goal immediately, but instead wait for an more opportune time.	The only disadvantage is the same as for the single agent, is that it can end up in livelocks.
+		The interesting part of the data is that the independent goal strategy finds faster and shorter solutions for the multi-agent levels. This can be explained by the fact that if an agent interferes with another agent's goal, it is not necessarily best to fix the goal immediately, but instead wait for a more opportune time. The only apparent disadvantage is the same as for the single agent: It can end up in livelocks.
 		
-		Part of the explanation is also, that the heuristic helps avoid destroying already achieved goals, and there by negating most of the disadvantages the independent goal approach has. 
+		Part of the explanation is also that the heuristic helps to avoid destroying already achieved goals, and thereby negating most of the disadvantages that the independent goal approach has. 
 		
-		For the multiagent levels \verb|MAnull| breaks the pattern, this is due to the most time consuming part of of the level is practise a minor version of the single agent level \verb|SAboxesOfHanoi| and a performance more similar to pattern from the single agent levels are therefore expected.
+		For the multi-agent levels, \verb|MAnull| breaks the pattern. This is due to the fact that the most time consuming part of the level, is in reality a minor version of the single-agent level \verb=SAboxesofHanoi=. This means that a performance similar to that of a single-agent level, is to be expected. 
+
+		%This is due to the most time consuming part of of the level is in practice a minor version of the single agent level \verb|SAboxesOfHanoi| and a performance more similar to pattern from the single agent levels are therefore expected.
 	
 	
 \section{Discussion}
