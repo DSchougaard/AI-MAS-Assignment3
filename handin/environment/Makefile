@@ -18,6 +18,10 @@ all:
 	javac client/*/*/*.java
 	javac client/*/*/*/*.java
 
+jar: all
+	jar cvfm client.jar manifest.txt client/*class client/*/*.class client/*/*/*.class client/*/*/*/*.class
+
+
 map:
 	javac client/node/map/*.java
 	javac client/node/*.java
