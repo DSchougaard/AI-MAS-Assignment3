@@ -110,9 +110,9 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 				
 			
 	\subsection{Distances in the Map}
-		To increase the performance of our heuristics, we have been employing something we've called a ``Distance Map". A distance map is a certain way to calculate the distance from one location to another.
+		To increase the performance of our heuristics, we have used something we've called a ``distance map". A distance map is a certain way to calculate the distance from one location to another.
 			
-		One important fact to realise, is that the levels we work on here can represented as graphs: Each cell is a vertice, $V$, and each connection to another cell is an edge, $E$. With this knowledge in hand, we quickly realised that we could employ various algorithms, originally designed to work on graphs. At the time of writing, we've implemented, tested, and worked with a distance map generated using the Floyd-Warshall algorithm.
+		One important fact to realise, is that the levels we work on here can be represented as graphs: Each cell is a vertice, $V$, and each connection to another cell is an edge, $E$. With this knowledge in hand, we quickly realised that we could employ various algorithms, originally designed to work on graphs. At the time of writing, we've implemented, tested, and worked with a distance map generated using the Floyd-Warshall algorithm.
 
 	\subsection{Search}
 		\label{sec:search}
@@ -134,35 +134,36 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 		Since we're using multiple agents, each planning their own route, conflicts are bound to happen. We have chosen a method to solve these conflicts, which somewhat resembles online planning. But first and foremost we need to describe exactly how we \emph{detect} these conflicts.
 
 		\subsubsection{Detecting the Conflicts}
-			Currently we rely on two different methods for detecting if agent is stuck. As was mentioned in section \ref{sec:search}, we employ a double search. From the solution of the search in the relaxed subdomain, we derive a threshold. Should this threshold be exceeded -- in search on the original domain -- we can safely assume that a conflict must be present.
+			Currently we rely on two different methods for detecting if an agent is stuck. As was mentioned in section \ref{sec:search}, we employ a double search. From the solution of the search in the relaxed subdomain, we derive a threshold. Should this threshold be exceeded, during the search on the original domain, we can safely assume that a conflict must be present.
 
-			The second approach is using something we call a \verb=History=. Due to the way we implemented searching and re-planning, occasionally two agents could find themselves in a situation, where both of them would \textsc{cycle} between two locations -- a so called live-lock. The \verb=History= is a memory of a certain length, containing information about where an agent has been for the past $x$ moves. Should more than a certain fraction of this history be of the same location, a cycle is detected.
+			The second approach is using something we call a \verb=History=. Due to the way we implemented searching and re-planning, occasionally two agents could find themselves in a situation, where both of them would ``cycle" between two locations. The \verb=History= is a memory of a certain length, containing information about where an agent has been for the past $x$ moves. Should more than a certain fraction of this history be of the same location, a cycle is detected.
 
-			We handle conflicts based on a priority system: At first, the agents' numbers determines their priority. Agent $0$ has priority over agent $1$, and so forth. Should additional conflicts arise, when handling the conflicts, we always prioritise the newly found conflict highest. This is done to avoid unfortunate conflict-of-conflict situations.
+			We handle conflicts based on a priority system: At first, the agents' numbers determines their priority. Agent $0$ has priority over agent $1$, and so forth. Should new conflicts arise, while handling the conflicts, we always prioritise the newly found ones the highest. This is done to avoid unfortunate conflict-of-conflict situations.
 
 		\subsubsection{Types of Conflicts}
-			Having detected a conflict, we partition the cause(s) into one of two groups: When it is only an agent in the way, and when it is a box. As a rule, all boxes found in the route are handled first. This is done to avoid cases, where an agent otherwise asked to move a found box, is told to get out of the way first. An example of this can be seen below. $0$ is a \verb=BLUE= agent, and $1$ is a \verb=RED= agent. The box $B$ is also \verb=RED=. 
+			Having detected a conflict, we partition the cause(s) into one of two groups: When it is an agent obstructing the route, and when it is a box. As a rule, all boxes found in the route are handled first. This is done to avoid cases, where an agent otherwise asked to move an obstructing box, is told to get out of the way first. An example of this can be seen below. $0$ is a \verb=BLUE= agent, and $1$ is a \verb=RED= agent. The box $B$ is also \verb=RED=. 
 			\begin{verbatim}
 				...+++++++++...
 				     0 B1
 				...+++++++++...
 			\end{verbatim}
-			In this example, $0$ would like to move right. Obviously, this is impossible, due to the fact that both the agent $1$ and the box $B$ is in the way. Should we chose to handle agents first, $1$ would move out of the way, leaving no one to move the box, $B$.
+			In this example $0$ would like to move right. Obviously, this is impossible, due to the fact that both agent $1$ and box $B$ is obstructing the route. Should we choose to handle agents first, agent $1$ would move out of the way, leaving no one to move the box $B$.
 
-		\subsubsection{Resolving a Box Conflict}
-			To move a box out of the way, we first need to identify which agent should ``help". This is done by first trying to find the nearest agent, which currently does not have a plan. If none is found, the nearest agent is simply selected -- disregarding its current plan. Once the selected agent has reached the box, we employ a very naïve search: We breadth-first search, until both agent and box is out of the route. Once the helping agent is out of the route, a number of \verb=NoOp=s are injected into the plan, to ensure that the stuck agent has left the problematic area.
+		\subsubsection{Resolving a Box Conflict} \label{sec:box_conf}
+			To move a box out of the way, we first need to identify which agent should ``help". This is done by first trying to find the nearest agent, which currently does not have a plan. If no such agent is found, the nearest one is simply selected -- disregarding its current plan. Once the selected agent has reached the box, we employ a very naive search: We breadth-first search, until both agent and box are out of the route. Once both are out of the route, a number of \verb=NoOp=s are injected into the plan, to ensure that the agent receiving help has left the problematic area.
+		
 
 		\subsubsection{Resolving an Agent Conflict}
-			If an agent is found to be blocking the route, that agent is told to leave the route. That is, unless its plan's length is below a certain threshold. Should the plan be below this threshold, the agent in the way is allowed to finish its current plan, before getting out of the way \emph{(if it is required at that point)}.
+			If an agent is obstructing the route, that agent is simply told to leave, much like described in section \ref{sec:box_conf}, only without a box. The exception to this, however, is if the length of the agent's plan, is below a certain threshold. Should the plan be below this threshold, the obstructing agent is allowed to finish its current plan, before getting out of the way \emph{(if it is required at that point)}.
 
 		\subsubsection{Resolving a Cycle}
-			A cycle is resolved by simply injecting NoOps in one of the agents, enabling the other to re-plan itself out of the problem area. A cycle conflict falls under the category of an Agent Conflict, but is resolved and detected separately.
+			A cycle is resolved by simply injecting \verb=NoOp=s in one of the agents, enabling the other to re-plan itself out of the problem area. A cycle conflict falls under the category of an Agent Conflict, but is resolved and detected separately.
 		
 
 \section{Experiments and Results}
-	Throughout the development and implementation of the client for this project, we have tested out various ideas and designs. This sections contains a mix of experiments performed during all stages of development. 
+	Throughout the development and implementation of the client for this project, we have tested out various ideas and designs. This section contains a mix of experiments performed during all stages of the development. 
 
-	Tables \ref{table:bench_astar} and \ref{table:bench_greedy} shows benchmarks using a Greedy search and a A* search, with a real distance map calculated with the Floyd-Warshall algorithm, and a Manhattan distance map, respectively. 
+	Tables \ref{table:bench_astar} and \ref{table:bench_greedy} show benchmarks using a Greedy search and a A* search, with distances pre-computed using the Floyd-Warshall algorithm, and computed on the fly as a Manhattan Distance, respectively.
 	
 	\begin{table}
 		\begin{tabular}[t]{ l | r | r | r | r }
@@ -191,29 +192,31 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 			SABispebjerg	&	1530.0			& 	1913.6 			&	-				&	-		\\
 			SAGroup42F13	&	375.0			& 	31110.4 		&	-				&	-		\\
 		\end{tabular}
-		\caption{Benchmarks using Greedy search.}
+		\caption{Benchmarks using greedy search.}
 		\label{table:bench_greedy}
 	\end{table}
 
 	\subsection{Testing Methodology}
-		All testing is done over the course of five iterations, after which the average is calculated. Results shown as ``-" denotes that a test failed all five attempts. The limits have been set to approximately 2 gigabyte RAM and 5 minutes. The benchmarks in Table \ref{table:bench_astar} and Table \ref{table:bench_greedy} have been run on a system powered by an Intel i5-3570k (Ivy Bridge) processor, equipped with 8 gigabyte 1866MHz DDR3 RAM, running Ubuntu 12.04. This was also the system, that was used for the competition.
+		All testing is performed over the course of five iterations, after which the average is calculated. Results shown as ``-" denote that a test failed all five attempts. The limits have been set to approximately two gigabyte RAM and five minutes. The benchmarks in Table \ref{table:bench_astar} and Table \ref{table:bench_greedy} have been run on a system powered by an Intel i5-3570k (Ivy Bridge) processor, equipped with 8 gigabyte 1866MHz DDR3 RAM, running Ubuntu 12.04. This was also the system that was used for the competition.
 		
 		Table \ref{table:bench_indygoals} and Table \ref{table:bench_cumgoals} have been run on a system powered by an Intel i7-3680QM (Ivy Bridge) processor, equipped with 8 gigabyte 1600MHz DDR3 SDRAM, running Windows 8.1.
 
 	\subsection{Comparison of Search Strategies}
-		First off, it could seem like our benchmarks are flawed: Where Greedy fails to find a solution using the Manhattan distance, A* actually manages to find it, cf. table \ref{table:bench_greedy}. This might seem slightly counter-intuitive but the reason is actually fairly simple:  We apply goal decomposition, as mentioned earlier. Each search is treated as its own. Hence the difference here, stems from how respectively Greedy and A* fares in search across the level. In larger levels, with a rather high branching factor, the Greedy approach would simply end up reaching the memory limit, before even getting a box \emph{close} to the goal.
+		First off, it could seem like our benchmarks are flawed: Where a greedy search fails to find a solution using the Manhattan distance, A* actually manages to solve it, cf. table \ref{table:bench_greedy}. This might seem slightly counter-intuitive but the reason is actually fairly simple:  We apply goal decomposition, as mentioned earlier. Each search is treated as its own. Hence the difference here, stems from how Greedy and A* fares in search across the level. In larger levels, with a rather high branching factor, the Greedy approach would simply end up reaching the memory limit, before even getting a box \emph{close} to the goal.
 
-		A real interesting thing that is seen on table \ref{table:bench_astar}, is that using the Manhattan distance map, we get a better solution. This is because very odd set of events. We select the goal order based on the distance, cf. \ref{goal2}. When using the Manhattan distance, the inherent flaw in the distance, actually makes the goal heuristic select a \emph{better} goal order.
+		An interesting phenomenon, is that using the Manhattan distance results in a better solution, as seen on table \ref{table:bench_astar}. This is caused by a very odd set of events. We select the goal order based on the distance, cf. \ref{goal2}. When using the Manhattan distance, the inherent flaw in the calculated distance actually makes the goal heuristic select a \emph{better} goal order.
 
-		Having said that, we can conclude using a Manhattan distance, with Greedy is a horrible choice. Not only does it result in sub-par solutions, but it simply fails to solve both \verb=SABispebjerg= and \verb=SAGroup42F13=. This is due to the branching factor on the two, combined with the inherent source of error, from calculating distances using the Manhattan Distance. 
+		Having said that, we can conclude using a Manhattan distance with a greedy search, is a horrible choice. Not only does it result in sub-par solutions, but it simply fails to solve both \verb=SABispebjerg= and \verb=SAGroup42F13=. This is due to the branching factor on the two levels, combined with the inherent source of error, from calculating distances using the Manhattan Distance. 
 
-		Applying A*, however, we see that we are now able to actually solve the previously unsolvable levels. However, the time for it to solve \verb=SABispebjerg= is far from good. Impressively we manage to solve \verb=SAGroup42F13= using only 756.4 ms in average. Having said all this, using the Manhattan distance map, using A* seems to be the best option.
+		Finally, we see that by applying A* we are able to solve levels, which a greedy search failed on. Unfortunately the time for it to solve \verb=SABispebjerg= is far from good. Impressively, we managed to solve \verb=SAGroup42F13= using only 756.4 ms in average. 
+
+		Having said all this, while limiting ourselves to only using the Manhattan distance, A* is the superior option.
 
 
 	\subsection{Distance Maps}
-		Having compared A* and Greedy based on the Manhattan distance map, we can now take another look on the benefit of the distance map. As we've mentioned before, we are applying a FloydWarshall algorithm to generate it. This comes with a trade-off: Time. In terms of running time, the algorithm is bound by $O(|V|^3)$ in pre-computation time, where $V$ is the number of cells. On some levels this trade-off is non-noticeable, simply due to the increased effectiveness. This is very much the case on \verb=SABispebjerg= and \verb=SACrunch=, cf. tables \ref{table:bench_astar} and \ref{table:bench_greedy}. However, when the level reaches a certain size, the time explodes. This is clearly seen on \verb=SAGroupF42F13=.
+		Having compared A* and greedy search with Manhattan distances, we can now compare this to their respective performances, using a pre-computed distance map. As we've mentioned before, we are applying the Floyd-Warshall algorithm to generate said distance map. This comes with a trade-off: Time. In terms of running time, the algorithm is bound by $O(|V|^3)$ in pre-computation time, where $V$ is the number of cells. On some levels this trade-off is non-noticeable, simply due to the increased effectiveness. This is very much the case on \verb=SABispebjerg= and \verb=SACrunch=, cf. tables \ref{table:bench_astar} and \ref{table:bench_greedy}. However, when a level is of a certain size, the time explodes. This is clearly seen on \verb=SAGroupF42F13=.
 
-		One \emph{very} interesting effect of the Floyd-Warshall distance map, is that it makes the Greedy approach return an optimal result, cf. table \ref{table:bench_greedy}. This is simply because, that for each location on the level, we know \emph{exactly} how far there is to the goal.
+		One \emph{very} interesting effect of the Floyd-Warshall distance map, is that it makes the greedy search return an optimal result, cf. table \ref{table:bench_greedy}. This is caused by the fact that for each location on the level, we know \emph{exactly} how far there is to any given destination.
 
 		In the current test set, the only case where we see an actual \emph{increase} in time is on \verb=SAGroup42F13=. A theory as to why the pre-computation time is much more significant on this level, compared to e.g. \verb=SABispebjerg=, is because \verb=SAGroup42F13= can be considered a sparse graph. Because of this, the pre-computation time exceeds the benefit of the reduced search time. While the time penalty \emph{is} a concern in this case, the fact that we increase the quality of the solution by roughly $29\%$, we feel that the Floyd-Warshall distance map is a good choice, in this domain.
 
