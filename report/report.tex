@@ -294,6 +294,8 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 	We've chosen to partition possible improvements into one of two categories: Increasing the performance of the current approach, using more complex algorithms, and taking an entirely new approach to a sub-problem.
 	
 	\subsection{Improving the Current Approach} 
+		Some improvements that could be to our solution, are primarily changing the algorithms and data structures that makes up the foundation of our project, to more advanced and efficient ones. 
+
 
 		\subsubsection{Distance Maps}
 			As we saw in our benchmarks, there \emph{is} a considerable time penalty for using the Floyd-Warshall distance map on the \verb=SAGroup42F13= level. Originally we chose this particular algorithm, due to it being considerably easier to understand and implement, than other \emph{slightly} more efficient algorithms. We estimated Floyd-Warshall to be the best benefit/resource ratio.
@@ -342,7 +344,7 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 			%Reindahl
 			One of the most obvious generalisations would be Sokoban, or any variants of it. Due to it being a very similar domain, it will therefore be simple to generalise to it. The only concern would be that Sokoban does have some irreversible actions/situations, due to the fact that there is no pull action. The concern is that a single error can make a level unsolvable and it would not necessarily be obvious at the time. This means that online replanning can be problematic and backtracking is far more important in this domain.
 
-		\subsubsection{Multi-Body NPC Route Finding in a Dynamic Environment}
+		\subsubsection{Controlling NPCs}
 			% Daniel
 			A not quite-so-obvious generalisation, could be to employ our solution for controlling the behaviour of NPCs\footnote{Non-Player-Character}, in open-world sandbox games.
 
