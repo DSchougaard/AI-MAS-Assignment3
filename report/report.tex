@@ -110,9 +110,9 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 				
 			
 	\subsection{Distances in the Map}
-		To increase the performance of our heuristics, we have been employing something we've called a ``Distance Map". A distance map is a certain way to calculate distances from one location to another.
+		To increase the performance of our heuristics, we have been employing something we've called a ``Distance Map". A distance map is a certain way to calculate the distance from one location to another.
 			
-		One important fact to realise, is that the levels we work on here, can represented as graphs: Each cell is a vertice, $V$, and each connection to another cell is an edge, $E$. With this knowledge in hand, we quickly realised that we could employ various algorithms actually meant to work on graphs. At the time of writing, we've implemented, tested and worked with a distance map generated using the Floyd-Warshall algorithm.
+		One important fact to realise, is that the levels we work on here can represented as graphs: Each cell is a vertice, $V$, and each connection to another cell is an edge, $E$. With this knowledge in hand, we quickly realised that we could employ various algorithms, originally designed to work on graphs. At the time of writing, we've implemented, tested, and worked with a distance map generated using the Floyd-Warshall algorithm.
 
 	\subsection{Search}
 		\label{sec:search}
@@ -131,15 +131,15 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 
 
 	\subsection{Conflict Resolution}
-		Since we're using multiple agents, each planning their own route, conflicts are bound to happen. We've chosen to rely on a method to resolve these somewhat similar to online planning. But first and foremost, we need to describe exactly how we \emph{detect} these conflicts.
+		Since we're using multiple agents, each planning their own route, conflicts are bound to happen. We have chosen a method to solve these conflicts, which somewhat resembles online planning. But first and foremost we need to describe exactly how we \emph{detect} these conflicts.
 
 		\subsubsection{Detecting the Conflicts}
-			Currently we rely on two different methods for detecting if agent is stuck. As was mentioned in section \ref{sec:search}, we employ a double search. Because the threshold is generated from the subdomain, we can assume that should the threshold be exceeded, a conflict must be present.
+			Currently we rely on two different methods for detecting if agent is stuck. As was mentioned in section \ref{sec:search}, we employ a double search. From the solution of the search in the relaxed subdomain, we derive a threshold. Should this threshold be exceeded -- in search on the original domain -- we can safely assume that a conflict must be present.
 
 			The second approach is using something we call a \verb=History=. Due to the way we implemented searching and re-planning, occasionally two agents could find themselves in a situation, where both of them would \textsc{cycle} between two locations -- a so called live-lock. The \verb=History= is a memory of a certain length, containing information about where an agent has been for the past $x$ moves. Should more than a certain fraction of this history be of the same location, a cycle is detected.
 
 		\subsubsection{Types of Conflicts}
-			Having detected a conflict, we partition the causes into one of two groups: The cases where it is only a box in the way, and the cases where it is a box. As a rule, all boxes found in the route, is handled first. This is done to avoid cases, where an agent otherwise asked to move a box, is told to get out of the way. An example of this, can be seen below. $0$ is a \verb=BLUE= agent, and $1$ is a \verb=RED= agent. The box $B$ is also \verb=RED=. 
+			Having detected a conflict, we partition the cause(s) into one of two groups: When it is only an agent in the way, when it is a box. As a rule, all boxes found in the route, is handled first. This is done to avoid cases, where an agent otherwise asked to move a box, is told to get out of the way. An example of this, can be seen below. $0$ is a \verb=BLUE= agent, and $1$ is a \verb=RED= agent. The box $B$ is also \verb=RED=. 
 			\begin{verbatim}
 				...+++++++++...
 				     0 B1
