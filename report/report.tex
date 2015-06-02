@@ -88,20 +88,20 @@ We discuss the strengths and weaknesses of our solution based on the results of 
 %			subgoal independence
 %			adding goals for agents
 %		
-	The general structure used is a multibody approach with preprocessing. The complexity is lowered by decomposing the problem by assuming that goals of the same colour, located close to each other are related and therefore can be grouped together (using k-clustering). It is also assumed that solving each grouping is independent of the others. One agent is assigned to solve each grouping. Each agent in this system is responsible for solving its own goals independent of the other agents, as far as possible. 
+	The general structure used is a multibody approach with preprocessing. The complexity is lowered by decomposing the problem by assuming that goals of the same colour, located close to each other are related and therefore can be grouped together (using k-clustering). It is also assumed that solving each grouping is independent of the others. One agent is assigned to solve each grouping. Each agent in this system is responsible for solving its own goals independently of the other agents, as far as possible. 
 	To lower the complexity further for each grouping the goals are solved cumulative. The order of solving the goals is based on a heuristic. It cumulative solves the goals, to avoid destroying already achieved goals, since they are assumed to be dependent on each other. To find a solution for a set of goals a search is performed. After each search the found plan is executed until it is completed or it fails. If it fails replanning is commenced.
 
  
 	\subsection{The Heuristic}
 		%Reindahl \\
 		%RELAXATION OF A WABBIT, WABBIT! WABBIT!\\
-		A series of heuristics is used, each one to solve a different problem. All the heuristics have that in common, that to enhance the heuristics the distances used, is the shortest path, when the domain is relaxed by removing all movable objects, these values can be precomputed (The All-pairs shortest paths problem).
+		A series of heuristics is used, each one to solve a different problem. All the heuristics have that in common, that to enhance the heuristics the distances used, is the shortest path, when the domain is relaxed by removing all movable objects, these values can be precomputed (the all-pairs shortest paths problem).
 		
 		Of all the heuristic used only two are noteworthy \nameref{Goal1} and \nameref{goal2}, the rest is basically just the distance to or from a point.
 		\subsubsection{Goal Heuristic}\label{Goal1}
-			The main heuristic used is the one for placing boxes on goals. It consist of two parts, one to ensure progress and one to ensure as little interference as possible with the other agents.
+			The main heuristic used, is the one for placing boxes on goals. It consist of two parts, one to ensure progress and one to ensure as little interference as possible with the other agents.
 			
-			The first part calculates the shortest path from each of the agents assigned goals to the agent, going through a box that matches the goal (boxes already on goals are not used). All these parts are summed together.
+			The first part calculates the shortest path from each of the agents' assigned goals to the agent, going through a box that matches the goal (boxes already on goals are not used). All these parts are summed together.
 			
 			The second part is basically a goal count. It works as punishment for moving boxes away from goal fields, even though the goals ar not part of the agents goal condition.
 			
@@ -109,7 +109,7 @@ We discuss the strengths and weaknesses of our solution based on the results of 
 		
 		\subsubsection{Goal Selection Heuristic}\label{goal2}
 			%Reindahl
-			This heuristic is used to to choose the order in which the goals is solved. Goals are selected from a agents grouping mainly based on the shortest distance from a goal to the nearest similar box (not on a goal) and to the agent. The location of a given goal is also taken into consideration so goals likely to be blocked (fx. dead ends and corners) is prioritised higher by a factor.
+			This heuristic is used to choose the order in which the goals is solved. Goals are selected from a agents grouping mainly based on the shortest distance from a goal to the nearest similar box (not on a goal) and to the agent. The location of a given goal is also taken into consideration so goals likely to be blocked (e.g. dead ends and corners) is prioritised higher by a factor.
 
 				
 			
@@ -121,15 +121,15 @@ We discuss the strengths and weaknesses of our solution based on the results of 
 	\subsection{Search}
 		\label{sec:search}
 		To find a plan to solve a given set of goals, a search is performed. The search is either a Greedy or A* search. A* is used in the single agent world and when the problem is considered small enough, such as moving out of a given path. 
-		The search works under the assumption, that nothing changes in the world except what the agent performing the search do. This will sometimes fail on the multi agent levels, and we rely on simply letting the server \emph{tell} the client, that there is a conflict and then replanning is commenced. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a greater overhead. 
+		The search works under the assumption, that nothing changes in the world, except what the agent performing the search do. This will sometimes fail on the multi agent levels, and we rely on simply letting the server \emph{tell} the client, that there is a conflict and then replanning is commenced. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a greater overhead. 
 		
 		
-		To avoid using to much time on searches which are impossible or just to long, we employ a sort of double search. By first relaxing the domain, into a subdomain, only containing the agent itself and boxes, it can move. We then search this reduced domain. Using the length of the found route, we get a threshold for determining whether or not the normal search is worth progressing with. This approach rely on the assumption that relaxed search is significantly faster than the normal search. This assumption is however not the case for the single agent level, and it is therefore not performed in that case.
+		To avoid using to much time on searches, which are impossible or just to time consuming, we employ a sort of double search. By first relaxing the domain, into a subdomain, only containing the agent itself and boxes, it can move. We then search this reduced domain. Using the length of the found route, we get a threshold for determining whether or not the normal search is worth progressing with or it should be cut short. This approach rely on the assumption that relaxed search is significantly faster than the normal search. This assumption is however not the case for the single agent level, and it is therefore not performed in that case.
 		
 		
 		
 		
-		Another thing worth remarking on here is that a randomized approach is used in expanding the search space, which means that a search is often not likely to result in the same plan each time. This even more so the case when combining it with a greedy approach and a non admissible heuristic.
+		Another area worth remarking on here is that a randomized approach is used in expanding the search space, which means that a search is often not likely to result in the same plan each time. This is even more so the case, when combining it with a greedy approach and a non admissible heuristic.
 
 
 
@@ -220,9 +220,7 @@ We discuss the strengths and weaknesses of our solution based on the results of 
 		In the current test set, the only case where we see an actual \emph{increase} in time is on \verb=SAGroup42F13=. A theory as to why the pre-computation time is much more significant on this level, compared to i.e. \verb=SABispebjerg=, is because \verb=SAGroup42F13= can be considered a sparse graph. Because of this, the pre-computation time exceeds the benefit of the reduced search time, in cases like this. While the time penalty \emph{is} a concern in this case, the fact that we increase the quality of the solution by roughly $29\%$, we feel that the FloydWarshall distance map is a good choice, in this domain.
 
 	\subsection{Goal Dependency}
-		As a final experiment, we compare how our solution performs in regards to total subgoal independence contra cumulative subgoal dependence. The results of this experiment are found on Tables \ref{table:bench_indygoals} and \ref{table:bench_cumgoals}, respectively.
-		%Kasper
-		%Here we will be comparing the effect of running the algorithm with total subgoal independence and cumulative subgoal dependence in the goal conditions. The results of the test can be seen in Tables \ref{table:bench_indygoals} and \ref{table:bench_cumgoals}.
+		Here we will be comparing how our solution performs in regards to total subgoal independence contra cumulative subgoal dependence. The results of this experiment are found on Tables \ref{table:bench_indygoals} and \ref{table:bench_cumgoals}, respectively.
 		\begin{table}
 			\centering
 			\begin{tabular}{ l | r | c | l }
@@ -267,17 +265,13 @@ We discuss the strengths and weaknesses of our solution based on the results of 
 
 
 		The results show a clear difference between the single agent and the multi-agent levels. 
-		The single agent levels show that the performance is more or less equal, when comparing the number of steps and the amount of time. The only major difference is the success rate on \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the proximity of the goals. This tendency can however not be seen on the \verb|SAFirefly|, since the agent has a fairly limited set of paths. This means that the agent can not easily move around previously achieved goals, and unfortunately ends up undoing them, instead of progressing. This in return, results in a longer solution.
-
-		%and the agent therefore can't easily move around previously achieved goals and end up undoing them instead, and thereby resulting in a longer solution.
+		The single agent levels show that the performance is more or less equal, when comparing the number of steps and the amount of time. The only major difference is the success rate on \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the proximity of the goals. This tendency can however not be seen on the \verb|SAFirefly|, since the agent has a fairly limited set of paths. This means that the agent can not easily move around previously achieved goals, and ends up undoing them, instead of progressing. This in return, results in a longer solution.
 		
 		The interesting part of the data is that the independent goal strategy finds faster and shorter solutions for the multi-agent levels. This can be explained by the fact that if an agent interferes with another agent's goal, it is not necessarily best to fix the goal immediately, but instead wait for a more opportune time. The only apparent disadvantage is the same as for the single agent: It can end up in livelocks.
 		
 		Part of the explanation is also that the heuristic helps to avoid destroying already achieved goals, and thereby negating most of the disadvantages that the independent goal approach has. 
 		
 		For the multi-agent levels, \verb|MAnull| breaks the pattern. This is due to the fact that the most time consuming part of the level, is in reality a minor version of the single-agent level \verb=SAboxesofHanoi=. This means that a performance similar to that of a single-agent level, is to be expected. 
-
-		%This is due to the most time consuming part of of the level is in practice a minor version of the single agent level \verb|SAboxesOfHanoi| and a performance more similar to pattern from the single agent levels are therefore expected.
 	
 	
 \section{Discussion}
@@ -315,9 +309,9 @@ We discuss the strengths and weaknesses of our solution based on the results of 
 			However, this comes at a disadvantage: We have to keep \emph{two} data structures in memory, while also maintaining them. To avoid this issue, another approach could be to use a Fibonacci Heap ~\cite{fibonacci}. This data structure would allow us to perform most operations at expected time $O(1)$, while in linear space, resulting in a \emph{theoretical} improvement.
 
 	\subsection{New Approaches}
-		Whereas the previous section focused on improving the existing solution, there are still improvements to be made, which require a completely new approach. As shown by the competition, our code \emph{could} produce single-agent solutions of higher quality. This is definitely one of the improvements which could be made.
-
-		%Our approach has some general disadvantages as discussed in section \ref{disscussion} and as shown in the competition results the quality of the single agent solution could be higher, which would be obvious to address.
+	%	Whereas the previous section focused on improving the existing solution, there are still improvements to be made, which require a completely new approach. As shown by the competition, our code \emph{could} produce single-agent solutions of higher quality. This is definitely one of the improvements which could be made.
+		There is a limited to what can be improved, by using the existing approach and optimising on it. It can therefore be necessary negate some disadvantages by using a completely new approach.
+	%	Our approach has some general disadvantages as discussed in section \ref{disscussion} and as shown in the competition results, the quality of the single agent solution could be higher. These areas would be obvious to address, but to do this a completely new approach is need
 
 		%\subsubsection{Identical Adjacent Goals:}
 			%Box Cycling\\
@@ -327,21 +321,18 @@ We discuss the strengths and weaknesses of our solution based on the results of 
 		\subsubsection{Coordination}
 			We had problems with several agents' lack of coordination. This often caused agents to hit each other, even though there would be plenty of space for them to navigate around each other. Additionally, it also resulted in agents performing more \verb=NoOps= than necessary, when resolving a conflict.
 
-			To mitigate these issues, all agents need to have some idea of where the remaining agents are, at all times. One solution to this, is the blackboard approach. This lets all agents validate and modify their plans, prior to executing them.
+			To mitigate these issues, all agents need to have some idea of where the remaining agents are, at all times. This can be achieved by using a blackboard approach. This lets all agents validate and modify their plans, before executing them.
 
-
-			%We had problems with several agents' lack of coordination. Which resulted in agents doing more than necessary noops to avoid conflicts and in general hitting each other even though there are space to pass each other. To avoid this the agent needs to have some idea of where the other agents are at all time. This can be achieved by using a  blackboard approach, and thereby letting the agents modify and validate their plans before executing them.
 		\subsubsection{Backtracking}
 		\label{subsub:backtrack}
-			Performing the search completely offline, will allow better backtracking. By extension this will allow us to recover from situations, where the agent would otherwise get stuck, by solving the goal in the wrong order.
+			To solutions of a higher quality, backtracking could be improved. This could be done by performing the search completely offline, and thereby allowing the search to backtrack to before the current goal. This will also allow the system to recover from situations, where the agent would otherwise get stuck, due solving the goal in the wrong order.
+%			As shown by some of the competition levels a few mistake can make the level unsolvable for us. Therefore improved backtracking could be interesting to look at. This could be be done by
+			
 
-			%Running the complete search offline will allow better backtracking, and thereby being able to recover from situations, where the agent get stuck by solving the goals in the wrong order. 
 
 		\subsubsection{Goal Decomposition}
-			To increase the performance on single-agent levels, a more restricted approach could be used. This could be done by grouping goals together, applying the same assumption as used for the multi-agent clustering. The difference from the multi-agent approach would be that more groupings than agents exists. A more advanced approach would be to apply the techniques from \cite{Subgoals} to find the ordering of the goals and solve them in that order. This approach could also be applied in combination with clustering for multi-agents, to determine the way goals are grouped.
+			To increase the performance on single-agent levels, a more guided approach could be used. This could be done by grouping goals together, applying the same assumption as used for the multi-agent clustering. The difference from the multi-agent approach would be that more groupings than agents exists. A more advanced approach would be to apply the techniques from \cite{Subgoals} to find the ordering of the goals and solve them in that order. This approach could also be applied in combination with clustering for multi-agents, to determine the way goals are grouped.
 
-			%To increase the performance on single agent levels, a more guide approach could be used. This could be by grouping goals together applying the same assumption as used for the multi agent clustering. The difference from the multi agent approach would be that the grouping would be that there would be more groupings than agents. A more advanced approach would be to apply the techniques from \cite{Subgoals} to find the ordering of the goals and solve them in the found order. This approach could also be applied in combination with the clustering to the way goals are grouped for the multi agents.
-			
 			
 
 	\subsection{Generalisations of our Solution}
@@ -351,9 +342,7 @@ We discuss the strengths and weaknesses of our solution based on the results of 
 		
 		\subsubsection{Sokoban}
 			%Reindahl
-			One of the most obvious generalisations would be Sokoban, or any variants of it. Due to it being a very similar domain, it will therefore be simple to generalise to it. The only concern would be that Sokoban does have some irreversible actions/situations, due to the fact that there is no pull action. The concern is that a single error can make a level unsolvable and it would not necessarily be obvious at the time. This means that backtracking is far more important in this domain.
-
-			%One of the most obvious generalisations would be that of Sokoban or variants of it. Due to it being a very similar domain, and it will therefore be simple to generalise to this domain. The only concern would be that Sokoban does have some irreversible actions/situations (due to no pull action). The concern is that a single error can make a level unsolvable and it would not necessarily be obvious at the time, this means that backtracking is far more important in this domain.
+			One of the most obvious generalisations would be Sokoban, or any variants of it. Due to it being a very similar domain, it will therefore be simple to generalise to it. The only concern would be that Sokoban does have some irreversible actions/situations, due to the fact that there is no pull action. The concern is that a single error can make a level unsolvable and it would not necessarily be obvious at the time. This means that online replanning can be problematic and backtracking is far more important in this domain.
 
 		\subsubsection{Multi-Body NPC Route Finding in a Dynamic Environment}
 			% Daniel
