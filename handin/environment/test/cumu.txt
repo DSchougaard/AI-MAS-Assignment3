@@ -1,0 +1,367 @@
+
+E:\GitHub\AI-MAS-Assignment3\environment>javac -cp . client/SearchClient.java
+
+E:\GitHub\AI-MAS-Assignment3\environment>java -jar cserver.jar -d test/ -c "java client.SearchClient"
+Starting competition run!
+Timeout of 300 seconds. Action limit is 20000
+ ************
+ * Processing test\MAAteam - Copy (2).lvl (1 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 23.678 seconds
+  - Actions taken: 480
+
+ ************
+ * Processing test\MAAteam - Copy (3).lvl (2 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 2.74 seconds
+  - Actions taken: 117
+
+ ************
+ * Processing test\MAAteam - Copy (4).lvl (3 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 4.244 seconds
+  - Actions taken: 188
+
+ ************
+ * Processing test\MAAteam - Copy.lvl (4 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 14.973 seconds
+  - Actions taken: 492
+
+ ************
+ * Processing test\MAAteam.lvl (5 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 24.079 seconds
+  - Actions taken: 416
+
+ ************
+ * Processing test\MABullFightF11 - Copy (2).lvl (6 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 16.849 seconds
+  - Actions taken: 479
+
+ ************
+ * Processing test\MABullFightF11 - Copy (3).lvl (7 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 19.697 seconds
+  - Actions taken: 276
+
+ ************
+ * Processing test\MABullFightF11 - Copy (4).lvl (8 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 3.571 seconds
+  - Actions taken: 273
+
+ ************
+ * Processing test\MABullFightF11 - Copy.lvl (9 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 15.539 seconds
+  - Actions taken: 299
+
+ ************
+ * Processing test\MABullFightF11.lvl (10 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 17.995 seconds
+  - Actions taken: 348
+
+ ************
+ * Processing test\MAdeepblue - Copy (2).lvl (11 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 10.261 seconds
+  - Actions taken: 256
+
+ ************
+ * Processing test\MAdeepblue - Copy (3).lvl (12 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 7.716 seconds
+  - Actions taken: 282
+
+ ************
+ * Processing test\MAdeepblue - Copy (4).lvl (13 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 7.751 seconds
+  - Actions taken: 217
+
+ ************
+ * Processing test\MAdeepblue - Copy.lvl (14 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 10.403 seconds
+  - Actions taken: 266
+
+ ************
+ * Processing test\MAdeepblue.lvl (15 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 4.694 seconds
+  - Actions taken: 241
+
+ ************
+ * Processing test\MAnull - Copy (2).lvl (16 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 12.357 seconds
+  - Actions taken: 116
+
+ ************
+ * Processing test\MAnull - Copy (3).lvl (17 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 12.722 seconds
+  - Actions taken: 122
+
+ ************
+ * Processing test\MAnull - Copy (4).lvl (18 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 11.418 seconds
+  - Actions taken: 108
+
+ ************
+ * Processing test\MAnull - Copy.lvl (19 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 9.647 seconds
+  - Actions taken: 98
+
+ ************
+ * Processing test\MAnull.lvl (20 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 8.674 seconds
+  - Actions taken: 90
+
+ ************
+ * Processing test\SAbispebjerg - Copy (2).lvl (21 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 1.704 seconds
+  - Actions taken: 1518
+
+ ************
+ * Processing test\SAbispebjerg - Copy (3).lvl (22 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 1.775 seconds
+  - Actions taken: 1514
+
+ ************
+ * Processing test\SAbispebjerg - Copy (4).lvl (23 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 1.747 seconds
+  - Actions taken: 1534
+
+ ************
+ * Processing test\SAbispebjerg - Copy.lvl (24 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 1.75 seconds
+  - Actions taken: 1534
+
+ ************
+ * Processing test\SAbispebjerg.lvl (25 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 1.785 seconds
+  - Actions taken: 1530
+
+ ************
+ * Processing test\SACrunch - Copy (2).lvl (26 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.119 seconds
+  - Actions taken: 104
+
+ ************
+ * Processing test\SACrunch - Copy (3).lvl (27 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.124 seconds
+  - Actions taken: 106
+
+ ************
+ * Processing test\SACrunch - Copy (4).lvl (28 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.144 seconds
+  - Actions taken: 102
+
+ ************
+ * Processing test\SACrunch - Copy.lvl (29 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.141 seconds
+  - Actions taken: 106
+
+ ************
+ * Processing test\SACrunch.lvl (30 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.136 seconds
+  - Actions taken: 102
+
+ ************
+ * Processing test\SAFirefly - Copy (2).lvl (31 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.13 seconds
+  - Actions taken: 100
+
+ ************
+ * Processing test\SAFirefly - Copy (3).lvl (32 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.131 seconds
+  - Actions taken: 100
+
+ ************
+ * Processing test\SAFirefly - Copy (4).lvl (33 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.133 seconds
+  - Actions taken: 102
+
+ ************
+ * Processing test\SAFirefly - Copy.lvl (34 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.126 seconds
+  - Actions taken: 84
+
+ ************
+ * Processing test\SAFirefly.lvl (35 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.125 seconds
+  - Actions taken: 100
+
+ ************
+ * Processing test\SAgroup42F13 - Copy (2).lvl (36 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 40.528 seconds
+  - Actions taken: 375
+
+ ************
+ * Processing test\SAgroup42F13 - Copy (3).lvl (37 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 40.182 seconds
+  - Actions taken: 375
+
+ ************
+ * Processing test\SAgroup42F13 - Copy (4).lvl (38 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 40.187 seconds
+  - Actions taken: 375
+
+ ************
+ * Processing test\SAgroup42F13 - Copy.lvl (39 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 40.176 seconds
+  - Actions taken: 375
+
+ ************
+ * Processing test\SAgroup42F13.lvl (40 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 40.324 seconds
+  - Actions taken: 375
+
+ ************
+ * Processing test\SAnull - Copy (2).lvl (41 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.144 seconds
+  - Actions taken: 91
+
+ ************
+ * Processing test\SAnull - Copy (3).lvl (42 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.114 seconds
+  - Actions taken: 91
+
+ ************
+ * Processing test\SAnull - Copy (4).lvl (43 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.139 seconds
+  - Actions taken: 91
+
+ ************
+ * Processing test\SAnull - Copy.lvl (44 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.166 seconds
+  - Actions taken: 95
+
+ ************
+ * Processing test\SAnull.lvl (45 of 45)
+ ************
+  - Run of level ended
+  - Solution found
+  - Time spent: 0.166 seconds
+  - Actions taken: 121
+
+Competition run finished. Please follow provided instructions for uploading results.

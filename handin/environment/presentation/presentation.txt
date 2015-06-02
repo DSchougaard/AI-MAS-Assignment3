@@ -1,0 +1,39 @@
+mabullfighter
+	conflict
+		noops - to ensure road is clear
+
+Malionfishf11
+	goal decomposition		
+		clustering
+	noops ensure a little progress each time	
+	randomization
+		
+maNUll
+	boxes of 
+		greedy
+		priorities goals
+		
+	conflict resolution
+		out of the way
+		noops
+
+		
+		
+sa bruteforce
+	goal decomposition
+	order
+
+sagroup42f13
+	real distance (floyed)
+	
+salionfishf11
+	goal decomposition
+	priorities goals
+		goal K
+		heuristic 
+			single move fix
+	
+saMasters
+	goal prioritasation
+	semi independence
+	bug...
