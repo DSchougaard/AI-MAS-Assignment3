@@ -116,11 +116,11 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 
 	\subsection{Search}
 		\label{sec:search}
-		To find a plan to solve a given set of goals, a search is performed. The search is either a Greedy or A* search. A* is used in the single agent world and when the problem is considered small enough, such as moving out of a given path. 
-		The search works under the assumption, that nothing changes in the world, except what the agent performing the search do. This will sometimes fail on the multi agent levels, and we rely on simply letting the server \emph{tell} the client, that there is a conflict and then replanning is commenced. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a greater overhead. 
+		To find a plan to solve a given set of goals, a search is performed. The search is either a Greedy or A* search. A* is used in the single-agent world and when the problem is considered small enough, such as moving out of a given path. 
+		The search works under the assumption, that nothing changes in the world, except what the agent performing the search do. This will sometimes fail on the multi-agent levels, and we rely on simply letting the server \emph{tell} the client, that there is a conflict and then replanning is commenced. This is by far the simplest possible way to detect a conflict, but it does inevitably result in a greater overhead. 
 		
 		
-		To avoid using to much time on searches, which are impossible or just to time consuming, we employ a sort of double search. By first relaxing the domain, into a subdomain, only containing the agent itself and boxes, it can move. We then search this reduced domain. Using the length of the found route, we get a threshold for determining whether or not the normal search is worth progressing with or it should be cut short. This approach rely on the assumption that relaxed search is significantly faster than the normal search. This assumption is however not the case for the single agent level, and it is therefore not performed in that case.
+		To avoid using to much time on searches, which are impossible or just to time consuming, we employ a sort of double search. By first relaxing the domain, into a subdomain, only containing the agent itself and boxes, it can move. We then search this reduced domain. Using the length of the found route, we get a threshold for determining whether or not the normal search is worth progressing with or it should be cut short. This approach rely on the assumption that relaxed search is significantly faster than the normal search. This assumption is however not the case for the single-agent level, and it is therefore not performed in that case.
 		
 		
 		
@@ -262,10 +262,10 @@ In this paper we present a planning system for solving Pukoban problems in a coo
 		\end{table}
 
 
-		The results show a clear difference between the single agent and the multi-agent levels. 
-		The single agent levels show that the performance is more or less equal, when comparing the number of steps and the amount of time. The only major difference is the success rate on \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the proximity of the goals. This tendency can however not be seen on the \verb|SAFirefly|, since the agent has a fairly limited set of paths. This means that the agent can not easily move around previously achieved goals, and ends up undoing them, instead of progressing. This in return, results in a longer solution.
+		The results show a clear difference between the single-agent and the multi-agent levels. 
+		The single-agent levels show that the performance is more or less equal, when comparing the number of steps and the amount of time. The only major difference is the success rate on \verb=SAnull=, where a livelock occurs 4/5 of the time, due to the proximity of the goals. This tendency can however not be seen on the \verb|SAFirefly|, since the agent has a fairly limited set of paths. This means that the agent can not easily move around previously achieved goals, and ends up undoing them, instead of progressing. This in return, results in a longer solution.
 		
-		The interesting part of the data is that the independent goal strategy finds faster and shorter solutions for the multi-agent levels. This can be explained by the fact that if an agent interferes with another agent's goal, it is not necessarily best to fix the goal immediately, but instead wait for a more opportune time. The only apparent disadvantage is the same as for the single agent: It can end up in livelocks.
+		The interesting part of the data is that the independent goal strategy finds faster and shorter solutions for the multi-agent levels. This can be explained by the fact that if an agent interferes with another agent's goal, it is not necessarily best to fix the goal immediately, but instead wait for a more opportune time. The only apparent disadvantage is the same as for the single-agent: It can end up in livelocks.
 		
 		Part of the explanation is also that the heuristic helps to avoid destroying already achieved goals, and thereby negating most of the disadvantages that the independent goal approach has. 
 		
