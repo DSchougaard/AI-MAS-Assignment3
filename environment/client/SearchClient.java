@@ -12,7 +12,6 @@ import client.heuristic.Heuristic;
 import client.node.Node;
 import client.node.level.distancemap.FloydWarshallDistanceMap;
 import client.node.storage.ExpansionStatus;
-import client.node.storage.Goal;
 import client.node.storage.SearchResult;
 import client.parser.ArgumentParser;
 import client.parser.LevelParser;

@@ -76,8 +76,6 @@ public class Conflict{
 				move_agents = new ArrayList<LogicalAgent>();
 			}
 
-			if( move_boxes.isEmpty() && Settings.Global.PRINT)
-				System.err.println("Conflict :: No boxes on route.");
 
 			for( Box box : move_boxes ){
 				if( box == null )
@@ -313,7 +311,6 @@ public class Conflict{
 		ArrayList<Box> boxesInTheWay = new ArrayList<>();
 
 		// Loop over route, identifying obstructions in the route
-		int numBoxes = 0;
 		for( Base b : route ){
 			Object o = node.objectAt(b);
 			if( o instanceof LogicalAgent && ((LogicalAgent)o).id != agent.id ){
